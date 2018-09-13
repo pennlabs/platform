@@ -39,3 +39,18 @@ class UpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Update
         fields = ('product', 'title', 'body')
+
+class Event(models.Model):
+    name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
+    date = models.CharField(max_length=255)
+    start_time = models.CharField(max_length=255)
+    end_time = models.CharField(max_length=255)
+    link = models.URLField()
+    free_food = models.BooleanField()
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('name', 'date', 'location', 'start_time', 'end_time', 'link', 'free_food')
