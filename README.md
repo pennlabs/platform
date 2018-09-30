@@ -11,3 +11,4 @@ Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form
 
 ## Current Maintainer
 - Arun Kirubarajan
+- Armaan Tobaccowalla
