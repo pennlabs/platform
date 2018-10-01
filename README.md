@@ -9,6 +9,6 @@ The Penn Lab's Platform API for accessing Users, Products, Members, Updates and 
 ## Documentation
 Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form of `*/urls.py`. Account/authorization related scripts are located in `accounts/` and all other database-driven routes are located in `api/`.
 
-## Current Maintainer
+## Current Maintainers
 - Arun Kirubarajan
 - Armaan Tobaccowalla
