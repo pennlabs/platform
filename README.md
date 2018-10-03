@@ -1,6 +1,9 @@
-# Labs
+# Labs Core
 
-The Penn Lab's Platform API for accessing Users, Products, Members, Updates and more. Built using Django REST Framework and Python3.
+The Penn Lab's Platform API for accessing Users, Products, Members, Updates and more. 
+
+## Dependencies
+1. Django REST Framework (Python 3.7)
 
 ## Usage
 1. Install requirements using `pip install -r requirements.txt`.
@@ -10,5 +13,5 @@ The Penn Lab's Platform API for accessing Users, Products, Members, Updates and 
 Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form of `*/urls.py`. Account/authorization related scripts are located in `accounts/` and all other database-driven routes are located in `api/`.
 
 ## Current Maintainers
-- Arun Kirubarajan
-- Armaan Tobaccowalla
+- [Arun Kirubarajan](https://github.com/kirubarajan)
+- [Armaan Tobaccowalla](https://github.com/ArmaanT)
