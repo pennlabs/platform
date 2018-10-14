@@ -9,18 +9,19 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('email', 'date_joined', 'name', 'major', 'school')
 
 
-class MemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
-
-    class Meta:
-        model = Member
-        fields = ('user', 'bio', 'location', 'role', 'photo', 'linkedin', 'website', 'github', 'year_joined')
-
-
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ('name', 'tagline', 'description', 'url')
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
+    teams = TeamSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Member
+        fields = ('user', 'bio', 'location', 'role', 'teams', 'photo', 'linkedin', 'website', 'github', 'year_joined')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
