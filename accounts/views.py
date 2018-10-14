@@ -1,8 +1,9 @@
-from django.contrib.auth.models import User
+from .models import User
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from knox.models import AuthToken
 from .serializers import CreateUserSerializer, UserSerializer, LoginUserSerializer
+
 
 class RegistrationView(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
@@ -17,6 +18,7 @@ class RegistrationView(generics.GenericAPIView):
             "token": AuthToken.objects.create(user)
         })
 
+
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
 
@@ -28,6 +30,7 @@ class LoginView(generics.GenericAPIView):
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)
         })
+
 
 class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()

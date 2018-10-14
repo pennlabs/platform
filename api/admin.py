@@ -1,7 +1,9 @@
 from django.contrib import admin
-from .models import Member, Product, Update, Event
+from .models import Member, Team, Update, Event
+from accounts.models import User
 
+admin.site.register(User)
 admin.site.register(Member)
-admin.site.register(Product)
+admin.site.register(Team)
 admin.site.register(Update)
 admin.site.register(Event)

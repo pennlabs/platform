@@ -1,5 +1,4 @@
-# Labs Core
-
+# Labs Platform
 The Penn Lab's Platform API for accessing Users, Products, Members, Updates and more. 
 
 ## Dependencies
