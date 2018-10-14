@@ -25,7 +25,7 @@ SECRET_KEY = 'o7ql0!vuk0%rgrh9p2bihq#pege$qqlm@zo#8&t==%&za33m*2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'platform.pennlabs.org', 'platform.apps.pennlabs.org']
 
 
 # Application definition
