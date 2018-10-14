@@ -1,11 +1,11 @@
 from rest_framework import viewsets
-from .models import LabMember, Team, Update, Event
-from .serializers import LabMemberSerializer, TeamSerializer, UpdateSerializer, EventSerializer
+from .models import Member, Team, Update, Event
+from .serializers import MemberSerializer, TeamSerializer, UpdateSerializer, EventSerializer
 
 
-class LabMemberViewSet(viewsets.ModelViewSet):
-    queryset = LabMember.objects.all()
-    serializer_class = LabMemberSerializer
+class MemberViewSet(viewsets.ModelViewSet):
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer
     http_method_names = ['get']
 
 

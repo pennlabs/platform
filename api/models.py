@@ -3,7 +3,7 @@ from rest_framework import serializers
 from accounts.models import User
 
 
-class LabMember(models.Model):
+class Member(models.Model):
     user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     bio = models.TextField()
     location = models.CharField(max_length=255)
