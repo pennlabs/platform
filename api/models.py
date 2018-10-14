@@ -15,7 +15,7 @@ class LabMember(models.Model):
     year_joined = models.DateField()
 
 
-class Product(models.Model):
+class Team(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
     tagline = models.CharField(max_length=255)
@@ -24,7 +24,7 @@ class Product(models.Model):
 
 
 class Update(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=255)
     body = models.TextField()
 

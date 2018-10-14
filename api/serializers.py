@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from accounts.models import User
-from .models import LabMember, Product, Update, Event
+from .models import LabMember, Team, Update, Event
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,9 +17,9 @@ class LabMemberSerializer(serializers.ModelSerializer):
         fields = ('user', 'bio', 'location', 'role', 'photo', 'linkedin', 'website', 'github', 'year_joined')
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class TeamSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = Team
         fields = ('name', 'tagline', 'description', 'url')
 
 
