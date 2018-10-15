@@ -1,5 +1,7 @@
 from .models import User
-from rest_framework import viewsets, permissions, generics
+from rest_framework import viewsets, generics
+from knox.auth import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from knox.models import AuthToken
 from .serializers import CreateUserSerializer, UserSerializer, LoginUserSerializer

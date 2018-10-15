@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from accounts.models import User
 from accounts.serializers import UserSerializer
 from .models import Member, Team, Update, Event
 

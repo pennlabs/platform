@@ -1,6 +1,6 @@
 from .views import RegistrationView, LoginView, UserView
 from knox.views import LogoutView, LogoutAllView
-from django.urls import path, include
+from django.urls import path
 
 urlpatterns = [
     path("register/", RegistrationView.as_view()),
