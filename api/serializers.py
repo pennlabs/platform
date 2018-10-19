@@ -16,7 +16,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ('user', 'bio', 'location', 'role', 'teams', 'photo', 'linkedin', 'website', 'github', 'year_joined')
+        fields = ('user', 'bio', 'location', 'role', 'teams', 'photo', 'linkedin', 'website', 'github', 'year_joined', 'alumnus')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
