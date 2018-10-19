@@ -1,10 +1,10 @@
-from rest_framework.routers import SimpleRouter
-from .views import MemberViewSet, TeamViewSet, UpdateViewSet, EventViewSet
+from .views import MemberViewSet, TeamViewSet, UpdateViewSet, EventViewSet, ProtectedViewSet
+from django.urls import path
 
-router = SimpleRouter()
-router.register("members", MemberViewSet)
-router.register("teams", TeamViewSet)
-router.register("updates", UpdateViewSet)
-router.register("events", EventViewSet)
-
-urlpatterns = router.urls
+urlpatterns = [
+    path("members/", MemberViewSet.as_view({'get': 'list'})),
+    path("teams/", TeamViewSet.as_view({'get': 'list'})),
+    path("updates/", UpdateViewSet.as_view({'get': 'list'})),
+    path("events/", EventViewSet.as_view({'get': 'list'})),
+    path("protected/", ProtectedViewSet.as_view())
+]
