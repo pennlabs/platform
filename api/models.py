@@ -22,6 +22,7 @@ class Member(models.Model):
     website = models.URLField()
     github = models.URLField()
     year_joined = models.DateField()
+    alumnus = models.BooleanField(default=False)
 
 
 class Update(models.Model):
