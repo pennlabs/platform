@@ -1,6 +1,9 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from .models import Member, Team, Update, Event
 from .serializers import MemberSerializer, TeamSerializer, UpdateSerializer, EventSerializer
+from knox.auth import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 
 class MemberViewSet(viewsets.ModelViewSet):
@@ -25,3 +28,11 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     http_method_names = ['get']
+
+
+class ProtectedViewSet(generics.GenericAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+        return Response({"secret_information": "this is a protected route"})
