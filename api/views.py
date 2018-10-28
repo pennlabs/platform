@@ -1,6 +1,6 @@
 from rest_framework import viewsets, generics
-from .models import Member, Team, Update, Event
-from .serializers import MemberSerializer, TeamSerializer, UpdateSerializer, EventSerializer
+from .models import Member, Team, Role, Update, Event
+from .serializers import MemberSerializer, TeamSerializer, RoleSerializer, UpdateSerializer, EventSerializer
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,6 +15,12 @@ class MemberViewSet(viewsets.ModelViewSet):
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+    http_method_names = ['get']
+
+
+class RoleViewSet(viewsets.ModelViewSet):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
     http_method_names = ['get']
 
 
