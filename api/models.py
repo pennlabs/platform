@@ -10,12 +10,17 @@ class Team(models.Model):
     url = models.URLField()
 
 
+class Role(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+
 class Member(models.Model):
     user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     bio = models.TextField()
     location = models.CharField(max_length=255)
-    role = models.CharField(max_length=255)
     teams = models.ManyToManyField(Team)
+    roles = models.ManyToManyField(Role)
     photo = models.URLField()
     linkedin = models.URLField()
     website = models.URLField()

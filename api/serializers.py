@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
-from .models import Member, Team, Update, Event
+from .models import Member, Team, Role, Update, Event
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -10,13 +10,20 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = ('name', 'tagline', 'description', 'url')
 
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ('name', 'description')
+
+
 class MemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
     teams = TeamSerializer(read_only=True, many=True)
+    roles = RoleSerializer(read_only=True, many=True)
 
     class Meta:
         model = Member
-        fields = ('user', 'bio', 'location', 'role', 'teams', 'photo', 'linkedin', 'website', 'github', 'year_joined', 'alumnus')
+        fields = ('user', 'bio', 'location', 'teams', 'roles', 'photo', 'linkedin', 'website', 'github', 'year_joined', 'alumnus')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
