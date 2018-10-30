@@ -7,7 +7,13 @@ from rest_framework.response import Response
 
 
 class MemberViewSet(viewsets.ModelViewSet):
-    queryset = Member.objects.all()
+    queryset = Member.objects.all().filter(alumnus=False)
+    serializer_class = MemberSerializer
+    http_method_names = ['get']
+
+
+class AlumniViewSet(viewsets.ModelViewSet):
+    queryset = Member.objects.all().filter(alumnus=True)
     serializer_class = MemberSerializer
     http_method_names = ['get']
 
