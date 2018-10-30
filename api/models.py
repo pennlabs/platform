@@ -21,6 +21,7 @@ class Member(models.Model):
     location = models.CharField(max_length=255)
     teams = models.ManyToManyField(Team)
     roles = models.ManyToManyField(Role)
+    url = models.CharField(max_length=255, unique=True, null=True)
     photo = models.URLField()
     linkedin = models.URLField()
     website = models.URLField()

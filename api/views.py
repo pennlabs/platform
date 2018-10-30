@@ -13,9 +13,8 @@ class MemberViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
     @list_route()
-    def single_member(self, request, name=None):
-        print(name)
-        serializer = self.get_serializer(Member.objects.all().filter(alumnus=False, user__name__iexact=name).first(), many=False)
+    def single_member(self, request, url=None):
+        serializer = self.get_serializer(Member.objects.all().filter(alumnus=False, url=url).first(), many=False)
         return Response(serializer.data)
 
 

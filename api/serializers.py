@@ -23,7 +23,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ('user', 'bio', 'location', 'teams', 'roles', 'photo', 'linkedin', 'website', 'github', 'year_joined', 'alumnus')
+        fields = ('user', 'bio', 'location', 'teams', 'roles', 'url', 'photo', 'linkedin', 'website', 'github', 'year_joined', 'alumnus')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
