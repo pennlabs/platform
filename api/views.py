@@ -4,10 +4,22 @@ from .serializers import MemberSerializer, TeamSerializer, RoleSerializer, Updat
 from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import list_route
 
 
 class MemberViewSet(viewsets.ModelViewSet):
-    queryset = Member.objects.all()
+    queryset = Member.objects.all().filter(alumnus=False)
+    serializer_class = MemberSerializer
+    http_method_names = ['get']
+
+    @list_route()
+    def single_member(self, request, url=None):
+        serializer = self.get_serializer(Member.objects.all().filter(alumnus=False, url=url).first(), many=False)
+        return Response(serializer.data)
+
+
+class AlumniViewSet(viewsets.ModelViewSet):
+    queryset = Member.objects.all().filter(alumnus=True)
     serializer_class = MemberSerializer
     http_method_names = ['get']
 
