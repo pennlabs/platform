@@ -2,9 +2,11 @@ from rest_framework import viewsets, generics
 from .models import Member, Team, Role, Update, Event
 from .serializers import MemberSerializer, TeamSerializer, RoleSerializer, UpdateSerializer, EventSerializer
 from knox.auth import TokenAuthentication
+from .auth import LabsTokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
+from rest_framework import exceptions
 
 
 class MemberViewSet(viewsets.ModelViewSet):
@@ -48,9 +50,16 @@ class EventViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
 
-class ProtectedViewSet(generics.GenericAPIView):
+class PennAuthMixin(generics.GenericAPIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+
+class LabsAuthMixin(generics.GenericAPIView):
+    authentication_classes = (LabsTokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+
+class ProtectedViewSet(LabsAuthMixin, generics.GenericAPIView):
     def get(self, request, format=None):
         return Response({"secret_information": "this is a protected route"})
