@@ -5,6 +5,12 @@ The Penn Lab's Platform API for accessing Users, Products, Members, Updates and 
 1. Django REST Framework (Python 3.7)
 
 ## Usage
+0. Configure environment variables (e.g. `.env`) containing:
+```
+DB_PASSWORD=password
+SECRET_KEY=secret
+PLATFORM_ENV=(debug/prod)
+```
 1. Install requirements using `pip install -r requirements.txt`.
 2. Run server using `python manage.py runserver`.
 

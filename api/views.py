@@ -1,10 +1,11 @@
 from rest_framework import viewsets, generics
-from .models import Member, Team, Role, Update, Event
-from .serializers import MemberSerializer, TeamSerializer, RoleSerializer, UpdateSerializer, EventSerializer
-from knox.auth import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
+from knox.auth import TokenAuthentication
+from api.models import Member, Team, Role, Update, Event
+from api.serializers import (MemberSerializer, TeamSerializer, RoleSerializer, 
+    UpdateSerializer, EventSerializer)
 
 
 class MemberViewSet(viewsets.ModelViewSet):
