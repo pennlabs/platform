@@ -9,7 +9,7 @@ The Penn Lab's Platform API for accessing Users, Products, Members, Updates and 
 ```
 DB_PASSWORD=password
 SECRET_KEY=secret
-PLATFORM_ENV=debug
+PLATFORM_ENV=(debug/prod)
 ```
 1. Install requirements using `pip install -r requirements.txt`.
 2. Run server using `python manage.py runserver`.
