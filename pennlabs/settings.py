@@ -92,7 +92,7 @@ if PRODUCTION:
             'USER': 'platform',
             'PASSWORD': os.environ.get('DB_PASSWORD', ''),
             'HOST': 'sql.pennlabs.org',
-            'PORT': '3306',
+            'PORT': 3306,
         }
     }
 else:
