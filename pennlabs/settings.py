@@ -93,6 +93,7 @@ if PRODUCTION:
             'PASSWORD': os.environ.get('DB_PASSWORD', ''),
             'HOST': 'sql.pennlabs.org',
             'PORT': 3306,
+            'OPTIONS': {'charset': 'utf8mb4'},
         }
     }
 else:
