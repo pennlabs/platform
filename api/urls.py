@@ -1,5 +1,7 @@
-from .views import MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, UpdateViewSet, EventViewSet, ProtectedViewSet
 from django.urls import path
+from api.views import (MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, 
+    UpdateViewSet, EventViewSet, ProtectedViewSet)
+
 
 urlpatterns = [
     path("members/", MemberViewSet.as_view({'get': 'list'})),
