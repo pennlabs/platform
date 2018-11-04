@@ -1,12 +1,28 @@
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse
 from rest_framework import viewsets, generics, exceptions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 from knox.auth import TokenAuthentication
+from shortener.models import shorten
 from api.models import Member, Team, Role, Update, Event
 from api.serializers import (MemberSerializer, TeamSerializer, RoleSerializer,
     UpdateSerializer, EventSerializer)
 from api.auth import LabsTokenAuthentication
+
+
+class ShortURLViewSet(generics.GenericAPIView):
+    def post(self, request):
+        print(request.data.get('url'))
+        try:
+            url = request.data.get('url', '')
+            URLValidator()(url)
+            short = shorten(url)
+            return Response({'short': short.short_id, "long": url})
+        except ValidationError:
+            return HttpResponse(status=400)
 
 
 class MemberViewSet(viewsets.ModelViewSet):
