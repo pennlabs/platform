@@ -22,7 +22,7 @@ class ShortURLViewSet(generics.GenericAPIView):
             return Response({'short': short.short_id, "long": url})
         except ValidationError:
             return HttpResponse(status=400)
-          
+
 
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all().filter(alumnus=False)
