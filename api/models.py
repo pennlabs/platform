@@ -28,19 +28,3 @@ class Member(models.Model):
     github = models.URLField()
     year_joined = models.DateField()
     alumnus = models.BooleanField(default=False)
-
-
-class Update(models.Model):
-    product = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
-    title = models.CharField(max_length=255)
-    body = models.TextField()
-
-
-class Event(models.Model):
-    name = models.CharField(max_length=255)
-    location = models.CharField(max_length=255)
-    date = models.CharField(max_length=255)
-    start_time = models.CharField(max_length=255)
-    end_time = models.CharField(max_length=255)
-    link = models.URLField()
-    free_food = models.BooleanField()
