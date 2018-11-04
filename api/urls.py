@@ -1,8 +1,10 @@
 from django.urls import path
-from api.views import MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, UpdateViewSet, ProtectedViewSet
-
+from shortener.views import index
+from api.views import ShortURLViewSet, MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, UpdateViewSet, ProtectedViewSet
 
 urlpatterns = [
+    path("urls/get/<slug:short>/", index, name='index'),
+    path("urls/create/", ShortURLViewSet.as_view()),
     path("members/", MemberViewSet.as_view({'get': 'list'})),
     path("members/<slug:url>", MemberViewSet.as_view({'get': 'single_member'})),
     path("alumni/", AlumniViewSet.as_view({'get': 'list'})),
