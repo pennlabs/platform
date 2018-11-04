@@ -1,3 +1,22 @@
 from django.db import models
+from api.models import Team
 
-# Create your models here.
+
+class Service(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField() 
+    location = models.URLField()
+    notes = models.TextField()
+    team = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
+    routes = models.ManyToManyField('Endpoint')
+
+
+class Endpoint(models.Model):
+    url = models.CharField(max_length=255)
+    description = models.TextField()
+
+
+class Update(models.Model):
+    product = models.ForeignKey(Service, on_delete=models.DO_NOTHING)
+    title = models.CharField(max_length=255)
+    body = models.TextField()
