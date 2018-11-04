@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.models import Club, Event
+from clubs.models import Club, Event
 
 
 admin.site.register(Club)

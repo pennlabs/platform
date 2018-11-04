@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'api',
-    'accounts'
+    'accounts',
+    'clubs'
 ]
 
 REST_FRAMEWORK = {
