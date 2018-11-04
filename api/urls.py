@@ -1,6 +1,5 @@
 from django.urls import path
-from api.views import (MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, 
-    UpdateViewSet, EventViewSet, ProtectedViewSet)
+from api.views import MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, UpdateViewSet, ProtectedViewSet
 
 
 urlpatterns = [
@@ -10,6 +9,5 @@ urlpatterns = [
     path("teams/", TeamViewSet.as_view({'get': 'list'})),
     path("roles/", RoleViewSet.as_view({'get': 'list'})),
     path("updates/", UpdateViewSet.as_view({'get': 'list'})),
-    path("events/", EventViewSet.as_view({'get': 'list'})),
     path("protected/", ProtectedViewSet.as_view())
 ]

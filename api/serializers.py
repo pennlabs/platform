@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
-from api.models import Member, Team, Role, Update, Event
+from api.models import Member, Team, Role, Update
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -30,9 +30,3 @@ class UpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Update
         fields = ('product', 'title', 'body')
-
-
-class EventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = ('name', 'date', 'location', 'start_time', 'end_time', 'link', 'free_food')
