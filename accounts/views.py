@@ -1,8 +1,8 @@
-from .models import User
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import CreateUserSerializer, UserSerializer, LoginUserSerializer
+from accounts.models import User
+from accounts.serializers import CreateUserSerializer, UserSerializer, LoginUserSerializer
 
 
 class RegistrationView(generics.GenericAPIView):
