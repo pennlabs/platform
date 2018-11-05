@@ -11,3 +11,4 @@ pycparser==2.18
 pyOpenSSL==18.0.0
 pytz==2018.5
 six==1.11.0
+whitenoise==4.1

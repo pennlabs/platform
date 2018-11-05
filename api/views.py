@@ -1,11 +1,9 @@
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
-from rest_framework import viewsets, generics, exceptions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
-from knox.auth import TokenAuthentication
 from shortener.models import shorten
 from api.models import Member, Team, Role
 from api.serializers import MemberSerializer, TeamSerializer, RoleSerializer
