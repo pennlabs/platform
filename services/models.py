@@ -4,7 +4,7 @@ from api.models import Team
 
 class Service(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField() 
+    description = models.TextField()
     location = models.URLField()
     notes = models.TextField()
     team = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
@@ -12,6 +12,7 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Endpoint(models.Model):
     url = models.CharField(max_length=255)
