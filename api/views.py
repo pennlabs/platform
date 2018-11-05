@@ -5,9 +5,9 @@ from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 from shortener.models import shorten
+from accounts.auth import PennAuthMixin, LabsAuthMixin
 from api.models import Member, Team, Role
 from api.serializers import MemberSerializer, TeamSerializer, RoleSerializer
-from api.auth import LabsTokenAuthentication
 
 
 class ShortURLViewSet(generics.GenericAPIView):
@@ -49,16 +49,6 @@ class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
     http_method_names = ['get']
-
-
-class PennAuthMixin(generics.GenericAPIView):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-
-class LabsAuthMixin(generics.GenericAPIView):
-    authentication_classes = (LabsTokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
 
 class ProtectedViewSet(LabsAuthMixin, generics.GenericAPIView):
