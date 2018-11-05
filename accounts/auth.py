@@ -1,7 +1,9 @@
 from knox.auth import TokenAuthentication
 from rest_framework import exceptions
-from .models import Member
+from api.models import Member
+from rest_framework import generics
 from rest_framework.authentication import get_authorization_header
+from rest_framework.permissions import IsAuthenticated
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -24,3 +26,13 @@ class LabsTokenAuthentication(TokenAuthentication):
         else:
             raise exceptions.AuthenticationFailed(
                 _('Authentication Failed. User is not a Penn Labs member'))
+
+
+class PennAuthMixin(generics.GenericAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+
+class LabsAuthMixin(generics.GenericAPIView):
+    authentication_classes = (LabsTokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
