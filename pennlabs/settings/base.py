@@ -20,15 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # Determine production or development environment
-PRODUCTION = os.environ.get('PLATFORM_ENV') == 'prod'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'o7ql0!vuk0%rgrh9p2bihq#pege$qqlm@zo#8&t==%&za33m*2')
+SECRET_KEY = 'o7ql0!vuk0%rgrh9p2bihq#pege$qqlm@zo#8&t==%&za33m*2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not PRODUCTION
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'platform.pennlabs.org', 'platform.apps.pennlabs.org']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -86,25 +85,12 @@ WSGI_APPLICATION = 'pennlabs.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-if PRODUCTION:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'platform',
-            'USER': 'platform',
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST': 'sql.pennlabs.org',
-            'PORT': 3306,
-            'OPTIONS': {'charset': 'utf8mb4'},
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
