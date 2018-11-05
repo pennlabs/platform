@@ -9,4 +9,4 @@ urlpatterns = [
     path('api/auth/', include('knox.urls')),
     path('api/', include('api.urls')),
     path('clubs/', include('clubs.urls'))
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]

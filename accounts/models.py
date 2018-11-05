@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext as _
-from .manager import UserManager
+from accounts.manager import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):

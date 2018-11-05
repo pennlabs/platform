@@ -9,6 +9,9 @@ class Club(models.Model):
     contact = models.EmailField()
     description = models.TextField()
 
+    def __str__(self):
+        return self.name
+
 
 class Event(models.Model):
     name = models.CharField(max_length=255)
@@ -17,3 +20,6 @@ class Event(models.Model):
     location = models.CharField(max_length=255)
     url = models.URLField()
     description = models.TextField()
+
+    def __str__(self):
+        return self.club.name + ": " + self.name + " (" + self.time.strftime('%Y-%m-%d') + ")"
