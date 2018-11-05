@@ -8,8 +8,7 @@ from rest_framework.decorators import list_route
 from knox.auth import TokenAuthentication
 from shortener.models import shorten
 from api.models import Member, Team, Role, Update, Event
-from api.serializers import (MemberSerializer, TeamSerializer, RoleSerializer,
-    UpdateSerializer, EventSerializer)
+from api.serializers import MemberSerializer, TeamSerializer, RoleSerializer, UpdateSerializer
 from api.auth import LabsTokenAuthentication
 
 
@@ -57,12 +56,6 @@ class RoleViewSet(viewsets.ModelViewSet):
 class UpdateViewSet(viewsets.ModelViewSet):
     queryset = Update.objects.all()
     serializer_class = UpdateSerializer
-    http_method_names = ['get']
-
-
-class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
     http_method_names = ['get']
 
 

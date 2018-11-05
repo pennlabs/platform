@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'shortener.apps.ShortenerConfig',
     'knox',
     'api',
-    'accounts'
+    'accounts',
+    'clubs'
 ]
 
 REST_FRAMEWORK = {

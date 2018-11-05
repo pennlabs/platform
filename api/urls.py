@@ -1,7 +1,7 @@
 from django.urls import path
 from shortener.views import index
 from api.views import (ShortURLViewSet, MemberViewSet, AlumniViewSet, TeamViewSet,
-    RoleViewSet, UpdateViewSet, EventViewSet, ProtectedViewSet)
+    RoleViewSet, UpdateViewSet, ProtectedViewSet)
 
 urlpatterns = [
     path("urls/get/<slug:short>/", index, name='index'),
@@ -12,6 +12,5 @@ urlpatterns = [
     path("teams/", TeamViewSet.as_view({'get': 'list'})),
     path("roles/", RoleViewSet.as_view({'get': 'list'})),
     path("updates/", UpdateViewSet.as_view({'get': 'list'})),
-    path("events/", EventViewSet.as_view({'get': 'list'})),
     path("protected/", ProtectedViewSet.as_view())
 ]
