@@ -24,7 +24,7 @@ class Endpoint(models.Model):
 
 
 class Update(models.Model):
-    product = models.ForeignKey(Service, on_delete=models.DO_NOTHING)
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=255)
     body = models.TextField()
 

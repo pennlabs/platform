@@ -11,4 +11,4 @@ class ServiceSerializer(serializers.ModelSerializer):
 class UpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Update
-        fields = ('product', 'title', 'body')
+        fields = ('service', 'title', 'body')
