@@ -5,9 +5,9 @@ from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 from shortener.models import shorten
-from accounts.auth import LabsAuthMixin
-from api.models import Member, Team, Role, Update
-from api.serializers import MemberSerializer, TeamSerializer, RoleSerializer, UpdateSerializer
+from accounts.auth import PennAuthMixin, LabsAuthMixin
+from api.models import Member, Team, Role
+from api.serializers import MemberSerializer, TeamSerializer, RoleSerializer
 
 
 class ShortURLViewSet(generics.GenericAPIView):
@@ -48,12 +48,6 @@ class TeamViewSet(viewsets.ModelViewSet):
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
-    http_method_names = ['get']
-
-
-class UpdateViewSet(viewsets.ModelViewSet):
-    queryset = Update.objects.all()
-    serializer_class = UpdateSerializer
     http_method_names = ['get']
 
 

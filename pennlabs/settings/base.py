@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'knox',
     'api',
     'accounts',
+    'services',
     'clubs'
 ]
 
