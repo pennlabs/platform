@@ -7,12 +7,13 @@ from rest_framework.decorators import list_route
 from shortener.models import shorten
 from accounts.auth import PennAuthMixin, LabsAuthMixin
 from org.models import Member, Team, Role
-from org.serializers import MemberSerializer, TeamSerializer, RoleSerializer
+from org.serializers import ShortUrlSerializer, MemberSerializer, TeamSerializer, RoleSerializer
 
 
-class ShortURLViewSet(generics.GenericAPIView):
+class ShortUrlViewSet(generics.GenericAPIView):
+    serializer_class = ShortUrlSerializer
+
     def post(self, request):
-        print(request.data.get('url'))
         try:
             url = request.data.get('url', '')
             URLValidator()(url)
