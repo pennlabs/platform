@@ -1,11 +1,11 @@
 from django.urls import path
 from shortener.views import index
-from org.views import ShortURLViewSet, MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, ProtectedViewSet
+from org.views import ShortUrlViewSet, MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, ProtectedViewSet
 
 
 urlpatterns = [
     path("urls/get/<slug:short>/", index, name='index'),
-    path("urls/create/", ShortURLViewSet.as_view()),
+    path("urls/create/", ShortUrlViewSet.as_view()),
     path("members/", MemberViewSet.as_view({'get': 'list'})),
     path("members/<slug:url>", MemberViewSet.as_view({'get': 'single_member'})),
     path("alumni/", AlumniViewSet.as_view({'get': 'list'})),

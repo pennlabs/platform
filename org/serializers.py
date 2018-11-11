@@ -1,7 +1,14 @@
 from rest_framework import serializers
+from shortener.models import Url
 from accounts.models import User
 from accounts.serializers import UserSerializer
 from org.models import Member, Team, Role
+
+
+class ShortUrlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Url
+        fields = ('short_id', 'long_url')
 
 
 class TeamSerializer(serializers.ModelSerializer):

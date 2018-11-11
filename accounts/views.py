@@ -6,6 +6,9 @@ from accounts.serializers import CreateUserSerializer, UserSerializer, LoginUser
 
 
 class RegistrationView(generics.GenericAPIView):
+    """
+    Create a new user.
+    """
     serializer_class = CreateUserSerializer
 
     def post(self, request, *args, **kwargs):
@@ -20,6 +23,9 @@ class RegistrationView(generics.GenericAPIView):
 
 
 class LoginView(generics.GenericAPIView):
+    """
+    Attempt to log in a user with the specified email and password.
+    """
     serializer_class = LoginUserSerializer
 
     def post(self, request, *args, **kwargs):
