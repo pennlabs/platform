@@ -1,6 +1,6 @@
 from django.urls import path
 from shortener.views import index
-from api.views import ShortURLViewSet, MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, ProtectedViewSet
+from org.views import ShortURLViewSet, MemberViewSet, AlumniViewSet, TeamViewSet, RoleViewSet, ProtectedViewSet
 
 
 urlpatterns = [

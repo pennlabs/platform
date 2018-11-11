@@ -1,5 +1,5 @@
 from django.db import models
-from api.models import Team
+from org.models import Team
 
 
 class Service(models.Model):

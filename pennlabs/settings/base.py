@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'shortener.apps.ShortenerConfig',
     'knox',
-    'api',
+    'org',
     'accounts',
     'services',
     'clubs'

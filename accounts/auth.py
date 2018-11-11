@@ -1,6 +1,6 @@
 from knox.auth import TokenAuthentication
 from rest_framework import exceptions
-from api.models import Member
+from org.models import Member
 from rest_framework import generics
 from rest_framework.authentication import get_authorization_header
 from rest_framework.permissions import IsAuthenticated

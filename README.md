@@ -15,7 +15,7 @@ PLATFORM_ENV=(debug/prod)
 2. Run server using `python manage.py runserver`.
 
 ## Documentation
-Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form of `*/urls.py`. Account/authorization related scripts are located in `accounts/` and all other database-driven routes are located in `api/`.
+Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form of `*/urls.py`. Account/authorization related scripts are located in `accounts/` and Penn Labs related routes are located in `org/`.
 
 ## Current Maintainers
 - [Arun Kirubarajan](https://github.com/kirubarajan)

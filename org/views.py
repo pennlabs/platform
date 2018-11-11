@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import list_route
 from shortener.models import shorten
 from accounts.auth import PennAuthMixin, LabsAuthMixin
-from api.models import Member, Team, Role
-from api.serializers import MemberSerializer, TeamSerializer, RoleSerializer
+from org.models import Member, Team, Role
+from org.serializers import MemberSerializer, TeamSerializer, RoleSerializer
 
 
 class ShortURLViewSet(generics.GenericAPIView):

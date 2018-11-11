@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from accounts.models import User
 from accounts.serializers import UserSerializer
-from api.models import Member, Team, Role
+from org.models import Member, Team, Role
 
 
 class TeamSerializer(serializers.ModelSerializer):
