@@ -22,4 +22,4 @@ class Event(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.club.name + ": " + self.name + " (" + self.time.strftime('%Y-%m-%d') + ")"
+        return self.name

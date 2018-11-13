@@ -36,9 +36,3 @@ class LoginView(generics.GenericAPIView):
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)
         })
-
-
-class UserView(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    http_method_names = ['get']

@@ -3,7 +3,6 @@ from org.models import Member, Team, Role
 from accounts.models import User
 
 
-admin.site.site_header = "Platform Admin"
 admin.site.register(User)
 admin.site.register(Member)
 admin.site.register(Team)
