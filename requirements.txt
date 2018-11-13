@@ -2,6 +2,7 @@ asn1crypto==0.24.0
 cffi==1.11.5
 coreapi==2.3.3
 cryptography==2.3.1
+dj-database-url==0.5.0
 Django==2.0.8
 django-rest-knox==3.1.5
 djangorestframework==3.8.2

@@ -7,9 +7,9 @@ The Penn Lab's Platform API for accessing Users, Products, Members, Updates and 
 ## Usage
 0. Configure environment variables (e.g. `.env`) containing:
 ```
-DB_PASSWORD=password
+DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
 SECRET_KEY=secret
-PLATFORM_ENV=(debug/prod)
+DJANGO_SETTINGS_MODULE=pennlabs.settings.production
 ```
 1. Install requirements using `pip install -r requirements.txt`.
 2. Run server using `python manage.py runserver`.
