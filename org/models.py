@@ -22,7 +22,7 @@ class Role(models.Model):
 
 
 class Member(models.Model):
-    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING, null=True, blank=True)
     bio = models.TextField()
     location = models.CharField(max_length=255)
     teams = models.ManyToManyField(Team)
