@@ -15,7 +15,9 @@ DJANGO_SETTINGS_MODULE=pennlabs.settings.production
 2. Run server using `python manage.py runserver`.
 
 ## Documentation
-Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form of `*/urls.py`. Account/authorization related scripts are located in `accounts/` and Penn Labs related routes are located in `org/`.
+Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form of `*/urls.py`. Account/authorization related scripts are located in `accounts/` and Penn Labs related scripts are located in `org/`.
+
+Documentation about individual endpoints is available through the `documentation/` route when the Django app is running.
 
 ## Current Maintainers
 - [Arun Kirubarajan](https://github.com/kirubarajan)
