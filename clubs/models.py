@@ -16,9 +16,11 @@ class Club(models.Model):
 class Event(models.Model):
     name = models.CharField(max_length=255)
     club = models.ForeignKey(Club, on_delete=models.DO_NOTHING)
-    time = models.DateTimeField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     location = models.CharField(max_length=255)
     url = models.URLField()
+    image_url = models.URLField()
     description = models.TextField()
 
     def __str__(self):
