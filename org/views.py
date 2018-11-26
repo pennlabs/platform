@@ -1,6 +1,7 @@
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
@@ -39,8 +40,8 @@ class MemberViewSet(viewsets.ModelViewSet):
         """
         Return a single member of Penn Labs using their unique url
         """
-        serializer = self.get_serializer(Member.objects.all().filter(alumnus=False, url=url).first(), many=False)
-        return Response(serializer.data)
+        obj = get_object_or_404(Member, alumnus=False, url=url)
+        return Response(self.get_serializer(obj).data)
 
 
 class AlumniViewSet(viewsets.ModelViewSet):

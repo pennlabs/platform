@@ -8,7 +8,7 @@ from org.models import Member, Team, Role
 class ShortUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = Url
-        fields = ('short_id', 'long_url')
+        fields = ('short_id',)
 
 
 class TeamSerializer(serializers.ModelSerializer):
