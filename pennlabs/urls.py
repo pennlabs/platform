@@ -7,9 +7,10 @@ from rest_framework.documentation import include_docs_urls
 admin.site.site_header = "Platform Admin"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', include('application.urls')),
     path('accounts/', include('accounts.urls')),
     path('org/', include('org.urls')),
     path('clubs/', include('clubs.urls')),
     path('documentation/', include_docs_urls(title="Platform Documentation")),
+    path('admin/', admin.site.urls),
 ]

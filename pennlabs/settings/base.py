@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'org',
     'accounts',
     'services',
-    'clubs'
+    'clubs',
+    'application'
 ]
 
 REST_FRAMEWORK = {
