@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, generics
-from clubs.models import Club, Event
-from clubs.serializers import ClubSerializer, EventSerializer
+from engagement.models import Club, Event
+from engagement.serializers import ClubSerializer, EventSerializer
 
 
 class ClubViewSet(viewsets.ModelViewSet):

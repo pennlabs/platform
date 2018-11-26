@@ -1,5 +1,5 @@
 from django.contrib import admin
-from clubs.models import Club, Event
+from engagement.models import Club, Event
 
 
 class EventAdmin(admin.ModelAdmin):

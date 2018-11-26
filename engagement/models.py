@@ -2,12 +2,13 @@ from django.db import models
 
 
 class Club(models.Model):
+    id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
-    route = models.CharField(max_length=255)
-    founded = models.DateTimeField()
-    verified = models.BooleanField()
-    contact = models.EmailField()
     description = models.TextField()
+    verified = models.BooleanField()
+    founded = models.DateField(null=True)
+    email = models.EmailField()
+    facebook = models.URLField(null=True)
 
     def __str__(self):
         return self.name

@@ -1,5 +1,5 @@
 from django.urls import path
-from clubs.views import ClubViewSet, EventViewSet
+from engagement.views import ClubViewSet, EventViewSet
 
 
 urlpatterns = [

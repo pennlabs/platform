@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'org',
     'accounts',
     'services',
-    'clubs',
+    'engagement',
     'application'
 ]
 
