@@ -1,10 +1,13 @@
-# Labs Platform
-The Penn Lab's Platform API for accessing Users, Products, Members, Updates and more. 
+<a href="https://platform.pennlabs.org" target="_blank" rel="noopener noreferrer"><img width="300" src="https://i.imgur.com/E0Qldg5.png" alt="Platform Logo"></a>
 
-## Dependencies
-1. Django REST Framework (Python 3.7)
+The <strong> Labs Platform </strong> is the back-end interface to the ecosystem that facilitates the organization's:
 
-## Usage
+1. Accounts Engine
+2. Engagement Infrastructure
+3. Cross-Product Resources
+4. Organizational Information
+
+## Installation
 0. Configure environment variables (e.g. `.env`) containing:
 ```
 DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
