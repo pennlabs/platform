@@ -5,7 +5,7 @@ from engagement.models import Club, Event
 class ClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
-        fields = ('name', 'route', 'founded', 'verified', 'contact', 'description')
+        fields = ('name', 'id', 'description', 'verified', 'founded', 'email', 'facebook')
 
 
 class EventSerializer(serializers.ModelSerializer):
