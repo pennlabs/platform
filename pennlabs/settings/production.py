@@ -13,6 +13,9 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ] + MIDDLEWARE
 
+# Fix MySQL Emoji support
+DATABASES['default']['OPTIONS'] = {'charset': 'utf8mb4'}
+
 # Honour the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
