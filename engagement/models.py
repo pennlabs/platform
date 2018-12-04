@@ -1,5 +1,5 @@
 from django.db import models
-
+from accounts.models import User
 
 class Club(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
@@ -7,8 +7,10 @@ class Club(models.Model):
     description = models.TextField()
     verified = models.BooleanField()
     founded = models.DateField(null=True)
+    fact = models.CharField(max_length=255)
     email = models.EmailField()
     facebook = models.URLField(null=True)
+    members = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name
