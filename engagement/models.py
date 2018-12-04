@@ -8,6 +8,7 @@ class Club(models.Model):
     verified = models.BooleanField()
     founded = models.DateField(null=True)
     fact = models.CharField(max_length=255)
+    size = models.IntegerField()
     email = models.EmailField()
     facebook = models.URLField(null=True)
     members = models.ManyToManyField(User)
