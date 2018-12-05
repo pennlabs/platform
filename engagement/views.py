@@ -1,11 +1,14 @@
-from django.shortcuts import render
-from rest_framework import viewsets, generics
+from rest_framework import viewsets
 from engagement.models import Club, Event
 from engagement.serializers import ClubSerializer, EventSerializer
 
 
 class ClubViewSet(viewsets.ModelViewSet):
     """
+    retrieve:
+    Return a single club.
+
+    list:
     Return a list of clubs.
     """
     queryset = Club.objects.all()

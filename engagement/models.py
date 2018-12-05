@@ -1,14 +1,18 @@
 from django.db import models
+from accounts.models import User
 
 
 class Club(models.Model):
-    id = models.CharField(max_length=255, primary_key=True)
+    id = models.SlugField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
     verified = models.BooleanField()
     founded = models.DateField(null=True)
+    fact = models.CharField(max_length=255)
+    size = models.IntegerField()
     email = models.EmailField()
     facebook = models.URLField(null=True)
+    members = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name
