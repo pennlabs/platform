@@ -1,10 +1,8 @@
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
-from rest_framework.decorators import list_route
 from shortener.models import shorten
 from accounts.auth import PennAuthMixin, LabsAuthMixin
 from org.models import Member, Team, Role
