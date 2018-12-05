@@ -1,8 +1,4 @@
-from django.shortcuts import render
-from django.http import Http404
-from rest_framework import viewsets, generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import viewsets
 from engagement.models import Club, Event
 from engagement.serializers import ClubSerializer, EventSerializer
 
