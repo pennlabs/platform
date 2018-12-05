@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import User
 
+
 class Club(models.Model):
     id = models.SlugField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
