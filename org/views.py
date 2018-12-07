@@ -1,10 +1,8 @@
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
-from rest_framework.decorators import list_route
 from shortener.models import shorten
 from accounts.auth import PennAuthMixin, LabsAuthMixin
 from org.models import Member, Team, Role
@@ -29,19 +27,16 @@ class ShortUrlViewSet(generics.GenericAPIView):
 
 class MemberViewSet(viewsets.ModelViewSet):
     """
+    retrieve:
+    Return a single member of Penn Labs using their unique url.
+
+    list:
     Return a list of current Penn Labs members.
     """
     queryset = Member.objects.all().filter(alumnus=False)
     serializer_class = MemberSerializer
     http_method_names = ['get']
-
-    @list_route()
-    def single_member(self, request, url=None):
-        """
-        Return a single member of Penn Labs using their unique url
-        """
-        obj = get_object_or_404(Member, alumnus=False, url=url)
-        return Response(self.get_serializer(obj).data)
+    lookup_field = 'url'
 
 
 class AlumniViewSet(viewsets.ModelViewSet):
