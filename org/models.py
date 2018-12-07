@@ -25,7 +25,7 @@ class Member(models.Model):
     user = models.OneToOneField(User, on_delete=models.DO_NOTHING, null=True, blank=True)
     bio = models.TextField()
     location = models.CharField(max_length=255)
-    teams = models.ManyToManyField(Team)
+    team = models.ForeignKey(Team, on_delete=models.DO_NOTHING, null=True, blank=True)
     roles = models.ManyToManyField(Role)
     url = models.SlugField(unique=True, null=True)
     photo = models.URLField()
