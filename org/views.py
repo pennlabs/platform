@@ -57,6 +57,18 @@ class TeamViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
 
 
+class TeamMemberViewSet(viewsets.ModelViewSet):
+    """
+    Return a list Penn Labs members by team
+    """
+    serializer_class = MemberSerializer
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        team = self.kwargs['team']
+        return Member.objects.all().filter(alumnus=False, team__name__iexact=team)
+
+
 class RoleViewSet(viewsets.ModelViewSet):
     """
     Return a list of Penn Labs roles.
