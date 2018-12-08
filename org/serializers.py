@@ -11,12 +11,6 @@ class ShortUrlSerializer(serializers.ModelSerializer):
         fields = ('short_id',)
 
 
-class TeamSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Team
-        fields = ('name', 'tagline', 'description', 'url')
-
-
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
@@ -25,10 +19,21 @@ class RoleSerializer(serializers.ModelSerializer):
 
 class MemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
-    teams = TeamSerializer(read_only=True, many=True)
+    team = serializers.SerializerMethodField(read_only=True)
     roles = RoleSerializer(read_only=True, many=True)
+
+    def get_team(self, obj):
+                return obj.team.name
 
     class Meta:
         model = Member
-        fields = ('user', 'bio', 'location', 'teams', 'roles', 'url', 'photo', 'linkedin', 'website', 'github',
+        fields = ('user', 'bio', 'location', 'team', 'roles', 'url', 'photo', 'linkedin', 'website', 'github',
             'year_joined', 'alumnus')
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    members = MemberSerializer(required=True, many=True)
+
+    class Meta:
+        model = Team
+        fields = ('name', 'tagline', 'description', 'url', 'members')
