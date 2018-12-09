@@ -19,11 +19,8 @@ class RoleSerializer(serializers.ModelSerializer):
 
 class MemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
-    team = serializers.SerializerMethodField(read_only=True)
+    team = serializers.StringRelatedField()
     roles = RoleSerializer(read_only=True, many=True)
-
-    def get_team(self, obj):
-                return obj.team.name
 
     class Meta:
         model = Member

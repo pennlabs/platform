@@ -12,6 +12,9 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 class Role(models.Model):
     name = models.CharField(max_length=255)
@@ -20,6 +23,9 @@ class Role(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 class Member(models.Model):
     user = models.OneToOneField(User, on_delete=models.DO_NOTHING, null=True, blank=True)
@@ -27,13 +33,16 @@ class Member(models.Model):
     location = models.CharField(max_length=255)
     team = models.ForeignKey(Team, related_name='members', on_delete=models.DO_NOTHING, null=True, blank=True)
     roles = models.ManyToManyField(Role)
-    url = models.SlugField(unique=True, null=True)
+    url = models.SlugField(unique=True)
     photo = models.URLField()
-    linkedin = models.URLField()
-    website = models.URLField()
-    github = models.URLField()
+    linkedin = models.URLField(null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
+    github = models.URLField(null=True, blank=True)
     year_joined = models.DateField()
     alumnus = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.email
+        return self.user.user.username
+
+    class Meta:
+        ordering = ['user__user__username']

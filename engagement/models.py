@@ -11,11 +11,14 @@ class Club(models.Model):
     fact = models.CharField(max_length=255)
     size = models.IntegerField()
     email = models.EmailField()
-    facebook = models.URLField(null=True)
-    members = models.ManyToManyField(User)
+    facebook = models.URLField(blank=True)
+    members = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
 
 
 class Event(models.Model):
@@ -24,8 +27,8 @@ class Event(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     location = models.CharField(max_length=255)
-    url = models.URLField()
-    image_url = models.URLField()
+    url = models.URLField(null=True, blank=True)
+    image_url = models.URLField(null=True, blank=True)
     description = models.TextField()
 
     def __str__(self):
