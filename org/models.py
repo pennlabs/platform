@@ -12,6 +12,9 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 class Role(models.Model):
     name = models.CharField(max_length=255)
@@ -19,6 +22,9 @@ class Role(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
 
 
 class Member(models.Model):
@@ -37,3 +43,6 @@ class Member(models.Model):
 
     def __str__(self):
         return self.user.user.username
+
+    class Meta:
+        ordering = ['user__user__username']
