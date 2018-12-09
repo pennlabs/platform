@@ -10,7 +10,6 @@ urlpatterns = [
     path("members/", MemberViewSet.as_view({'get': 'list'})),
     path("alumni/", AlumniViewSet.as_view({'get': 'list'})),
     path("teams/", TeamViewSet.as_view({'get': 'list'})),
-    # path("teams/<slug:team>/", TeamMemberViewSet.as_view({'get': 'list'})),
     path("roles/", RoleViewSet.as_view({'get': 'list'})),
     path("protected/", ProtectedViewSet.as_view())
 ]
