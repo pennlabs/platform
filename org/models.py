@@ -36,4 +36,4 @@ class Member(models.Model):
     alumnus = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.email
+        return self.user.user.username

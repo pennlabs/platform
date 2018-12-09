@@ -1,36 +1,25 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.utils.translation import gettext as _
-from accounts.manager import UserManager
+from django.contrib.auth.models import User as DjangoUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email address'), unique=True)
-    date_joined = models.DateTimeField(_('date_joined'), auto_now_add=True)
-    is_active = models.BooleanField(_('is_active'), default=True)
-    is_staff = models.BooleanField(_('is_staff'), default=False)
-    is_superuser = models.BooleanField(_('is_superuser'), default=False)
-    name = models.CharField(_('name'), max_length=255, blank=True)
-    major = models.CharField(_('major'), max_length=255, blank=True)
-    school = models.CharField(_('school'), max_length=255, blank=True)
+class User(models.Model):
+    user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=True)
+    major = models.CharField(max_length=255, blank=True)
+    school = models.CharField(max_length=255, blank=True)
 
-    objects = UserManager()
+    def __str__(self):
+        return self.user.username
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
-    class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+@receiver(post_save, sender=DjangoUser)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        User.objects.create(user=instance)
 
-    def get_name(self):
-        """
-        Returns the name for the user.
-        """
-        return self.name
 
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        """
-        Sends an email to the user.
-        """
-        send_mail(subject, message, from_email, [self.email], **kwargs)
+@receiver(post_save, sender=DjangoUser)
+def save_user_profile(sender, instance, **kwargs):
+    instance.user.save()
