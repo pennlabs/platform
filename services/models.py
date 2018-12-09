@@ -7,7 +7,7 @@ class Service(models.Model):
     description = models.TextField()
     location = models.URLField()
     icon = models.URLField()
-    notes = models.TextField()
+    notes = models.TextField(blank=True)
     team = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
     routes = models.ManyToManyField('Endpoint')
 
