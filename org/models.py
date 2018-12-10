@@ -7,7 +7,7 @@ class Team(models.Model):
     name = models.CharField(max_length=255)
     tagline = models.CharField(max_length=255)
     description = models.TextField()
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField(unique=True, null=True)
     url = models.URLField()
 
     def __str__(self):
@@ -20,12 +20,13 @@ class Team(models.Model):
 class Role(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    order = models.IntegerField(unique=True, null=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ['order']
 
 
 class Member(models.Model):

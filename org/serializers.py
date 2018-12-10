@@ -1,3 +1,4 @@
+from django.db.models import Min
 from rest_framework import serializers
 from shortener.models import Url
 from accounts.serializers import StudentSerializer
@@ -28,7 +29,11 @@ class MemberSerializer(serializers.ModelSerializer):
 
 
 class TeamSerializer(serializers.ModelSerializer):
-    members = MemberSerializer(required=True, many=True)
+    members = serializers.SerializerMethodField()
+
+    def get_members(self, instance):
+        members = Member.objects.filter(team__id=instance.id).annotate(order=Min('roles__order')).order_by('order')
+        return MemberSerializer(members, many=True).data
 
     class Meta:
         model = Team
