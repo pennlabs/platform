@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import User
+from accounts.models import Student
 
 
 class Club(models.Model):
@@ -12,7 +12,7 @@ class Club(models.Model):
     size = models.IntegerField()
     email = models.EmailField()
     facebook = models.URLField(blank=True)
-    members = models.ManyToManyField(User, blank=True)
+    members = models.ManyToManyField(Student, blank=True)
 
     def __str__(self):
         return self.name

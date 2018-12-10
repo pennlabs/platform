@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from shortener.models import Url
-from accounts.models import User
-from accounts.serializers import UserSerializer
+from accounts.serializers import StudentSerializer
 from org.models import Member, Team, Role
 
 
@@ -18,13 +17,13 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
+    student = StudentSerializer(required=True)
     team = serializers.StringRelatedField()
     roles = RoleSerializer(read_only=True, many=True)
 
     class Meta:
         model = Member
-        fields = ('user', 'bio', 'location', 'team', 'roles', 'url', 'photo', 'linkedin', 'website', 'github',
+        fields = ('student', 'bio', 'location', 'team', 'roles', 'url', 'photo', 'linkedin', 'website', 'github',
             'year_joined', 'alumnus')
 
 
