@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from accounts.models import User
+from accounts.models import Student
 
 
 # class CreateUserSerializer(serializers.ModelSerializer):
@@ -16,17 +16,17 @@ from accounts.models import User
 #         return user
 
 
-class DjangoUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DjangoUser
+        model = User
         fields = ('username', 'email', 'date_joined')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    user = DjangoUserSerializer(required=True)
+class StudentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
 
     class Meta:
-        model = User
+        model = Student
         fields = ('user', 'name', 'major', 'school')
 
     def to_representation(self, obj):
