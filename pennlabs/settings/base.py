@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_api_key',
+    'rest_framework_jwt',
     'shortener.apps.ShortenerConfig',
     'org',
     'accounts',
