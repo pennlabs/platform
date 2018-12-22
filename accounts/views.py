@@ -1,11 +1,15 @@
+from django.contrib import auth
+from django.http import HttpResponseServerError
 from django.shortcuts import redirect
-from rest_framework import viewsets, permissions, generics
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework_api_key.crypto import hash_token
 from rest_framework_api_key.models import APIKey
-from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework_api_key.settings import TOKEN_HEADER, SECRET_KEY_HEADER
-from accounts.models import Student
+from rest_framework_jwt.settings import api_settings
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 class LoginView(generics.GenericAPIView):
@@ -28,4 +32,17 @@ class LoginView(generics.GenericAPIView):
         if hashed_token != api_key.hashed_token:
             return self.login_redirect()
 
-        return Response({"Test": "okay"})
+        # Use provided headers to login user
+        pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
+        first_name = request.META.get('HTTP_GIVENNAME', '').lower().capitalize()
+        last_name = request.META.get('HTTP_SN', '').lower().capitalize()
+        email = request.META.get('HTTP_MAIL', '').lower()
+        shibboleth_attributes = {'first_name': first_name, 'last_name': last_name, 'email': email}
+        user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
+        if user:
+            request.user = user
+            auth.login(request, user)
+            payload = jwt_payload_handler(user)
+            token = jwt_encode_handler(payload)
+            return Response({'token': token})
+        return HttpResponseServerError()
