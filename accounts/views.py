@@ -6,7 +6,6 @@ from rest_framework_api_key.models import APIKey
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework_api_key.settings import TOKEN_HEADER, SECRET_KEY_HEADER
 from accounts.models import Student
-# from accounts.serializers import CreateUserSerializer, UserSerializer, LoginUserSerializer
 
 
 class LoginView(generics.GenericAPIView):
