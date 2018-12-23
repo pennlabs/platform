@@ -3,6 +3,10 @@ from django.contrib.auth.backends import RemoteUserBackend
 
 
 class ShibbolethRemoteUserBackend(RemoteUserBackend):
+    """
+    Authenticate users from Shibboleth headers.
+    Code based on https://github.com/Brown-University-Library/django-shibboleth-remoteuser
+    """
     def authenticate(self, request, remote_user, shibboleth_attributes):
         if not remote_user:
             return
