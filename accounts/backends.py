@@ -7,6 +7,9 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
     Authenticate users from Shibboleth headers.
     Code based on https://github.com/Brown-University-Library/django-shibboleth-remoteuser
     """
+    def searchPennDirectory(self, username, key):
+        pass
+
     def authenticate(self, request, remote_user, shibboleth_attributes):
         if not remote_user:
             return
@@ -22,12 +25,9 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
                     # TODO Poll Penn Directory to get missing information
                     # User: first/last name and email
                     # Student: major, school, display name
-                    setattr(user, key, searchPennDirectory())
+                    setattr(user, key, searchPennDirectory(username, key))
 
             user.save()
             user = self.configure_user(user)
 
         return user if self.user_can_authenticate(user) else None
-
-    def searchPennDirectory(self, username, wanted):
-        pass
