@@ -16,21 +16,22 @@ class LoginView(generics.GenericAPIView):
     """
     Log in a user. API Key protected.
     """
-    def login_redirect(self):
-        return redirect('https://auth.pennlabs.org/login')
+    def login_redirect(self, redirect_url):
+        return redirect('https://auth.pennlabs.org/login?next=' + redirect_url)
 
     def get(self, request):
         # Validate API Key or redirect to Shibboleth
+        redirect_url = request.GET.get('next', '')
         token = request.META.get(TOKEN_HEADER, '')
         secret_key = request.META.get(SECRET_KEY_HEADER, '')
         if not token or not secret_key:
-            return self.login_redirect()
+            return self.login_redirect(redirect_url)
         api_key = APIKey.objects.filter(token=token, revoked=False).first()
         if api_key is None:
-            return self.login_redirect()
+            return self.login_redirect(redirect_url)
         hashed_token = hash_token(token, secret_key)
         if hashed_token != api_key.hashed_token:
-            return self.login_redirect()
+            return self.login_redirect(redirect_url)
 
         # Use provided headers to login user
         pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
