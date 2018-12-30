@@ -113,6 +113,13 @@ AUTHENTICATION_BACKENDS = (
     'accounts.backends.ShibbolethRemoteUserBackend',
 )
 
+# JWT Settings
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    'accounts.utils.jwt_response_payload_handler',
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
