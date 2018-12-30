@@ -108,6 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Authentication Backends
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'accounts.backends.ShibbolethRemoteUserBackend',
