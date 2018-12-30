@@ -8,7 +8,23 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
     Code based on https://github.com/Brown-University-Library/django-shibboleth-remoteuser
     """
     def searchPennDirectory(self, username, key):
-        pass
+        # TODO Poll Penn Directory to get missing information
+        # User: first/last name and email
+        # Student: major, school, display name
+        bearer = ""
+        token = ""
+        headers = {
+            "Authorization-Bearer": bearer,
+            "Authorization-Token": token,
+        }
+        params = {
+            "email": username,
+            "affiliation": "STU"
+        }
+        response = get("https://esb.isc-seo.upenn.edu/8091/open_data/directory",
+            params=params, headers=headers, timeout=30)
+        if response.status_code == 200:
+            response = response.json()
 
     def authenticate(self, request, remote_user, shibboleth_attributes):
         if not remote_user:
@@ -22,9 +38,6 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
                 if value:
                     setattr(user, key, value)
                 else:
-                    # TODO Poll Penn Directory to get missing information
-                    # User: first/last name and email
-                    # Student: major, school, display name
                     setattr(user, key, searchPennDirectory(username, key))
 
             user.save()
