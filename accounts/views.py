@@ -8,6 +8,7 @@ from rest_framework_api_key.crypto import hash_token
 from rest_framework_api_key.models import APIKey
 from rest_framework_api_key.settings import TOKEN_HEADER, SECRET_KEY_HEADER
 from rest_framework_simplejwt.views import TokenViewBase, TokenObtainPairView
+from accounts.auth import PennAuthMixin, LabsAuthMixin
 from accounts.models import Application
 from accounts.serializers import PlatformTokenObtainPairSerializer, PlatformTokenVerifySerializer
 from accounts.utils import hash_client_secret
@@ -64,3 +65,19 @@ class LoginView(generics.GenericAPIView):
             response = redirect(redirect_uri + "?token=" + token)
             return response
         return HttpResponseServerError()
+
+
+class ProtectedViewSet(PennAuthMixin, generics.GenericAPIView):
+    """
+    An example api endpoint to test user authentication.
+    """
+    def get(self, request, format=None):
+        return Response({"secret_information": "this is a login protected route"})
+
+
+class LabsProtectedViewSet(LabsAuthMixin, generics.GenericAPIView):
+    """
+    An example api endpoint to test Penn Labs authentication.
+    """
+    def get(self, request, format=None):
+        return Response({"secret_information": "this is a Penn Labs protected route"})
