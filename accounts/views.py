@@ -1,3 +1,4 @@
+from sentry_sdk import capture_message
 from django.contrib import auth
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponseBadRequest
@@ -32,6 +33,7 @@ class LoginView(generics.GenericAPIView):
         # Validate redirect_uri or invalidate request
         application = Application.objects.filter(redirect_uri=redirect_uri, revoked=False).first()
         if application is None:
+            capture_message("Invalid login redirect_uri", level="error")
             return HttpResponseBadRequest("Invalid redirect_uri.")
 
         # Validate Application client id and secret and redirect to auth (Product initiating request)
@@ -43,6 +45,7 @@ class LoginView(generics.GenericAPIView):
         api_key = APIKey.objects.filter(token=token, revoked=False).first()
         hashed_token = hash_token(token, secret_key)
         if api_key is None or hashed_token != api_key.hashed_token:
+            capture_message("Invalid login request", level="error")
             return HttpResponseBadRequest("Invalid request.")
 
         # Request is from auth. Use provided headers to login user
