@@ -1,3 +1,5 @@
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 from pennlabs.settings.base import *
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -21,3 +23,10 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow production host headers
 ALLOWED_HOSTS = ['platform.pennlabs.org', 'platform.apps.pennlabs.org']
+
+SENTRY_URL = os.environ.get('SENTRY_URL', '')
+
+sentry_sdk.init(
+    dsn=SENTRY_URL,
+    integrations=[DjangoIntegration()]
+)

@@ -1,38 +1,65 @@
-from rest_framework import viewsets, permissions, generics
-from rest_framework.response import Response
-# from knox.models import AuthToken
-from accounts.models import Student
-# from accounts.serializers import CreateUserSerializer, UserSerializer, LoginUserSerializer
+from sentry_sdk import capture_message
+from django.contrib import auth
+from django.http import HttpResponseServerError
+from django.http.response import HttpResponseBadRequest
+from django.shortcuts import redirect
+from rest_framework import generics
+from rest_framework_api_key.crypto import hash_token
+from rest_framework_api_key.models import APIKey
+from rest_framework_api_key.settings import TOKEN_HEADER, SECRET_KEY_HEADER
+from rest_framework_jwt.settings import api_settings
+from accounts.models import Application
+from accounts.utils import hash_client_secret
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
-# class RegistrationView(generics.GenericAPIView):
-#     """
-#     Create a new user.
-#     """
-#     serializer_class = CreateUserSerializer
+class LoginView(generics.GenericAPIView):
+    """
+    Log in a user.
+    """
+    def login_redirect(self, redirect_uri):
+        return redirect('https://auth.pennlabs.org/login?redirect_uri=' + redirect_uri)
 
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         user = serializer.save()
+    def get(self, request):
+        # Get body and header variables
+        redirect_uri = request.GET.get('redirect_uri', '')
+        client_id = request.GET.get('client_id', '')
+        client_secret = request.GET.get('client_secret', '')
+        token = request.META.get(TOKEN_HEADER, '')
+        secret_key = request.META.get(SECRET_KEY_HEADER, '')
 
-#         return Response({
-#             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-#             "token": AuthToken.objects.create(user)
-#         })
+        # Validate redirect_uri or invalidate request
+        application = Application.objects.filter(redirect_uri=redirect_uri, revoked=False).first()
+        if application is None:
+            capture_message("Invalid login redirect_uri", level="error")
+            return HttpResponseBadRequest("Invalid redirect_uri.")
 
+        # Validate Application client id and secret and redirect to auth (Product initiating request)
+        hased_client_secret = hash_client_secret(client_id, client_secret)
+        if hased_client_secret == application.hashed_secret:
+            return self.login_redirect(redirect_uri)
 
-# class LoginView(generics.GenericAPIView):
-#     """
-#     Attempt to log in a user with the specified email and password.
-#     """
-#     serializer_class = LoginUserSerializer
+        # Validate API token and secret or invalidate request (Auth initiating request)
+        api_key = APIKey.objects.filter(token=token, revoked=False).first()
+        hashed_token = hash_token(token, secret_key)
+        if api_key is None or hashed_token != api_key.hashed_token:
+            capture_message("Invalid login request", level="error")
+            return HttpResponseBadRequest("Invalid request.")
 
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         user = serializer.validated_data
-#         return Response({
-#             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-#             "token": AuthToken.objects.create(user)
-#         })
+        # Request is from auth. Use provided headers to login user
+        pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
+        first_name = request.META.get('HTTP_GIVENNAME', '').lower().capitalize()
+        last_name = request.META.get('HTTP_SN', '').lower().capitalize()
+        email = request.META.get('HTTP_MAIL', '').lower()
+        shibboleth_attributes = {'first_name': first_name, 'last_name': last_name, 'email': email}
+        user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
+        if user:
+            request.user = user
+            auth.login(request, user)
+            payload = jwt_payload_handler(user)
+            token = jwt_encode_handler(payload)
+            response = redirect(redirect_uri + "?token=" + token)
+            return response
+        return HttpResponseServerError()

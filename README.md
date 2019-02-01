@@ -13,6 +13,7 @@ The <strong> Labs Platform </strong> is the back-end interface to the ecosystem 
 DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
 SECRET_KEY=secret
 DJANGO_SETTINGS_MODULE=pennlabs.settings.production
+SENTRY_URL=https://pub:private@sentry.example.com/product
 ```
 1. Install requirements using `pip install -r requirements.txt`.
 2. Run server using `python manage.py runserver`.
