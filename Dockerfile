@@ -3,4 +3,4 @@ ADD . /
 WORKDIR /
 RUN pip install pipenv
 RUN pipenv install
-RUN python manage.py collectstatic --noinput
+RUN pipenv python manage.py collectstatic --noinput
