@@ -1,41 +1,25 @@
-import jwt
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import exceptions, generics
 from rest_framework.authentication import get_authorization_header
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework_jwt.settings import api_settings
-from org.models import Member
-
-jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
+from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication, TokenUser
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.settings import api_settings
 
 
-class LabsTokenAuthentication(JSONWebTokenAuthentication):
-    def authenticate(self, request):
-        jwt_value = self.get_jwt_value(request)
-        if jwt_value is None:
-            return None
-        try:
-            payload = jwt_decode_handler(jwt_value)
-        except jwt.ExpiredSignature:
-            msg = _('Signature has expired.')
-            raise exceptions.AuthenticationFailed(msg)
-        except jwt.DecodeError:
-            msg = _('Error decoding signature.')
-            raise exceptions.AuthenticationFailed(msg)
-        except jwt.InvalidTokenError:
-            raise exceptions.AuthenticationFailed()
-
-        (user, payload) = super().authenticate(request)
-        if hasattr(user.student, 'member'):
-            return (user, payload)
-        else:
-            raise exceptions.AuthenticationFailed(
-                _('Authentication Failed. User is not a Penn Labs member'))
+class LabsTokenAuthentication(JWTTokenUserAuthentication):
+    def get_user(self, validated_token):
+        if api_settings.USER_ID_CLAIM not in validated_token:
+            raise InvalidToken(_('Token contained no recognizable user identification'))
+        user = User.objects.filter(id=validated_token[api_settings.USER_ID_CLAIM]).first()
+        if (user is None or not hasattr(user.student, 'member')):
+            raise InvalidToken(_('Token User is not a Penn Labs member'))
+        return TokenUser(validated_token)
 
 
 class PennAuthMixin(generics.GenericAPIView):
-    authentication_classes = (JSONWebTokenAuthentication,)
+    authentication_classes = (JWTTokenUserAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
