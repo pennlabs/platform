@@ -1,7 +1,7 @@
 from django.urls import path
 from shortener.views import index
 from org.views import (ShortUrlViewSet, MemberViewSet, AlumniViewSet, TeamViewSet,
-    RoleViewSet)
+                       RoleViewSet)
 
 
 urlpatterns = [

@@ -25,7 +25,7 @@ class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
         fields = ('student', 'bio', 'location', 'team', 'roles', 'url', 'photo', 'linkedin', 'website', 'github',
-            'year_joined', 'alumnus')
+                  'year_joined', 'alumnus')
 
 
 class TeamSerializer(serializers.ModelSerializer):
