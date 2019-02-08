@@ -22,7 +22,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             "affiliation": "STU"
         }
         response = get("https://esb.isc-seo.upenn.edu/8091/open_data/directory",
-            params=params, headers=headers, timeout=30)
+                       params=params, headers=headers, timeout=30)
         if response.status_code == 200:
             response = response.json()
 

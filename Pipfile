@@ -4,6 +4,8 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+coveralls = "*"
+unittest-xml-reporting = "*"
 
 [packages]
 coreapi = "*"
@@ -17,7 +19,6 @@ sentry-sdk = "*"
 whitenoise = "*"
 Django = "*"
 cryptography = "*"
-unittest-xml-reporting = "*"
 djangorestframework-simplejwt = "*"
 
 [requires]
