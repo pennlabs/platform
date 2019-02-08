@@ -3,13 +3,6 @@ from django.contrib.auth.hashers import get_hasher
 from accounts.serializers import StudentSerializer
 
 
-def jwt_response_payload_handler(token, user=None, request=None):
-    return {
-        'token': token,
-        'user': StudentSerializer(user.student, context={'request': request}).data
-    }
-
-
 def hash_client_secret(client_id, client_secret):
     return get_hasher(algorithm='default').encode(client_id, salt=client_secret)
 

@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_api_key',
-    'rest_framework_jwt',
+    'rest_framework_simplejwt',
     'shortener.apps.ShortenerConfig',
     'org',
     'accounts',
@@ -114,13 +114,6 @@ AUTHENTICATION_BACKENDS = (
     'accounts.backends.ShibbolethRemoteUserBackend',
 )
 
-# JWT Settings
-
-JWT_AUTH = {
-    'JWT_RESPONSE_PAYLOAD_HANDLER':
-    'accounts.utils.jwt_response_payload_handler',
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

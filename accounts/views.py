@@ -7,12 +7,14 @@ from rest_framework import generics
 from rest_framework_api_key.crypto import hash_token
 from rest_framework_api_key.models import APIKey
 from rest_framework_api_key.settings import TOKEN_HEADER, SECRET_KEY_HEADER
-from rest_framework_jwt.settings import api_settings
+from rest_framework_simplejwt.views import TokenViewBase, TokenObtainPairView
 from accounts.models import Application
+from accounts.serializers import PlatformTokenObtainPairSerializer, PlatformTokenVerifySerializer
 from accounts.utils import hash_client_secret
 
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+class PlatformTokenVerifyView(TokenViewBase):
+    serializer_class = PlatformTokenVerifySerializer
 
 
 class LoginView(generics.GenericAPIView):
@@ -58,8 +60,7 @@ class LoginView(generics.GenericAPIView):
         if user:
             request.user = user
             auth.login(request, user)
-            payload = jwt_payload_handler(user)
-            token = jwt_encode_handler(payload)
+            token = PlatformTokenObtainPairSerializer.get_token(user)
             response = redirect(redirect_uri + "?token=" + token)
             return response
         return HttpResponseServerError()
