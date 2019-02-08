@@ -32,7 +32,7 @@ jobs:
           name: Install dependencies
           command: |
             sudo pip install pipenv
-            pipenv install
+            pipenv install -d
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
@@ -50,6 +50,10 @@ jobs:
       - store_artifacts:
           path: test_results
           destination: trl
+      - run:
+          command: |
+            pipenv run coverage run --source='.' manage.py test
+            pipenv run coveralls
   deploy:
     working_directory: ~/platform
     docker:
