@@ -52,7 +52,7 @@ jobs:
           destination: trl
       - run:
           command: |
-            pipenv run coverage run --source='.' manage.py test
+            pipenv run coverage run manage.py test
             pipenv run coveralls
   deploy:
     working_directory: ~/platform
