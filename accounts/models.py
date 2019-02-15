@@ -23,14 +23,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.student.save()
-
-
-class Application(models.Model):
-    redirect_uri = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    revoked = models.BooleanField(default=False)
-    client_id = models.CharField(max_length=100, unique=True)
-    hashed_secret = models.CharField(max_length=255, null=True)
-
-    def __str__(self):
-        return self.name

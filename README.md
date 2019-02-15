@@ -6,9 +6,8 @@
 The <strong> Labs Platform </strong> is the back-end interface to the ecosystem that facilitates the organization's:
 
 1. Accounts Engine
-2. Engagement Infrastructure
-3. Cross-Product Resources
-4. Organizational Information
+2. Cross-Product Resources
+3. Organizational Information
 
 ## Installation
 0. Configure environment variables (e.g. `.env`) containing:
@@ -18,7 +17,7 @@ SECRET_KEY=secret
 DJANGO_SETTINGS_MODULE=pennlabs.settings.production
 SENTRY_URL=https://pub:private@sentry.example.com/product
 ```
-1. Install requirements using `pip install -r requirements.txt`.
+1. Install requirements using `pipenv install`.
 2. Run server using `python manage.py runserver`.
 
 ## Documentation

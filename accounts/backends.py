@@ -1,3 +1,4 @@
+from collections import Mapping
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 
@@ -11,20 +12,21 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         # TODO Poll Penn Directory to get missing information
         # User: first/last name and email
         # Student: major, school, display name
-        bearer = ""
-        token = ""
-        headers = {
-            "Authorization-Bearer": bearer,
-            "Authorization-Token": token,
-        }
-        params = {
-            "email": username,
-            "affiliation": "STU"
-        }
-        response = get("https://esb.isc-seo.upenn.edu/8091/open_data/directory",
-                       params=params, headers=headers, timeout=30)
-        if response.status_code == 200:
-            response = response.json()
+        return ''
+        # bearer = ""
+        # token = ""
+        # headers = {
+        #     "Authorization-Bearer": bearer,
+        #     "Authorization-Token": token,
+        # }
+        # params = {
+        #     "email": username,
+        #     "affiliation": "STU"
+        # }
+        # response = get("https://esb.isc-seo.upenn.edu/8091/open_data/directory",
+        #                params=params, headers=headers, timeout=30)
+        # if response.status_code == 200:
+        #     response = response.json()
 
     def authenticate(self, request, remote_user, shibboleth_attributes):
         if not remote_user:
@@ -34,11 +36,12 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         user, created = User.objects.get_or_create(username=username)
         if created:
             user.set_unusable_password()
-            for key, value in shibboleth_attributes.items():
-                if value:
-                    setattr(user, key, value)
-                else:
-                    setattr(user, key, searchPennDirectory(username, key))
+            if isinstance(shibboleth_attributes, Mapping):
+                for key, value in shibboleth_attributes.items():
+                    if value:
+                        setattr(user, key, value)
+                    else:
+                        setattr(user, key, self.searchPennDirectory(username, key))
 
             user.save()
             user = self.configure_user(user)

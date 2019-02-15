@@ -1,8 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import UntypedToken
 from accounts.models import Student
 
 
@@ -25,18 +23,3 @@ class StudentSerializer(serializers.ModelSerializer):
         for key in user_representation:
             representation[key] = user_representation[key]
         return representation
-
-
-class PlatformTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super(PlatformTokenObtainPairSerializer, cls).get_token(user)
-        token['name'] = user.student.name
-        return token
-
-
-class PlatformTokenVerifySerializer(serializers.Serializer):
-    token = serializers.CharField()
-
-    def validate(self, attrs):
-        return UntypedToken(attrs['token']).payload
