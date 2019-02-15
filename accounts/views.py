@@ -5,11 +5,10 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from rest_framework import generics
 from rest_framework_api_key.permissions import HasAPIKey
-from accounts.auth import PennAuthMixin, LabsAuthMixin
+from accounts.auth import PennView, LabsView
 
 
 class LoginView(generics.GenericAPIView):
-    permission_classes = (HasAPIKey,)
     """
     Log in a user.
     """
@@ -17,6 +16,11 @@ class LoginView(generics.GenericAPIView):
         return redirect('https://auth.pennlabs.org/login/')
 
     def get(self, request):
+        # Validate API Key
+        if not HasAPIKey.has_permission(self, request, self):
+            return self.login_redirect()
+
+        # API is valid, login user
         pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
         first_name = request.META.get('HTTP_GIVENNAME', '').lower().capitalize()
         last_name = request.META.get('HTTP_SN', '').lower().capitalize()
@@ -30,7 +34,7 @@ class LoginView(generics.GenericAPIView):
         return HttpResponseServerError()
 
 
-class ProtectedViewSet(PennAuthMixin, generics.GenericAPIView):
+class ProtectedViewSet(PennView):
     """
     An example api endpoint to test user authentication.
     """
@@ -38,7 +42,7 @@ class ProtectedViewSet(PennAuthMixin, generics.GenericAPIView):
         return HttpResponse({"secret_information": "this is a login protected route"})
 
 
-class LabsProtectedViewSet(LabsAuthMixin, generics.GenericAPIView):
+class LabsProtectedViewSet(LabsView):
     """
     An example api endpoint to test Penn Labs authentication.
     """
