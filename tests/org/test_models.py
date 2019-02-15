@@ -1,5 +1,7 @@
+import datetime
 from django.test import TestCase
-from org.models import Team, Role, Member
+from django.contrib.auth.models import User
+from org.models import Member, Role, Team
 
 
 class TeamTestCase(TestCase):
@@ -11,10 +13,10 @@ class TeamTestCase(TestCase):
         Team.objects.create(name='Android', tagline='We own your data', description='Important information',
                             order=3, url='https://pennlabs.org')
 
+    def test_str(self):
+        self.assertEqual(str(Team.objects.all()[0]), 'Directors')
+
     def test_order(self):
-        """
-        Test custom ordering
-        """
         directors = Team.objects.get(name='Directors')
         platform = Team.objects.get(name='Platform')
         android = Team.objects.get(name='Android')
@@ -32,6 +34,9 @@ class RoleTestCase(TestCase):
         Role.objects.create(name='Backend Engineer', description='Important stuff', order=2)
         Role.objects.create(name='Frontend Engineer', description='Important stuff', order=3)
 
+    def test_str(self):
+        self.assertEqual(str(Role.objects.all()[0]), 'Co-Director')
+
     def test_order(self):
         """
         Test custom ordering
@@ -45,3 +50,12 @@ class RoleTestCase(TestCase):
         self.assertEqual(director, first)
         self.assertEqual(be_engineer, second)
         self.assertEqual(fe_engineer, third)
+
+
+class MemberTestCase(TestCase):
+    def setUp(self):
+        self.member = User.objects.create_user(username='member', password='secret')
+        Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
+
+    def test_str(self):
+        self.assertEqual(str(self.member.student.member), 'member')
