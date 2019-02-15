@@ -12,13 +12,10 @@ class LoginView(generics.GenericAPIView):
     """
     Log in a user.
     """
-    def login_redirect(self):
-        return redirect('https://auth.pennlabs.org/login/')
-
     def get(self, request):
         # Validate API Key
         if not HasAPIKey.has_permission(self, request, self):
-            return self.login_redirect()
+            return redirect('https://auth.pennlabs.org/login/?next=' + request.GET.get('next', ''))
 
         # API is valid, login user
         pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
@@ -29,7 +26,7 @@ class LoginView(generics.GenericAPIView):
         user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
         if user:
             auth.login(request, user)
-            return redirect('/accounts/authorize/')
+            return redirect('https://platform.pennlabs.org' + request.GET.get('next', ''))
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
 
