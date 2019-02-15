@@ -42,4 +42,6 @@ CORS_ORIGIN_WHITELIST = (
     'penncourseplan.com',
     'penncoursereview.com'
     'pennlabs.org',
+    # TODO This is a test domain, remove me at some point
+    'auth-test.apps.pennlabs.org',
 )
