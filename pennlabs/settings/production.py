@@ -38,7 +38,7 @@ CORS_ORIGIN_WHITELIST = (
     'pennbasics.com',
     'penncfa.com',
     'pennclubs.com',
-    'penncoursealert',
+    'penncoursealert.com',
     'penncourseplan.com',
     'penncoursereview.com'
     'pennlabs.org',
