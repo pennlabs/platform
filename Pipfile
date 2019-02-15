@@ -16,9 +16,9 @@ gunicorn = "*"
 mysqlclient = "*"
 sentry-sdk = "*"
 whitenoise = "*"
-Django = "*"
 django-oauth-toolkit = "*"
 django-cors-middleware = "*"
+django = "*"
 
 [requires]
 python_version = "3.7"
