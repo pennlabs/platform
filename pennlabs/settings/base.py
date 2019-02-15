@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'org',
     'accounts',
     'services',
-    'engagement',
     'application'
 ]
 
