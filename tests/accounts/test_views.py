@@ -37,7 +37,7 @@ class LoginViewTestCase(TestCase):
     def test_valid_api_key_valid_shibboleth(self):
         headers = {'HTTP_API_TOKEN': self.api_key.token, 'HTTP_API_SECRET_KEY': self.secret_key, 'HTTP_EPPN': 'test',
                    'HTTP_GIVENNAME': 'test', 'HTTP_SN': 'user', 'HTTP_MAIL': 'test@student.edu'}
-        params = '/accounts/authorize/%3Fclient_id%3Dabc123%26response_type%3Dcode%26state%3Dabc'
+        params = '/accounts/authorize/?client_id=abc123&response_type=code&state=abc'
         response = self.client.get('/accounts/login/?next=' + params, **headers)
         base_url = 'https://platform.pennlabs.org/accounts/authorize/'
         sample_response = base_url + '?client_id=abc123&response_type=code&state=abc'
