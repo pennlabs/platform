@@ -46,3 +46,7 @@ CORS_ORIGIN_WHITELIST = (
     # TODO This is a test domain, remove me at some point
     'auth-test.apps.pennlabs.org',
 )
+
+# Allow session cookie to be set from auth
+
+SESSION_COOKIE_DOMAIN = 'pennlabs.org'
