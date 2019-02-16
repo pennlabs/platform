@@ -35,6 +35,7 @@ sentry_sdk.init(
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
+    'auth.pennlabs.org'
     'pennbasics.com',
     'penncfa.com',
     'pennclubs.com',
