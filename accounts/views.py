@@ -1,3 +1,4 @@
+import base64
 from sentry_sdk import capture_message
 from django.contrib import auth
 from django.http import HttpResponseServerError
@@ -14,7 +15,6 @@ class LoginView(generics.GenericAPIView):
     Log in a user.
     """
     def get(self, request):
-        # print(iri_to_uri(request.GET.get('next', '')))
         # Validate API Key
         if not HasAPIKey.has_permission(self, request, self):
             return redirect('https://auth.pennlabs.org/login/?next=' + iri_to_uri(request.GET.get('next', '')))
@@ -28,8 +28,8 @@ class LoginView(generics.GenericAPIView):
         user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
         if user:
             auth.login(request, user)
-            params = request.get_full_path().split('next=')[1]
-            return redirect('https://platform.pennlabs.org' + params)
+            params = request.get_full_path().split('authorize/')[1]
+            return redirect('https://platform.pennlabs.org/accounts/authorize/' + params)
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
 
