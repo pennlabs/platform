@@ -2,6 +2,7 @@ from sentry_sdk import capture_message
 from django.contrib import auth
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse
+from django.utils.encoding import iri_to_uri
 from django.shortcuts import redirect
 from rest_framework import generics
 from rest_framework_api_key.permissions import HasAPIKey
@@ -15,7 +16,7 @@ class LoginView(generics.GenericAPIView):
     def get(self, request):
         # Validate API Key
         if not HasAPIKey.has_permission(self, request, self):
-            return redirect('https://auth.pennlabs.org/login/?next=' + request.GET.get('next', ''))
+            return redirect('https://auth.pennlabs.org/login/?next=' + iri_to_uri(request.GET.get('next', '')))
 
         # API is valid, login user
         pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
