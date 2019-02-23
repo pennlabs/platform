@@ -1,9 +1,16 @@
 import base64
+import calendar
+import json
 from sentry_sdk import capture_message
 from django.contrib import auth
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse
 from django.shortcuts import redirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from oauth2_provider.models import get_access_token_model
+from oauth2_provider.views import IntrospectTokenView
 from rest_framework import generics
 from rest_framework_api_key.permissions import HasAPIKey
 from accounts.auth import PennView, LabsView
@@ -31,6 +38,37 @@ class LoginView(generics.GenericAPIView):
             return redirect('https://platform.pennlabs.org/accounts/authorize/' + params)
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class UUIDIntrospectTokenView(IntrospectTokenView):
+    @staticmethod
+    def get_token_response(token_value=None):
+        try:
+            token = get_access_token_model().objects.get(token=token_value)
+        except ObjectDoesNotExist:
+            return HttpResponse(
+                content=json.dumps({"active": False}),
+                status=401,
+                content_type="application/json"
+            )
+        else:
+            if token.is_valid():
+                print(token)
+                data = {
+                    "active": True,
+                    "scope": token.scope,
+                    "exp": int(calendar.timegm(token.expires.timetuple())),
+                }
+                if token.application:
+                    data["client_id"] = token.application.client_id
+                if token.user:
+                    data["uuid"] = token.user.student.get_uuid()
+                return HttpResponse(content=json.dumps(data), status=200, content_type="application/json")
+            else:
+                return HttpResponse(content=json.dumps({
+                    "active": False,
+                }), status=200, content_type="application/json")
 
 
 class ProtectedViewSet(PennView):
