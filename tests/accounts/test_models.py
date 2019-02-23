@@ -8,3 +8,6 @@ class ModelTestCase(TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.user.student), self.user.username)
+
+    def test_uuid(self):
+        self.assertEquals(self.user.student.get_uuid(), str(self.user.student.uuid))
