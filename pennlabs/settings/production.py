@@ -35,14 +35,15 @@ sentry_sdk.init(
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
-    'auth.pennlabs.org'
+    'auth.pennlabs.org',
     'pennbasics.com',
     'penncfa.com',
     'pennclubs.com',
     'penncoursealert.com',
     'penncourseplan.com',
-    'penncoursereview.com'
+    'penncoursereview.com',
     'pennlabs.org',
+    'localhost',
 )
 
 # Allow session cookie to be set from auth
