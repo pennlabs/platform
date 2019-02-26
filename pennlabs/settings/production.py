@@ -2,7 +2,6 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from pennlabs.settings.base import *
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = False
 
@@ -43,7 +42,6 @@ CORS_ORIGIN_WHITELIST = (
     'penncourseplan.com',
     'penncoursereview.com',
     'pennlabs.org',
-    'localhost',
 )
 
 # Allow session cookie to be set from auth
