@@ -54,7 +54,6 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
             )
         else:
             if token.is_valid():
-                print(token)
                 data = {
                     "active": True,
                     "scope": token.scope,
