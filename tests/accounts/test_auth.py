@@ -1,5 +1,6 @@
 import datetime
 from django.test import TestCase, Client
+from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import AnonymousUser, User
 from oauth2_provider.models import Application, AccessToken
@@ -36,27 +37,25 @@ class AuthTestCase(TestCase):
         self.member_header = {"HTTP_AUTHORIZATION": "Bearer " + self.member_token.token}
 
     def test_penn_view_anonymous(self):
-        request = self.client.get('/accounts/protected/')
+        request = self.client.get(reverse('accounts:protected'))
         self.assertEqual(request.status_code, 403)
 
     def test_penn_view_student(self):
-        request = self.client.get('/accounts/protected/', **self.student_header)
+        request = self.client.get(reverse('accounts:protected'), **self.student_header)
         self.assertEqual(request.status_code, 200)
-        self.client.logout()
 
     def test_penn_view_member(self):
-        request = self.client.get('/accounts/protected/', **self.member_header)
+        request = self.client.get(reverse('accounts:protected'), **self.member_header)
         self.assertEqual(request.status_code, 200)
 
     def test_labs_view_anonymous(self):
-        request = self.client.get('/accounts/labsprotected/')
+        request = self.client.get(reverse('accounts:labsprotected'))
         self.assertEqual(request.status_code, 403)
 
     def test_labs_view_student(self):
-        request = self.client.get('/accounts/labsprotected/', **self.student_header)
+        request = self.client.get(reverse('accounts:labsprotected'), **self.student_header)
         self.assertEqual(request.status_code, 403)
-        self.client.logout()
 
     def test_labs_view_member(self):
-        request = self.client.get('/accounts/labsprotected/', **self.member_header)
+        request = self.client.get(reverse('accounts:labsprotected'), **self.member_header)
         self.assertEqual(request.status_code, 200)
