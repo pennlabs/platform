@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+coveralls = "*"
+unittest-xml-reporting = "*"
+
+[packages]
+coreapi = "*"
+dj-database-url = "*"
+djangorestframework = "*"
+djangorestframework-api-key = "*"
+gunicorn = "*"
+mysqlclient = "*"
+sentry-sdk = "*"
+whitenoise = "*"
+django-oauth-toolkit = "*"
+django-cors-middleware = "*"
+django = "*"
+
+[requires]
+python_version = "3.7"

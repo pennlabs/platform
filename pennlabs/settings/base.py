@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # Determine production or development environment
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'o7ql0!vuk0%rgrh9p2bihq#pege$qqlm@zo#8&t==%&za33m*2'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'o7ql0!vuk0%rgrh9p2bihq#pege$qqlm@zo#8&t==%&za33m*2')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,18 +40,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_api_key',
+    'oauth2_provider',
+    'corsheaders',
     'shortener.apps.ShortenerConfig',
-    'org',
-    'accounts',
-    'services',
-    'engagement',
+    'org.apps.OrgConfig',
+    'accounts.apps.AccountsConfig',
+    'services.apps.ServicesConfig',
     'application'
 ]
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -105,12 +109,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication Backends
+
+AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
+    'django.contrib.auth.backends.ModelBackend',
+    'accounts.backends.ShibbolethRemoteUserBackend',
+)
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -124,3 +137,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# CORS Settings
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# OAuth2 Settings
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'introspection': 'Introspect token scope',
+    },
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
+
+}

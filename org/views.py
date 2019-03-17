@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from shortener.models import shorten
-from accounts.auth import PennAuthMixin, LabsAuthMixin
 from org.models import Member, Team, Role
 from org.serializers import ShortUrlSerializer, MemberSerializer, TeamSerializer, RoleSerializer
 
@@ -64,11 +63,3 @@ class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
     http_method_names = ['get']
-
-
-class ProtectedViewSet(LabsAuthMixin, generics.GenericAPIView):
-    """
-    An example api endpoint to test user authentication.
-    """
-    def get(self, request, format=None):
-        return Response({"secret_information": "this is a protected route"})

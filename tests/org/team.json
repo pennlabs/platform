@@ -1,0 +1,60 @@
+{
+  "name": "Platform",
+  "tagline": "Break twice deploy once",
+  "description": "Important",
+  "url": "https://pennlabs.org",
+  "members": [
+    {
+      "student": {
+        "name": "",
+        "major": "",
+        "school": "",
+        "username": "z-director",
+        "email": "",
+        "date_joined": "2019-01-01T00:00:00-05:00"
+      },
+      "bio": "",
+      "location": "",
+      "team": "Platform",
+      "roles": [
+        {
+          "name": "Z-Director",
+          "description": "Important people"
+        }
+      ],
+      "url": "director",
+      "photo": "",
+      "linkedin": null,
+      "website": null,
+      "github": null,
+      "year_joined": "2019-01-01",
+      "alumnus": false
+    },
+    {
+      "student": {
+        "name": "",
+        "major": "",
+        "school": "",
+        "username": "backend",
+        "email": "",
+        "date_joined": "2019-01-01T00:00:00-05:00"
+      },
+      "bio": "",
+      "location": "",
+      "team": "Platform",
+      "roles": [
+        {
+          "name": "Backend Engineer",
+          "description": "Important stuff"
+        }
+      ],
+      "url": "backend",
+      "photo": "",
+      "linkedin": null,
+      "website": null,
+      "github": null,
+      "year_joined": "2019-01-01",
+      "alumnus": false
+    }
+  ]
+}
