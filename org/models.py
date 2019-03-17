@@ -41,6 +41,7 @@ class Member(models.Model):
     linkedin = models.URLField(null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     github = models.URLField(null=True, blank=True)
+    graduation_year = models.IntegerField()
     year_joined = models.DateField()
     alumnus = models.BooleanField(default=False)
 
