@@ -32,6 +32,7 @@ class Role(models.Model):
 class Member(models.Model):
     student = models.OneToOneField(Student, on_delete=models.DO_NOTHING, null=True, blank=True)
     bio = models.TextField()
+    job = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     team = models.ForeignKey(Team, related_name='members', on_delete=models.DO_NOTHING, null=True, blank=True)
     roles = models.ManyToManyField(Role)
