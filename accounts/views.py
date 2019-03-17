@@ -34,8 +34,8 @@ class LoginView(generics.GenericAPIView):
         user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
         if user:
             auth.login(request, user)
-            params = request.get_full_path().split('authorize/')[1]
-            return redirect('https://platform.pennlabs.org/accounts/authorize/' + params)
+            params = request.get_full_path().split('next=')[1]
+            return redirect('https://platform.pennlabs.org' + params)
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
 
@@ -54,7 +54,6 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
             )
         else:
             if token.is_valid():
-                print(token)
                 data = {
                     "active": True,
                     "scope": token.scope,
