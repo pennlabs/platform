@@ -28,7 +28,9 @@
       "website": null,
       "github": null,
       "year_joined": "2019-01-01",
-      "alumnus": false
+      "alumnus": false,
+      "job": null,
+      "graduation_year": null
     },
     {
       "student": {
@@ -54,7 +56,9 @@
       "website": null,
       "github": null,
       "year_joined": "2019-01-01",
-      "alumnus": false
+      "alumnus": false,
+      "job": null,
+      "graduation_year": null
     }
   ]
 }

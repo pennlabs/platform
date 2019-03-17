@@ -32,6 +32,7 @@ class Role(models.Model):
 class Member(models.Model):
     student = models.OneToOneField(Student, on_delete=models.DO_NOTHING, null=True, blank=True)
     bio = models.TextField()
+    job = models.CharField(max_length=255, null=True, blank=True)
     location = models.CharField(max_length=255)
     team = models.ForeignKey(Team, related_name='members', on_delete=models.DO_NOTHING, null=True, blank=True)
     roles = models.ManyToManyField(Role)
@@ -40,6 +41,7 @@ class Member(models.Model):
     linkedin = models.URLField(null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     github = models.URLField(null=True, blank=True)
+    graduation_year = models.IntegerField(null=True, blank=True)
     year_joined = models.DateField()
     alumnus = models.BooleanField(default=False)
 
