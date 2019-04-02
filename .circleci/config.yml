@@ -43,17 +43,20 @@ jobs:
             - "/usr/local/bin"
             - "/usr/local/lib/python3.7/site-packages"
       - run:
+          name: Lint
           command: |
-            pipenv run python manage.py test --settings=pennlabs.settings.ci
+            pipenv run flake8
+      - run:
+          name: Run tests
+          command: |
+            pipenv run coverage run manage.py test --settings=pennlabs.settings.ci
+            pipenv run coveralls
       - store_test_results:
           path: test-results
       - store_artifacts:
           path: test_results
           destination: trl
-      - run:
-          command: |
-            pipenv run coverage run manage.py test
-            pipenv run coveralls
+
   deploy-master:
     working_directory: ~/platform
     docker:
