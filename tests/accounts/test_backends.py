@@ -1,6 +1,7 @@
-from django.test import TestCase
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.test import TestCase
+
 from accounts.backends import ShibbolethRemoteUserBackend
 
 
@@ -14,15 +15,15 @@ class BackendTestCase(TestCase):
         self.assertIsNone(user)
 
     def test_invalid_shibboleth_attributes(self):
-        user = auth.authenticate(remote_user="student", shibboleth_attributes=None)
+        user = auth.authenticate(remote_user='student', shibboleth_attributes=None)
         self.assertIsNotNone(user)
 
     def test_partial_shibboleth_attributes(self):
-        user = auth.authenticate(remote_user="student", shibboleth_attributes={'first_name': ''})
+        user = auth.authenticate(remote_user='student', shibboleth_attributes={'first_name': ''})
         self.assertEqual(user.first_name, '')
 
     def test_create_user(self):
-        user = auth.authenticate(remote_user='test', shibboleth_attributes={})
+        auth.authenticate(remote_user='test', shibboleth_attributes={})
         self.assertEqual(len(User.objects.all()), 1)
         self.assertEqual(str(User.objects.all()[0]), 'test')
 

@@ -1,9 +1,10 @@
-from collections import OrderedDict
 import datetime
 import json
+
 import pytz
-from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test import TestCase
+
 from org.models import Member, Role, Team
 from org.serializers import TeamSerializer
 

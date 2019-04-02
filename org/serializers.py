@@ -1,8 +1,9 @@
 from django.db.models import Min
 from rest_framework import serializers
 from shortener.models import Url
+
 from accounts.serializers import StudentSerializer
-from org.models import Member, Team, Role
+from org.models import Member, Role, Team
 
 
 class ShortUrlSerializer(serializers.ModelSerializer):

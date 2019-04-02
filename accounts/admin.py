@@ -1,4 +1,5 @@
-from django.contrib import admin, messages
+from django.contrib import admin
+
 from accounts.models import Student
 
 

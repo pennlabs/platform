@@ -1,7 +1,5 @@
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
-from oauth2_provider.models import Application
 from rest_framework_api_key.models import APIKey
 
 
