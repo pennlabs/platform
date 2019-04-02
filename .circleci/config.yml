@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            pipenv run flake8
+            pipenv run flake8 .
       - run:
           name: Run tests
           command: |
