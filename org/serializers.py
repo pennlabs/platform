@@ -2,7 +2,7 @@ from django.db.models import Min
 from rest_framework import serializers
 from shortener.models import Url
 
-from accounts.serializers import StudentSerializer
+from accounts.models import Student
 from org.models import Member, Role, Team
 
 
@@ -16,6 +16,19 @@ class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = ('name', 'description')
+
+
+class UserField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.get_full_name()
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    name = UserField(source='user', read_only=True)
+
+    class Meta:
+        model = Student
+        fields = ('name', 'major', 'school')
 
 
 class MemberSerializer(serializers.ModelSerializer):
