@@ -1,4 +1,5 @@
 from collections import Mapping
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 
@@ -44,6 +45,6 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
                         setattr(user, key, self.searchPennDirectory(username, key))
 
             user.save()
-            user = self.configure_user(user)
+            user = self.configure_user(request, user)
 
         return user if self.user_can_authenticate(user) else None

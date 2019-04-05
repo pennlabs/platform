@@ -1,7 +1,8 @@
 from django.contrib import admin
-from services.models import Service, Endpoint, Update
+
+from services.models import Endpoint, Service, Update
 
 
-admin.site.register(Service)
 admin.site.register(Endpoint)
+admin.site.register(Service)
 admin.site.register(Update)

@@ -1,9 +1,11 @@
 import datetime
-from django.test import TestCase, Client
+
+from django.contrib.auth.models import User
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
-from django.contrib.auth.models import AnonymousUser, User
-from oauth2_provider.models import Application, AccessToken
+from oauth2_provider.models import AccessToken, Application
+
 from org.models import Member
 
 
@@ -14,7 +16,7 @@ class AuthTestCase(TestCase):
         self.member = User.objects.create_user(username='member', password='secret')
         Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
         self.application = Application(
-            name="Test",
+            name='Test',
             redirect_uris='http://a.a',
             user=self.student,
             client_type=Application.CLIENT_CONFIDENTIAL,
@@ -22,19 +24,19 @@ class AuthTestCase(TestCase):
         )
         self.application.save()
         self.student_token = AccessToken.objects.create(
-            user=self.student, token="12345",
+            user=self.student, token='12345',
             application=self.application,
             expires=timezone.now() + datetime.timedelta(days=1),
-            scope="read write"
+            scope='read write'
         )
         self.member_token = AccessToken.objects.create(
-            user=self.member, token="123456",
+            user=self.member, token='123456',
             application=self.application,
             expires=timezone.now() + datetime.timedelta(days=1),
-            scope="read write"
+            scope='read write'
         )
-        self.student_header = {"HTTP_AUTHORIZATION": "Bearer " + self.student_token.token}
-        self.member_header = {"HTTP_AUTHORIZATION": "Bearer " + self.member_token.token}
+        self.student_header = {'HTTP_AUTHORIZATION': 'Bearer ' + self.student_token.token}
+        self.member_header = {'HTTP_AUTHORIZATION': 'Bearer ' + self.member_token.token}
 
     def test_penn_view_anonymous(self):
         request = self.client.get(reverse('accounts:protected'))
