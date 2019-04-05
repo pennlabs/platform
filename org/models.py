@@ -49,4 +49,4 @@ class Member(models.Model):
         return self.student.user.username
 
     class Meta:
-        ordering = ['student__name']
+        ordering = ['student__user__first_name']
