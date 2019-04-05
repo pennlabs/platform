@@ -155,3 +155,7 @@ OAUTH2_PROVIDER = {
     'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https'],
 
 }
+
+# Custom User Model
+
+AUTH_USER_MODEL = 'accounts.User'
