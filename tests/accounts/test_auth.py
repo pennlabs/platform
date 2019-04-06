@@ -1,19 +1,22 @@
 import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 from oauth2_provider.models import AccessToken, Application
 
+from accounts.models import Student
 from org.models import Member
 
 
 class AuthTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.student = User.objects.create_user(username='student', password='secret')
-        self.member = User.objects.create_user(username='member', password='secret')
+        self.student = get_user_model().objects.create_user(username='student', password='secret')
+        Student.objects.create(user=self.student)
+        self.member = get_user_model().objects.create_user(username='member', password='secret')
+        Student.objects.create(user=self.member)
         Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
         self.application = Application(
             name='Test',

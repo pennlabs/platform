@@ -2,9 +2,10 @@ import datetime
 import json
 
 import pytz
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from accounts.models import Student
 from org.models import Member, Role, Team
 from org.serializers import TeamSerializer
 
@@ -16,8 +17,12 @@ class TeamSerializerTestCase(TestCase):
                                         order=2, url='https://pennlabs.org')
         self.director_role = Role.objects.create(name='Z-Director', description='Important people', order=1)
         self.backend_role = Role.objects.create(name='Backend Engineer', description='Important stuff', order=2)
-        self.director = User.objects.create_user(username='z-director', password='secret', date_joined=self.date)
-        self.backend = User.objects.create_user(username='backend', password='secret', date_joined=self.date)
+        self.director = get_user_model().objects.create_user(username='z-director', password='secret',
+                                                             date_joined=self.date)
+        Student.objects.create(user=self.director)
+        self.backend = get_user_model().objects.create_user(username='backend', password='secret',
+                                                            date_joined=self.date)
+        Student.objects.create(user=self.backend)
         self.director_member = Member.objects.create(student=self.director.student, year_joined=self.date,
                                                      team=self.team, url='director')
         self.director_member.roles.add(self.director_role)

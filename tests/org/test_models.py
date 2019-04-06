@@ -1,8 +1,9 @@
 import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from accounts.models import Student
 from org.models import Member, Role, Team
 
 
@@ -56,7 +57,8 @@ class RoleTestCase(TestCase):
 
 class MemberTestCase(TestCase):
     def setUp(self):
-        self.member = User.objects.create_user(username='member', password='secret')
+        self.member = get_user_model().objects.create_user(username='member', password='secret')
+        Student.objects.create(user=self.member)
         Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
 
     def test_str(self):
