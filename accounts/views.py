@@ -15,6 +15,7 @@ from rest_framework_api_key.permissions import HasAPIKey
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
+from accounts.serializers import UserSerializer
 
 
 class LoginView(generics.GenericAPIView):
@@ -63,7 +64,7 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
                 if token.application:
                     data['client_id'] = token.application.client_id
                 if token.user:
-                    data['uuid'] = token.user.student.get_uuid()
+                    data['user'] = UserSerializer(token.user).data
                 return HttpResponse(content=json.dumps(data), status=200, content_type='application/json')
             else:
                 return HttpResponse(content=json.dumps({
