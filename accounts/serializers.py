@@ -1,13 +1,27 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from accounts.models import Student
+from accounts.models import PennAffiliation, ProductPermissions, Student, User
+
+
+class PennAffiliationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PennAffiliation
+        fields = ('name',)
+
+
+class ProductPermissionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductPermissions
+        fields = ('id',)
 
 
 class UserSerializer(serializers.ModelSerializer):
+    affiliation = PennAffiliationSerializer(read_only=True, many=True)
+    product_permissions = ProductPermissionsSerializer(read_only=True, many=True)
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'date_joined')
+        fields = ('uuid', 'affiliation', 'product_permissions')
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -15,7 +29,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ('user', 'name', 'major', 'school')
+        fields = ('user', 'major', 'school')
 
     def to_representation(self, obj):
         representation = super().to_representation(obj)

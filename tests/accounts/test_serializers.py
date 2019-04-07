@@ -1,23 +1,28 @@
 import datetime
 
 import pytz
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from accounts.models import Student
 from accounts.serializers import StudentSerializer
 
 
-class SerializerTestCase(TestCase):
+class StudentSerializerTestCase(TestCase):
     def setUp(self):
         self.date = pytz.timezone('America/New_York').localize(datetime.datetime(2019, 1, 1))
-        self.user = User.objects.create_user(username='student', password='secret', email='student@student.edu',
-                                             date_joined=self.date)
+        self.user = get_user_model().objects.create_user(
+            username='student',
+            password='secret',
+            uuid='00000000000000000000000000000000'
+        )
+        Student.objects.create(user=self.user)
         self.user.student.name = 'Student'
         self.user.student.major = 'Major'
         self.user.student.school = 'School'
         self.serializer = StudentSerializer(self.user.student)
 
     def test_str(self):
-        sample_response = {'name': 'Student', 'major': 'Major', 'school': 'School', 'username': 'student',
-                           'email': 'student@student.edu', 'date_joined': '2019-01-01T00:00:00-05:00'}
+        sample_response = {'major': 'Major', 'school': 'School', 'uuid': '00000000000000000000000000000000',
+                           'affiliation': [], 'product_permissions': []}
         self.assertEqual(self.serializer.data, sample_response)

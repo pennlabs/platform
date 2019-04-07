@@ -1,13 +1,29 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from accounts.models import PennAffiliation, ProductPermissions, Student
 
-class ModelTestCase(TestCase):
+
+class PennAffiliationTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='student', password='secret')
+        self.affiliation = PennAffiliation.objects.create(name='student')
 
     def test_str(self):
-        self.assertEqual(str(self.user.student), self.user.username)
+        self.assertEqual(str(self.affiliation), self.affiliation.name)
 
-    def test_uuid(self):
-        self.assertEquals(self.user.student.get_uuid(), str(self.user.student.uuid))
+
+class ProductPermissionsTestCase(TestCase):
+    def setUp(self):
+        self.product_permission = ProductPermissions.objects.create(id='platform_admin', name='Platform Admin')
+
+    def test_str(self):
+        self.assertEqual(str(self.product_permission), self.product_permission.name)
+
+
+class StudentTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='student', password='secret')
+        self.student = Student.objects.create(user=self.user)
+
+    def test_str(self):
+        self.assertEqual(str(self.student), self.user.username)
