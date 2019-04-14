@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import PennAffiliation, ProductPermissions, Student, User
+from accounts.models import PennAffiliation, ProductPermission, Student, User
 
 
 class PennAffiliationSerializer(serializers.ModelSerializer):
@@ -9,15 +9,15 @@ class PennAffiliationSerializer(serializers.ModelSerializer):
         fields = ('name',)
 
 
-class ProductPermissionsSerializer(serializers.ModelSerializer):
+class ProductPermissionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductPermissions
+        model = ProductPermission
         fields = ('id',)
 
 
 class UserSerializer(serializers.ModelSerializer):
     affiliation = PennAffiliationSerializer(read_only=True, many=True)
-    product_permissions = ProductPermissionsSerializer(read_only=True, many=True)
+    product_permissions = ProductPermissionSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
