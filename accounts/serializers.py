@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import PennAffiliation, ProductPermission, Student, User
+from accounts.models import Student, User
 
 
 class UserSerializer(serializers.ModelSerializer):
