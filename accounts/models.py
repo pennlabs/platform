@@ -8,7 +8,7 @@ from django.db import models
 class User(AbstractUser):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     affiliation = models.ManyToManyField('PennAffiliation')
-    product_permissions = models.ManyToManyField('ProductPermissions')
+    product_permission = models.ManyToManyField('ProductPermission')
 
 
 class Student(models.Model):
@@ -27,7 +27,7 @@ class PennAffiliation(models.Model):
         return self.name
 
 
-class ProductPermissions(models.Model):
+class ProductPermission(models.Model):
     id = models.SlugField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
 

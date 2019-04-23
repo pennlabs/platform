@@ -1,27 +1,24 @@
 from rest_framework import serializers
 
-from accounts.models import PennAffiliation, ProductPermissions, Student, User
-
-
-class PennAffiliationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PennAffiliation
-        fields = ('name',)
-
-
-class ProductPermissionsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductPermissions
-        fields = ('id',)
+from accounts.models import Student, User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    affiliation = PennAffiliationSerializer(read_only=True, many=True)
-    product_permissions = ProductPermissionsSerializer(read_only=True, many=True)
+    affiliation = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='name'
+     )
+    product_permission = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='id'
+     )
+    name = serializers.CharField(source='get_full_name', read_only=True)
 
     class Meta:
         model = User
-        fields = ('uuid', 'affiliation', 'product_permissions')
+        fields = ('name', 'username', 'email', 'affiliation', 'product_permission')
 
 
 class StudentSerializer(serializers.ModelSerializer):
