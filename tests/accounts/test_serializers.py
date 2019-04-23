@@ -14,7 +14,9 @@ class StudentSerializerTestCase(TestCase):
         self.user = get_user_model().objects.create_user(
             username='student',
             password='secret',
-            uuid='00000000000000000000000000000000'
+            first_name='First',
+            last_name='Last',
+            email='test@test.com',
         )
         Student.objects.create(user=self.user)
         self.user.student.name = 'Student'
@@ -23,6 +25,6 @@ class StudentSerializerTestCase(TestCase):
         self.serializer = StudentSerializer(self.user.student)
 
     def test_str(self):
-        sample_response = {'major': 'Major', 'school': 'School', 'uuid': '00000000000000000000000000000000',
-                           'affiliation': [], 'product_permissions': []}
+        sample_response = {'major': 'Major', 'school': 'School', 'name': 'First Last', 'username': 'student',
+                           'email': 'test@test.com', 'affiliation': [], 'product_permission': []}
         self.assertEqual(self.serializer.data, sample_response)
