@@ -14,11 +14,10 @@ class UserSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='id'
      )
-    name = serializers.CharField(source='get_full_name', read_only=True)
 
     class Meta:
         model = User
-        fields = ('name', 'username', 'email', 'affiliation', 'product_permission')
+        fields = ('first_name', 'last_name', 'username', 'email', 'affiliation', 'product_permission')
 
 
 class StudentSerializer(serializers.ModelSerializer):

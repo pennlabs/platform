@@ -25,6 +25,14 @@ class StudentSerializerTestCase(TestCase):
         self.serializer = StudentSerializer(self.user.student)
 
     def test_str(self):
-        sample_response = {'major': 'Major', 'school': 'School', 'name': 'First Last', 'username': 'student',
-                           'email': 'test@test.com', 'affiliation': [], 'product_permission': []}
+        sample_response = {
+            'major': 'Major',
+            'school': 'School',
+            'first_name': 'First',
+            'last_name': 'Last',
+            'username': 'student',
+            'email': 'test@test.com',
+            'affiliation': [],
+            'product_permission': []
+        }
         self.assertEqual(self.serializer.data, sample_response)
