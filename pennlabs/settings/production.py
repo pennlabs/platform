@@ -44,7 +44,3 @@ CORS_ORIGIN_WHITELIST = (
     'penncoursereview.com',
     'pennlabs.org',
 )
-
-# Allow session cookie to be set from auth
-
-SESSION_COOKIE_DOMAIN = 'auth.pennlabs.org'
