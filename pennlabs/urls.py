@@ -9,7 +9,7 @@ urlpatterns = [
     path('', include('application.urls')),
     path('accounts/', include('accounts.urls')),
     path('org/', include('org.urls')),
-    path('services', include('services.urls')),
+    path('services/', include('services.urls')),
     path('documentation/', include_docs_urls(title='Platform Documentation')),
     path('admin/', admin.site.urls),
 ]
