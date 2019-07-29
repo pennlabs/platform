@@ -42,10 +42,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             if isinstance(shibboleth_attributes, Mapping):
                 for key, value in shibboleth_attributes.items():
                     if key != 'affiliation':
-                        if value:
-                            setattr(user, key, value)
-                        else:
-                            setattr(user, key, self.searchPennDirectory(username, key))
+                        setattr(user, key, value if value else self.searchPennDirectory(username, key))
 
             user.save()
             user = self.configure_user(request, user)
