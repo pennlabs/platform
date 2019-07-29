@@ -35,7 +35,7 @@ class LoginView(generics.GenericAPIView):
         user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
         if user:
             auth.login(request, user)
-            return redirect(request.GET.get('next'))
+            return redirect(request.GET.get('next', '/'))
         capture_message('Invalid user returned from shibboleth')
         return HttpResponseServerError()
 
