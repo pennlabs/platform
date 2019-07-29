@@ -11,7 +11,6 @@ from django.views.decorators.csrf import csrf_exempt
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from rest_framework import generics
-from rest_framework_api_key.permissions import HasAPIKey
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
@@ -21,13 +20,11 @@ from accounts.serializers import UserSerializer
 class LoginView(generics.GenericAPIView):
     """
     Log in a user.
+    WARNING: You must ensure this page is protected by Shibboleth and Clean Headers
+    See https://github.com/nginx-shib/nginx-http-shibboleth
     """
-    def get(self, request):
-        # Validate API Key
-        if not HasAPIKey.has_permission(self, request, self):
-            return redirect('https://auth.pennlabs.org/login/?next=' + request.GET.get('next', ''))
 
-        # API is valid, login user
+    def get(self, request):
         pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
         first_name = request.META.get('HTTP_GIVENNAME', '').lower().capitalize()
         last_name = request.META.get('HTTP_SN', '').lower().capitalize()
@@ -36,8 +33,7 @@ class LoginView(generics.GenericAPIView):
         user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
         if user:
             auth.login(request, user)
-            params = request.get_full_path().split('next=')[1]
-            return redirect('https://platform.pennlabs.org' + params)
+            return redirect(request.GET.get('next'))
         capture_message('Invalid user returned from shibboleth')
         return HttpResponseServerError()
 
