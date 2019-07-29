@@ -50,6 +50,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
 
         # Update affiliations with every log in
         if shibboleth_attributes is not None and 'affiliation' in shibboleth_attributes:
+            user.affiliation.clear()
             for affiliation_name in shibboleth_attributes['affiliation']:
                 affiliation = PennAffiliation.objects.get_or_create(name=affiliation_name)[0]
                 user.affiliation.add(affiliation)
