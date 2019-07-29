@@ -9,7 +9,11 @@ from org.models import Member, Role, Team
 class ShortUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = Url
-        fields = ('short_id',)
+        fields = ('long_url', 'short_id')
+        read_only_fields = ('short_id',)
+
+    def create(self, validated_data):
+        return Url.objects.get_or_create(validated_data.get('long_url'))
 
 
 class RoleSerializer(serializers.ModelSerializer):
