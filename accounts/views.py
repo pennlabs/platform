@@ -29,7 +29,9 @@ class LoginView(generics.GenericAPIView):
         first_name = request.META.get('HTTP_GIVENNAME', '').lower().capitalize()
         last_name = request.META.get('HTTP_SN', '').lower().capitalize()
         email = request.META.get('HTTP_MAIL', '').lower()
-        shibboleth_attributes = {'first_name': first_name, 'last_name': last_name, 'email': email}
+        affiliation = request.META.get('HTTP_UNSCOPED_AFFILIATION', '').split(';')
+        shibboleth_attributes = {'first_name': first_name, 'last_name': last_name, 'email': email,
+                                 'affiliation': affiliation}
         user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
         if user:
             auth.login(request, user)
