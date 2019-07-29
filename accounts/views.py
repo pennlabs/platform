@@ -8,16 +8,16 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
-from rest_framework import generics
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
 from accounts.serializers import UserSerializer
 
 
-class LoginView(generics.GenericAPIView):
+class LoginView(View):
     """
     Log in a user.
     WARNING: You must ensure this page is protected by Shibboleth and Clean Headers
