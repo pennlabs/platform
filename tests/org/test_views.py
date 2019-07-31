@@ -10,9 +10,9 @@ class ShortURLViewTestCase(TestCase):
         self.client = Client()
 
     def test_valid_url(self):
-        response = self.client.post(reverse('org:create_url'), {'url': 'http://pennlabs.org'})
-        self.assertEqual(response.status_code, 200)
-        sample_response = json.loads('{"short": "7a28b", "long": "http://pennlabs.org"}')
+        response = self.client.post(reverse('org:create_url'), {'long_url': 'http://pennlabs.org'})
+        self.assertEqual(response.status_code, 201)
+        sample_response = json.loads('{"short_id": "7a28b", "long_url": "http://pennlabs.org"}')
         self.assertEqual(response.data, sample_response)
         self.assertEqual(len(Url.objects.all()), 1)
 
