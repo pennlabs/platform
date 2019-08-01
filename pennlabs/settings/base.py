@@ -70,7 +70,7 @@ ROOT_URLCONF = 'pennlabs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['pennlabs/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

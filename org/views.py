@@ -1,28 +1,14 @@
-from django.core.exceptions import ValidationError
-from django.core.validators import URLValidator
-from django.http import HttpResponse
 from rest_framework import generics, viewsets
-from rest_framework.response import Response
-from shortener.models import shorten
 
 from org.models import Member, Role, Team
 from org.serializers import MemberSerializer, RoleSerializer, ShortUrlSerializer, TeamSerializer
 
 
-class ShortUrlViewSet(generics.GenericAPIView):
+class ShortUrlCreateView(generics.CreateAPIView):
     """
-    Return the long URL of a given short slug.
+    Create a short slug for a long url.
     """
     serializer_class = ShortUrlSerializer
-
-    def post(self, request):
-        try:
-            url = request.data.get('url', '')
-            URLValidator()(url)
-            short = shorten(url)
-            return Response({'short': short.short_id, 'long': url})
-        except ValidationError:
-            return HttpResponse(status=400)
 
 
 class MemberViewSet(viewsets.ModelViewSet):
