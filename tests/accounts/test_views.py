@@ -28,6 +28,24 @@ class LoginViewTestCase(TestCase):
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
 
 
+class LogoutViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_logged_in_user(self):
+        user = get_user_model().objects.create_user(username='user', password='secret')
+        self.client.login(username='user', password='secret')
+        response = self.client.get(reverse('accounts:logout'))
+        self.assertNotIn('_auth_user_id', self.client.session)
+        sample_response = '/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout'
+        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+    def test_guest_user(self):
+        response = self.client.get(reverse('accounts:logout'))
+        sample_response = '/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout'
+        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+
 class UUIDIntrospectTokenViewTestCase(TestCase):
     """
     Not exhaustive since most testing is done in django-oauth-toolkit itself. Code borrowed from

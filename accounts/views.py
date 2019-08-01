@@ -40,6 +40,16 @@ class LoginView(View):
         return HttpResponseServerError()
 
 
+class LogoutView(View):
+    """
+    Log out a user from both Platform and Shibboleth.
+    """
+
+    def get(self, request):
+        auth.logout(request)
+        return redirect('/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout')
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class UUIDIntrospectTokenView(IntrospectTokenView):
     @staticmethod
