@@ -33,7 +33,7 @@ class LogoutViewTestCase(TestCase):
         self.client = Client()
 
     def test_logged_in_user(self):
-        user = get_user_model().objects.create_user(username='user', password='secret')
+        get_user_model().objects.create_user(username='user', password='secret')
         self.client.login(username='user', password='secret')
         response = self.client.get(reverse('accounts:logout'))
         self.assertNotIn('_auth_user_id', self.client.session)
