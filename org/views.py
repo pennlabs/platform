@@ -1,8 +1,4 @@
-from django.core.exceptions import ValidationError
-from django.core.validators import URLValidator
-from django.http import HttpResponse
 from rest_framework import generics, viewsets
-from rest_framework.response import Response
 
 from org.models import Member, Role, Team
 from org.serializers import MemberSerializer, RoleSerializer, ShortUrlSerializer, TeamSerializer

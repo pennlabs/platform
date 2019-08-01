@@ -13,7 +13,7 @@ urlpatterns = [
     path('services/', include('services.urls')),
     path('admin/', admin.site.urls),
     path('openapi/', get_schema_view(
-        title="Platform Documentation"
+        title='Platform Documentation'
     ), name='openapi-schema'),
     path('documentation/', TemplateView.as_view(
         template_name='redoc.html',
