@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Write Shibboleth private key
+echo "$SHIBBOLETH_KEY" > /etc/shibboleth/sp-key.pem
+
+# Write nginx certificate and key
+echo "$NGINX_CERT" > /etc/nginx/cert.pem
+echo "$NGINX_KEY" > /etc/nginx/key.pem
+
+# Migrate database
+/usr/bin/python3.7 manage.py migrate --noinput
+
+# Run supervisor
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
