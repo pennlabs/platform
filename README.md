@@ -16,9 +16,17 @@ DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
 SECRET_KEY=secret
 DJANGO_SETTINGS_MODULE=pennlabs.settings.production
 SENTRY_URL=https://pub:private@sentry.example.com/product
+NGINX_CERT=-----BEGIN CERTIFICATE-----
+<snip>
+-----END CERTIFICATE-----
+NGINX_KEY=-----BEGIN PRIVATE KEY-----
+<snip>
+-----END PRIVATE KEY-----
+SHIBBOLETH_KEY=-----BEGIN PRIVATE KEY-----
+<snip>
+-----END PRIVATE KEY-----
 ```
-1. Install requirements using `pipenv install`.
-2. Run server using `python manage.py runserver`.
+1. Run using docker: `docker run -d pennlabs/platform`
 
 ## Documentation
 Routes are defined in `/pennlabs/urls.py` and subsequent app folders in the form of `*/urls.py`. Account/authorization related scripts are located in `accounts/` and Penn Labs related scripts are located in `org/`.
