@@ -22,6 +22,8 @@ django-oauth-toolkit = "*"
 django-cors-middleware = "*"
 django = "*"
 pyyaml = "*"
+uwsgi = "*"
+uritemplate = "*"
 
 [requires]
 python_version = "3.7"
