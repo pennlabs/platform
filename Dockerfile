@@ -36,4 +36,6 @@ RUN python3.7 /app/manage.py collectstatic
 # Copy start script
 COPY docker/platform-run /usr/local/bin/
 
+EXPOSE 443
+
 CMD ["platform-run"]
