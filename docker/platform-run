@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Write Shibboleth private key
+# Write Shibboleth certificate and key
+echo "$SHIBBOLETH_CERT" > /etc/shibboleth/sp-cert.pem
 echo "$SHIBBOLETH_KEY" > /etc/shibboleth/sp-key.pem
 
 # Write nginx certificate and key
