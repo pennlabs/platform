@@ -1,0 +1,20 @@
+more_clear_input_headers
+    Auth-Type
+    Shib-Application-Id
+    Shib-Authentication-Instant
+    Shib-Authentication-Method
+    Shib-Authncontext-Class
+    Shib-Handler
+    Shib-Identity-Provider
+    Shib-Session-Expires
+    Shib-Session-Id
+    Shib-Session-Inactivity
+    Shib-Session-Index
+    Remote-User
+    EPPN
+    SN
+    GivenName
+    DisplayName
+    Mail
+    Unscoped-Affiliation
+    Affiliation;
