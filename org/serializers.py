@@ -50,7 +50,7 @@ class TeamSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField()
 
     def get_members(self, instance):
-        members = Member.objects.filter(team__id=instance.id).annotate(order=Min('roles__order')).order_by('order')
+        members = Member.objects.filter(team__id=instance.id, alumnus=False).annotate(order=Min('roles__order')).order_by('order')
         return MemberSerializer(members, many=True).data
 
     class Meta:
