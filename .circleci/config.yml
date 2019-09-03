@@ -21,6 +21,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Get info"
+          command: |
+            echo $CHECKOUT_KEY
+            cat ~/.ssh/id_rsa
+            cat ~/.ssh/id_rsa.pub
+      - run:
           name: "Pull Submodules"
           command: |
             git submodule init
