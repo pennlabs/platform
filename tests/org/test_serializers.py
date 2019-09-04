@@ -13,8 +13,8 @@ from org.serializers import TeamSerializer
 class TeamSerializerTestCase(TestCase):
     def setUp(self):
         self.date = pytz.timezone('America/New_York').localize(datetime.datetime(2019, 1, 1))
-        self.team = Team.objects.create(name='Platform', tagline='Break twice deploy once', description='Important',
-                                        order=2, url='https://pennlabs.org')
+        self.team = Team.objects.create(name='Platform', description='Important',
+                                        order=2)
         self.director_role = Role.objects.create(name='Z-Director', description='Important people', order=1)
         self.backend_role = Role.objects.create(name='Backend Engineer', description='Important stuff', order=2)
         self.director = get_user_model().objects.create_user(username='z-director', password='secret',

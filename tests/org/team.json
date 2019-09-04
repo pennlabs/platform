@@ -1,8 +1,6 @@
 {
   "name": "Platform",
-  "tagline": "Break twice deploy once",
   "description": "Important",
-  "url": "https://pennlabs.org",
   "members": [
     {
       "student": {

@@ -9,12 +9,12 @@ from org.models import Member, Role, Team
 
 class TeamTestCase(TestCase):
     def setUp(self):
-        Team.objects.create(name='Directors', tagline='Direct things', description='Important people',
-                            order=1, url='https://pennlabs.org')
-        Team.objects.create(name='Platform', tagline='Break twice deploy once', description='Important stuff',
-                            order=2, url='https://pennlabs.org')
-        Team.objects.create(name='Android', tagline='We own your data', description='Important information',
-                            order=3, url='https://pennlabs.org')
+        Team.objects.create(name='Directors', description='Important people',
+                            order=1)
+        Team.objects.create(name='Platform', description='Important stuff',
+                            order=2)
+        Team.objects.create(name='Android', description='Important information',
+                            order=3)
 
     def test_str(self):
         self.assertEqual(str(Team.objects.all()[0]), 'Directors')

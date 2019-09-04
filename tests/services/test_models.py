@@ -6,8 +6,8 @@ from services.models import Endpoint, Service, Update
 
 class ServiceTestCase(TestCase):
     def setUp(self):
-        self.team = Team.objects.create(name='Directors', tagline='Direct things', description='Important people',
-                                        order=1, url='https://pennlabs.org')
+        self.team = Team.objects.create(name='Directors', description='Important people',
+                                        order=1)
         self.service = Service.objects.create(name='Service', team=self.team)
 
     def test_str(self):
@@ -24,8 +24,8 @@ class EndpointTestCase(TestCase):
 
 class UpdateTestCase(TestCase):
     def setUp(self):
-        self.team = Team.objects.create(name='Directors', tagline='Direct things', description='Important people',
-                                        order=1, url='https://pennlabs.org')
+        self.team = Team.objects.create(name='Directors', description='Important people',
+                                        order=1)
         self.service = Service.objects.create(name='Service', team=self.team)
         self.update = Update.objects.create(service=self.service)
 
