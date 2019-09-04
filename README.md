@@ -11,6 +11,7 @@ The <strong> Labs Platform </strong> is the back-end interface to the ecosystem 
 
 ## Installation
 0. Configure environment variables (e.g. `.env`) containing:
+
 ```
 DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
 SECRET_KEY=secret
