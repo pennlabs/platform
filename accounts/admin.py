@@ -19,10 +19,19 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(admin.ModelAdmin):
-    readonly_fields = ('uuid',)
+    readonly_fields = ('username', 'last_login', 'date_joined')
     search_fields = ('username', 'first_name', 'last_name')
     list_display = ('username', 'first_name', 'last_name', 'is_staff')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'affiliation')
+    fieldsets = (
+        (None, {
+            'fields': ('username', 'first_name', 'last_name', 'email', 'is_superuser', 'is_staff', 'is_active', 'affiliation', 'product_permission', 'last_login', 'date_joined')
+        }),
+        ('Advanced', {
+            'classes': ('collapse',),
+            'fields': ('groups', 'user_permissions')
+            })
+    )
 
 
 admin.site.register(PennAffiliation)
