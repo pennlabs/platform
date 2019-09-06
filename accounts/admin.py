@@ -22,7 +22,7 @@ class UserAdmin(admin.ModelAdmin):
     readonly_fields = ('uuid',)
     search_fields = ('username', 'first_name', 'last_name')
     list_display = ('username', 'first_name', 'last_name', 'is_staff')
-    list_filter = ('is_staff', 'is_superuser', 'is_active')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'affiliation')
 
 
 admin.site.register(PennAffiliation)
