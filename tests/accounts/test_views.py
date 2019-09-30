@@ -17,7 +17,7 @@ class LoginViewTestCase(TestCase):
 
     def test_invalid_shibboleth_response(self):
         response = self.client.get(reverse('accounts:login'))
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 302)
 
     def test_valid_shibboleth(self):
         headers = {'HTTP_EMPLOYEENUMBER': '1', 'HTTP_EPPN': 'test', 'HTTP_GIVENNAME': 'test', 'HTTP_SN': 'user',
