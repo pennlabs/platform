@@ -95,7 +95,7 @@ jobs:
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:latest
             docker push $IMAGE_NAME:$IMAGE_TAG
-  deploy:
+  deploy-master:
     working_directory: ~/pennlabs
     docker:
       - image: circleci/python:3.7
@@ -107,7 +107,20 @@ jobs:
       - run:
           name: Deploy master to Dokku
           command: |
-            git push dokku@apps.pennlabs.org:platform master
+            git push dokku@apps.pennlabs.org:platform development
+  deploy-development:
+    working_directory: ~/pennlabs
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo -e "Host apps.pennlabs.org\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run:
+          name: Deploy master to Dokku
+          command: |
+            git push dokku@apps.pennlabs.org:platform-dev master
 workflows:
   version: 2
   build-and-deploy:
@@ -126,9 +139,15 @@ workflows:
           filters:
             branches:
               only: master          
-      - deploy:
+      - deploy-master:
           requires:
             - publish
           filters:
             branches:
               only: master
+      - deploy-development:
+          requires:
+            - test
+          filters:
+            branches:
+              only: development
