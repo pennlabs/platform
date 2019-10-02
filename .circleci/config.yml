@@ -107,7 +107,7 @@ jobs:
       - run:
           name: Deploy master to Dokku
           command: |
-            git push dokku@apps.pennlabs.org:platform development
+            git push dokku@apps.pennlabs.org:platform master
   deploy-development:
     working_directory: ~/pennlabs
     docker:
@@ -120,7 +120,7 @@ jobs:
       - run:
           name: Deploy master to Dokku
           command: |
-            git push dokku@apps.pennlabs.org:platform-dev master
+            git push dokku@apps.pennlabs.org:platform-dev development
 workflows:
   version: 2
   build-and-deploy:
