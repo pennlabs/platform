@@ -143,11 +143,11 @@
         },
         "shortener": {
             "hashes": [
-                "sha256:7da47be8e319b43cb6a511fc66b8b82ba3fcc546ffcfb2405adc31176cee2d3e",
-                "sha256:b43401107e5e14fe064a2338b19b2682d0aed73e32c6dbdac808458b2e525df4"
+                "sha256:9db16b19db5871013e9488a55abcc744f67264f9b1d570edd68ab25de94af387",
+                "sha256:baffac4e5f85ec33007ac039d12849c8112c5919eacefb341fc946ac722f8859"
             ],
             "index": "pypi",
-            "version": "==0.1.0"
+            "version": "==0.2.0"
         },
         "sqlparse": {
             "hashes": [
