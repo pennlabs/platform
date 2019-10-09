@@ -13,7 +13,8 @@ class ShortUrlSerializer(serializers.ModelSerializer):
         read_only_fields = ('short_id',)
 
     def create(self, validated_data):
-        return Url.objects.get_or_create(validated_data.get('long_url'))
+        url, _ = Url.objects.get_or_create(validated_data.get('long_url'))
+        return url
 
 
 class RoleSerializer(serializers.ModelSerializer):
