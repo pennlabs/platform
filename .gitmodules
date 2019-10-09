@@ -1,3 +1,0 @@
-[submodule "shortener"]
-	path = shortener
-	url = https://github.com/pennlabs/shortener.git
