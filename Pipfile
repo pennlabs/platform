@@ -22,6 +22,7 @@ django = "*"
 pyyaml = "*"
 uwsgi = "*"
 uritemplate = "*"
+shortener = "*"
 
 [requires]
 python_version = "3.7"

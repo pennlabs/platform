@@ -20,11 +20,6 @@ jobs:
           MYSQL_DATABASE: circle_test
     steps:
       - checkout
-      - run:
-          name: "Pull Submodules"
-          command: |
-            git submodule init
-            git submodule update --remote
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
       - restore_cache:
@@ -61,11 +56,6 @@ jobs:
     executor: docker-publisher
     steps:
       - checkout
-      - run:
-          name: "Pull Submodules"
-          command: |
-            git submodule init
-            git submodule update --remote
       - setup_remote_docker
       - run:
           name: Build Docker image
