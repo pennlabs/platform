@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'pennlabs.urls'
+ROOT_URLCONF = 'Platform.urls'
 
 TEMPLATES = [
     {
@@ -81,7 +81,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pennlabs.wsgi.application'
+WSGI_APPLICATION = 'Platform.wsgi.application'
 
 
 # Database

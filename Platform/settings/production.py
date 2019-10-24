@@ -1,7 +1,7 @@
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from pennlabs.settings.base import *
+from Platform.settings.base import *
 
 
 DEBUG = False

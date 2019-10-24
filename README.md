@@ -15,7 +15,7 @@ The <strong> Labs Platform </strong> is the back-end interface to the ecosystem 
 ```
 DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
 SECRET_KEY=secret
-DJANGO_SETTINGS_MODULE=pennlabs.settings.production
+DJANGO_SETTINGS_MODULE=Platform.settings.production
 SENTRY_URL=https://pub:private@sentry.example.com/product
 NGINX_CERT=-----BEGIN CERTIFICATE-----
 <snip>

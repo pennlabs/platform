@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            pipenv run coverage run manage.py test --settings=pennlabs.settings.ci
+            pipenv run coverage run manage.py test --settings=Platform.settings.ci
       - run:
           name: Upload code coverage
           command: |
