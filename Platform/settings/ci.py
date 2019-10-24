@@ -1,4 +1,4 @@
-from pennlabs.settings.base import *
+from Platform.settings.base import *
 
 
 TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
