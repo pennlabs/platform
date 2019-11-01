@@ -1,3 +1,5 @@
+import requests
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 
@@ -9,25 +11,20 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
     Authenticate users from Shibboleth headers.
     Code based on https://github.com/Brown-University-Library/django-shibboleth-remoteuser
     """
-    def searchPennDirectory(self, username, key):
-        # TODO Poll Penn Directory to get missing information
-        # User: first/last name and email
-        # Student: major, school, display name
-        return ''
-        # bearer = ""
-        # token = ""
-        # headers = {
-        #     "Authorization-Bearer": bearer,
-        #     "Authorization-Token": token,
-        # }
-        # params = {
-        #     "email": username,
-        #     "affiliation": "STU"
-        # }
-        # response = get("https://esb.isc-seo.upenn.edu/8091/open_data/directory",
-        #                params=params, headers=headers, timeout=30)
-        # if response.status_code == 200:
-        #     response = response.json()
+    def get_email(self, pennid):
+        try:
+            response = requests.get(settings.EMAIL_WEB_SERVICE_URL + str(pennid),
+                                    auth=(settings.EMAIL_WEB_SERVICE_USERNAME, settings.EMAIL_WEB_SERVICE_PASSWORD))
+            response = response.json()
+            response = response['result_data']
+
+            # Check if Penn ID doesn't exist somehow
+            if len(response) == 0:
+                return ''
+
+            return response[0]['email']
+        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError):
+            return ''
 
     def authenticate(self, request, remote_user, shibboleth_attributes):
         if not remote_user or remote_user == -1:
@@ -41,6 +38,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             for key, value in shibboleth_attributes.items():
                 if key != 'affiliation':
                     setattr(user, key, value)
+            user.email = self.get_email(remote_user)
             user.save()
             user = self.configure_user(request, user)
 
