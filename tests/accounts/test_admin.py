@@ -7,7 +7,7 @@ from accounts.models import Student, User
 
 class StudentAdminTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='user', first_name='First', last_name='Last')
+        self.user = User.objects.create(pennid=1, username='user', first_name='First', last_name='Last')
         self.student = Student.objects.create(user=self.user)
         self.sa = StudentAdmin(Student, AdminSite())
 

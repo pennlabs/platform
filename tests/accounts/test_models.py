@@ -22,7 +22,7 @@ class ProductPermissionsTestCase(TestCase):
 
 class StudentTestCase(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username='student', password='secret')
+        self.user = get_user_model().objects.create_user(pennid=1, username='student', password='secret')
         self.student = Student.objects.create(user=self.user)
 
     def test_str(self):

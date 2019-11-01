@@ -17,10 +17,10 @@ class TeamSerializerTestCase(TestCase):
                                         order=2)
         self.director_role = Role.objects.create(name='Z-Director', description='Important people', order=1)
         self.backend_role = Role.objects.create(name='Backend Engineer', description='Important stuff', order=2)
-        self.director = get_user_model().objects.create_user(username='z-director', password='secret',
+        self.director = get_user_model().objects.create_user(pennid=1, username='z-director', password='secret',
                                                              date_joined=self.date)
         Student.objects.create(user=self.director)
-        self.backend = get_user_model().objects.create_user(username='backend', password='secret',
+        self.backend = get_user_model().objects.create_user(pennid=2, username='backend', password='secret',
                                                             date_joined=self.date)
         Student.objects.create(user=self.backend)
         self.director_member = Member.objects.create(student=self.director.student, year_joined=self.date,

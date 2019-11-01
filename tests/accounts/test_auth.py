@@ -13,9 +13,9 @@ from org.models import Member
 class AuthTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.student = get_user_model().objects.create_user(username='student', password='secret')
+        self.student = get_user_model().objects.create_user(pennid=1, username='student', password='secret')
         Student.objects.create(user=self.student)
-        self.member = get_user_model().objects.create_user(username='member', password='secret')
+        self.member = get_user_model().objects.create_user(pennid=2, username='member', password='secret')
         Student.objects.create(user=self.member)
         Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
         self.application = Application(
