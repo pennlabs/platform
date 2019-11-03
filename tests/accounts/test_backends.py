@@ -27,7 +27,7 @@ class BackendTestCase(TestCase):
         self.assertEqual(get_user_model().objects.all()[0].pennid, 1)
 
     def test_create_user_with_attributes(self):
-        attributes = {'pennid': 1, 'first_name': 'test', 'last_name': 'user',
+        attributes = {'username': 'user', 'first_name': 'test', 'last_name': 'user',
                       'affiliation': ['student', 'member']}
         student_affiliation = PennAffiliation.objects.create(name='student')
         user = auth.authenticate(remote_user=1, shibboleth_attributes=attributes)
@@ -37,6 +37,15 @@ class BackendTestCase(TestCase):
         self.assertEqual(user.affiliation.get(name='member'), PennAffiliation.objects.get(name='member'))
         self.assertEqual(len(user.affiliation.all()), 2)
         self.assertEqual(len(PennAffiliation.objects.all()), 2)
+
+    def test_update_user_with_attributes(self):
+        attributes = {'username': 'user', 'first_name': 'test', 'last_name': 'user',
+                      'affiliation': []}
+        user = auth.authenticate(remote_user=1, shibboleth_attributes=attributes)
+        self.assertEqual(user.username, 'user')
+        attributes['username'] = 'changed_user'
+        user = auth.authenticate(remote_user=1, shibboleth_attributes=attributes)
+        self.assertEqual(user.username, 'changed_user')
 
     def test_login_user(self):
         student = get_user_model().objects.create_user(pennid=1, username='student', password='secret')

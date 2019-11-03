@@ -35,12 +35,14 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         # Add initial attributes on first log in
         if created:
             user.set_unusable_password()
-            for key, value in shibboleth_attributes.items():
-                if key != 'affiliation':
-                    setattr(user, key, value)
             user.email = self.get_email(remote_user)
             user.save()
             user = self.configure_user(request, user)
+
+        # Update fields if changed
+        for key, value in shibboleth_attributes.items():
+            if key != 'affiliation' and getattr(user, key) is not value:
+                setattr(user, key, value)
 
         # Update affiliations with every log in
         user.affiliation.clear()
