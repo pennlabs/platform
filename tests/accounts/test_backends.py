@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from accounts.backends import ShibbolethRemoteUserBackend
-from accounts.models import PennAffiliation
+from accounts.models import PennAffiliation, Student
 
 
 class BackendTestCase(TestCase):
@@ -51,6 +51,12 @@ class BackendTestCase(TestCase):
         student = get_user_model().objects.create_user(pennid=1, username='student', password='secret')
         user = auth.authenticate(remote_user=1, shibboleth_attributes=self.shibboleth_attributes)
         self.assertEqual(user, student)
+
+    def test_create_student_object(self):
+        attributes = {'username': 'user', 'first_name': 'test', 'last_name': 'user',
+                      'affiliation': ['student']}
+        user = auth.authenticate(remote_user=1, shibboleth_attributes=attributes)
+        self.assertEqual(len(Student.objects.filter(user=user)), 1)
 
     @patch('accounts.backends.requests.get')
     def test_get_email_exists(self, mock_response):

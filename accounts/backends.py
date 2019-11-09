@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 
-from accounts.models import PennAffiliation
+from accounts.models import PennAffiliation, Student
 
 
 class ShibbolethRemoteUserBackend(RemoteUserBackend):
@@ -49,6 +49,11 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         for affiliation_name in shibboleth_attributes['affiliation']:
             affiliation, _ = PennAffiliation.objects.get_or_create(name=affiliation_name)
             user.affiliation.add(affiliation)
+
+        # Create a student object if the user is a student
+        if 'student' in shibboleth_attributes['affiliation']:
+            Student.objects.get_or_create(user=user)
+
         user.save()
 
         return user if self.user_can_authenticate(user) else None
