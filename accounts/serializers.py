@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'username', 'email', 'affiliation', 'product_permission')
+        fields = ('pennid', 'first_name', 'last_name', 'username', 'email', 'affiliation', 'product_permission')
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -31,5 +31,6 @@ class StudentSerializer(serializers.ModelSerializer):
         representation = super().to_representation(obj)
         user_representation = representation.pop('user')
         for key in user_representation:
-            representation[key] = user_representation[key]
+            if key != 'pennid':
+                representation[key] = user_representation[key]
         return representation

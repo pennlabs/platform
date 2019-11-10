@@ -17,4 +17,5 @@ more_clear_input_headers
     DisplayName
     Mail
     Unscoped-Affiliation
-    Affiliation;
+    Affiliation
+    EmployeeNumber;

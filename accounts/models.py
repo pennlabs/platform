@@ -6,6 +6,8 @@ from django.db import models
 
 
 class User(AbstractUser):
+    # implicit username field from AbstractUser that contains the user's PennKey
+    pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     affiliation = models.ManyToManyField('PennAffiliation')
     product_permission = models.ManyToManyField('ProductPermission', blank=True)

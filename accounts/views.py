@@ -25,14 +25,14 @@ class LoginView(View):
     """
 
     def get(self, request):
+        pennid = int(request.META.get('HTTP_EMPLOYEENUMBER', '-1'))
         pennkey = request.META.get('HTTP_EPPN', '').lower().split('@')[0]
         first_name = request.META.get('HTTP_GIVENNAME', '').lower().capitalize()
         last_name = request.META.get('HTTP_SN', '').lower().capitalize()
-        email = request.META.get('HTTP_MAIL', '').lower()
         affiliation = request.META.get('HTTP_UNSCOPED_AFFILIATION', '').split(';')
-        shibboleth_attributes = {'first_name': first_name, 'last_name': last_name, 'email': email,
+        shibboleth_attributes = {'username': pennkey, 'first_name': first_name, 'last_name': last_name,
                                  'affiliation': affiliation}
-        user = auth.authenticate(remote_user=pennkey, shibboleth_attributes=shibboleth_attributes)
+        user = auth.authenticate(remote_user=pennid, shibboleth_attributes=shibboleth_attributes)
         if user:
             auth.login(request, user)
             return redirect(request.GET.get('next', '/'))

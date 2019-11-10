@@ -20,7 +20,8 @@ class LoginViewTestCase(TestCase):
         self.assertEqual(response.status_code, 500)
 
     def test_valid_shibboleth(self):
-        headers = {'HTTP_EPPN': 'test', 'HTTP_GIVENNAME': 'test', 'HTTP_SN': 'user', 'HTTP_MAIL': 'test@student.edu'}
+        headers = {'HTTP_EMPLOYEENUMBER': '1', 'HTTP_EPPN': 'test', 'HTTP_GIVENNAME': 'test', 'HTTP_SN': 'user',
+                   'HTTP_MAIL': 'test@student.edu'}
         params = reverse('accounts:authorize') + '?client_id=abc123&response_type=code&state=abc'
         response = self.client.get(reverse('accounts:login') + '?next=' + quote(params), **headers)
         base_url = '/accounts/authorize/'
@@ -33,7 +34,7 @@ class LogoutViewTestCase(TestCase):
         self.client = Client()
 
     def test_logged_in_user(self):
-        get_user_model().objects.create_user(username='user', password='secret')
+        get_user_model().objects.create_user(pennid=1, username='user', password='secret')
         self.client.login(username='user', password='secret')
         response = self.client.get(reverse('accounts:logout'))
         self.assertNotIn('_auth_user_id', self.client.session)
@@ -56,8 +57,8 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         self.Application = get_application_model()
         self.AccessToken = get_access_token_model()
         self.UserModel = get_user_model()
-        self.resource_server_user = self.UserModel.objects.create_user('resource_server', 'test@example.com')
-        self.test_user = self.UserModel.objects.create_user('bar_user', 'dev@example.com')
+        self.resource_server_user = self.UserModel.objects.create_user(pennid=1, username='resource_server')
+        self.test_user = self.UserModel.objects.create_user(pennid=2, username='bar_user')
 
         self.application = self.Application(
             name='Test Application',

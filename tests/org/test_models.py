@@ -57,7 +57,7 @@ class RoleTestCase(TestCase):
 
 class MemberTestCase(TestCase):
     def setUp(self):
-        self.member = get_user_model().objects.create_user(username='member', password='secret')
+        self.member = get_user_model().objects.create_user(pennid=1, username='member', password='secret')
         Student.objects.create(user=self.member)
         Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
 
