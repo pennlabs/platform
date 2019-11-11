@@ -23,7 +23,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
                 return ''
 
             return response[0]['email']
-        except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError):
+        except (requests.exceptions.RequestException):
             return ''
 
     def authenticate(self, request, remote_user, shibboleth_attributes):
