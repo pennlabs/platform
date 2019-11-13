@@ -23,6 +23,7 @@ pyyaml = "*"
 uwsgi = "*"
 uritemplate = "*"
 shortener = "*"
+codecov = "*"
 
 [requires]
 python_version = "3.7"

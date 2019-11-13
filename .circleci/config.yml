@@ -47,6 +47,7 @@ jobs:
           name: Upload code coverage
           command: |
             pipenv run coveralls
+            pipenv run codecov
       - store_test_results:
           path: test-results
       - store_artifacts:
