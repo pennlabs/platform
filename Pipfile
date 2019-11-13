@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-coveralls = "*"
+codecov = "*"
 unittest-xml-reporting = "*"
 flake8 = "*"
 flake8-isort = "*"

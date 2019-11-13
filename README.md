@@ -1,7 +1,7 @@
 # Platform
 
 [![CircleCI](https://circleci.com/gh/pennlabs/platform.svg?style=shield)](https://circleci.com/gh/pennlabs/platform)
-[![Coverage Status](https://coveralls.io/repos/github/pennlabs/platform/badge.svg?branch=master)](https://coveralls.io/github/pennlabs/platform?branch=master)
+[![Coverage Status](https://codecov.io/gh/pennlabs/platform/branch/master/graph/badge.svg)](https://codecov.io/gh/pennlabs/platform)
 
 The <strong> Labs Platform </strong> is the back-end interface to the ecosystem that facilitates the organization's:
 
