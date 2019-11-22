@@ -12,7 +12,7 @@ class Team(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['order']
+        ordering = ["order"]
 
 
 class Role(models.Model):
@@ -24,7 +24,7 @@ class Role(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['order']
+        ordering = ["order"]
 
 
 class Member(models.Model):
@@ -32,7 +32,9 @@ class Member(models.Model):
     bio = models.TextField()
     job = models.CharField(max_length=255, null=True, blank=True)
     location = models.CharField(max_length=255)
-    team = models.ForeignKey(Team, related_name='members', on_delete=models.DO_NOTHING, null=True, blank=True)
+    team = models.ForeignKey(
+        Team, related_name="members", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
     roles = models.ManyToManyField(Role)
     url = models.SlugField(unique=True)
     photo = models.URLField()
@@ -47,4 +49,4 @@ class Member(models.Model):
         return self.student.user.username
 
     class Meta:
-        ordering = ['student__user__first_name']
+        ordering = ["student__user__first_name"]

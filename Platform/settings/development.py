@@ -1,1 +1,1 @@
-from Platform.settings.base import *
+from Platform.settings.base import *  # noqa

@@ -5,17 +5,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('org', '0001_initial'),
-    ]
+    dependencies = [("org", "0001_initial")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='team',
-            name='tagline',
-        ),
-        migrations.RemoveField(
-            model_name='team',
-            name='url',
-        ),
+        migrations.RemoveField(model_name="team", name="tagline"),
+        migrations.RemoveField(model_name="team", name="url"),
     ]
