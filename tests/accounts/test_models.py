@@ -6,7 +6,7 @@ from accounts.models import PennAffiliation, ProductPermission, Student
 
 class PennAffiliationTestCase(TestCase):
     def setUp(self):
-        self.affiliation = PennAffiliation.objects.create(name='student')
+        self.affiliation = PennAffiliation.objects.create(name="student")
 
     def test_str(self):
         self.assertEqual(str(self.affiliation), self.affiliation.name)
@@ -14,7 +14,9 @@ class PennAffiliationTestCase(TestCase):
 
 class ProductPermissionsTestCase(TestCase):
     def setUp(self):
-        self.product_permission = ProductPermission.objects.create(id='platform_admin', name='Platform Admin')
+        self.product_permission = ProductPermission.objects.create(
+            id="platform_admin", name="Platform Admin"
+        )
 
     def test_str(self):
         self.assertEqual(str(self.product_permission), self.product_permission.name)
@@ -22,7 +24,9 @@ class ProductPermissionsTestCase(TestCase):
 
 class StudentTestCase(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(pennid=1, username='student', password='secret')
+        self.user = get_user_model().objects.create_user(
+            pennid=1, username="student", password="secret"
+        )
         self.student = Student.objects.create(user=self.user)
 
     def test_str(self):

@@ -11,20 +11,23 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
     Authenticate users from Shibboleth headers.
     Code based on https://github.com/Brown-University-Library/django-shibboleth-remoteuser
     """
+
     def get_email(self, pennid):
         try:
-            response = requests.get(settings.EMAIL_WEB_SERVICE_URL + str(pennid),
-                                    auth=(settings.EMAIL_WEB_SERVICE_USERNAME, settings.EMAIL_WEB_SERVICE_PASSWORD))
+            response = requests.get(
+                settings.EMAIL_WEB_SERVICE_URL + str(pennid),
+                auth=(settings.EMAIL_WEB_SERVICE_USERNAME, settings.EMAIL_WEB_SERVICE_PASSWORD),
+            )
             response = response.json()
-            response = response['result_data']
+            response = response["result_data"]
 
             # Check if Penn ID doesn't exist somehow
             if len(response) == 0:
-                return ''
+                return ""
 
-            return response[0]['email']
+            return response[0]["email"]
         except (requests.exceptions.RequestException):
-            return ''
+            return ""
 
     def authenticate(self, request, remote_user, shibboleth_attributes):
         if not remote_user or remote_user == -1:
@@ -41,17 +44,17 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
 
         # Update fields if changed
         for key, value in shibboleth_attributes.items():
-            if key != 'affiliation' and getattr(user, key) is not value:
+            if key != "affiliation" and getattr(user, key) is not value:
                 setattr(user, key, value)
 
         # Update affiliations with every log in
         user.affiliation.clear()
-        for affiliation_name in shibboleth_attributes['affiliation']:
+        for affiliation_name in shibboleth_attributes["affiliation"]:
             affiliation, _ = PennAffiliation.objects.get_or_create(name=affiliation_name)
             user.affiliation.add(affiliation)
 
         # Create a student object if the user is a student
-        if 'student' in shibboleth_attributes['affiliation']:
+        if "student" in shibboleth_attributes["affiliation"]:
             Student.objects.get_or_create(user=user)
 
         user.save()

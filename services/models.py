@@ -10,13 +10,13 @@ class Service(models.Model):
     icon = models.URLField()
     notes = models.TextField(blank=True)
     team = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
-    routes = models.ManyToManyField('Endpoint')
+    routes = models.ManyToManyField("Endpoint")
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
 
 class Endpoint(models.Model):

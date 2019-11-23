@@ -5,7 +5,7 @@ from oauth2_provider.views.mixins import ProtectedResourceMixin
 
 class LabsMixin(ProtectedResourceMixin):
     def dispatch(self, request, *args, **kwargs):
-        if hasattr(request.user, 'student') and hasattr(request.user.student, 'member'):
+        if hasattr(request.user, "student") and hasattr(request.user.student, "member"):
             return super().dispatch(request, *args, **kwargs)
         return HttpResponseForbidden()
 
