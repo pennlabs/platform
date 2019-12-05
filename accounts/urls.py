@@ -1,8 +1,13 @@
 from django.urls import path
 from oauth2_provider.views import AuthorizationView, TokenView
 
-from accounts.views import (LabsProtectedViewSet, LoginView, LogoutView,
-                            ProtectedViewSet, UUIDIntrospectTokenView)
+from accounts.views import (
+    LabsProtectedViewSet,
+    LoginView,
+    LogoutView,
+    ProtectedViewSet,
+    UUIDIntrospectTokenView,
+)
 
 
 app_name = "accounts"
