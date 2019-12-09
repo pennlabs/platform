@@ -1,119 +1,6 @@
 version: 2.1
 orbs:
-  django-test:
-    commands:
-      setup:
-        parameters:
-          project_location:
-            description: Used to specify the location of the django project
-            type: string
-            default: "./"
-        steps:
-        - restore_cache:
-            key: v0-{{ .Branch }}-{{ checksum "<< parameters.project_location >>Pipfile.lock" }}
-        - run:
-            name: Install dependencies
-            command: |
-              cd << parameters.project_location >>
-              sudo pip install pipenv
-              pipenv install --deploy --dev
-        - save_cache:
-            key: v0-{{ .Branch }}-{{ checksum "<< parameters.project_location >>Pipfile.lock" }}
-            paths:
-              - "<< parameters.project_location >>.venv"
-              - "/usr/local/bin"
-              - "/usr/local/lib/python3.7/site-packages"
-      lint:
-        parameters:
-          project_location:
-            description: Used to specify the location of the django project
-            type: string
-            default: "./"
-        steps:
-        - run:
-            name: Lint
-            command: |
-              cd << parameters.project_location >>
-              pipenv run flake8 .
-              pipenv run black -l100 --check .
-      test:
-        parameters:
-          project_name:
-            description: Used to specify the name of the django project
-            type: string
-            default: ""
-          project_location:
-            description: Used to specify the location of the django project
-            type: string
-            default: "./"
-        steps:
-        - run:
-            name: Run tests
-            command: |
-              cd << parameters.project_location >>
-              pipenv run coverage run manage.py test --settings=<< parameters.project_name >>.settings.ci
-      code-coverage:
-        parameters:
-          project_location:
-            description: Used to specify the location of the django project
-            type: string
-            default: "./"
-        steps:
-        - run:
-            name: Upload code coverage
-            command: |
-              cd << parameters.project_location >>
-              pipenv run codecov
-      upload-artifacts:
-        parameters:
-          project_location:
-            description: Used to specify the location of the django project
-            type: string
-            default: "./"
-        steps:
-        - store_test_results:
-            path: << parameters.project_location >>test-results
-        - store_artifacts:
-            path: << parameters.project_location >>test-results
-            destination: trl
-    
-    jobs:
-      check:
-        parameters:
-          project_name:
-            description: Used to specify the name of the django project
-            type: string
-            default: ""
-          project_location:
-            description: Used to specify the location of the django project
-            type: string
-            default: "./"      
-        docker:
-          - image: circleci/python:3.7
-            environment:
-              PIPENV_VENV_IN_PROJECT: true
-              DATABASE_URL: mysql://root:password@127.0.0.1:3306/circle_test
-          - image: circleci/mysql:latest
-            command: --default-authentication-plugin=mysql_native_password
-            environment:
-              MYSQL_ROOT_PASSWORD: password
-              MYSQL_DATABASE: circle_test
-        steps:
-          - checkout
-          - run: sudo chown -R circleci:circleci /usr/local/bin
-          - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
-          - setup:
-              project_location: << parameters.project_location >>
-          - lint:
-              project_location: << parameters.project_location >>
-          - test:
-              project_location: << parameters.project_location >>
-              project_name: << parameters.project_name >>
-          - code-coverage:
-              project_location: << parameters.project_location >>
-          - upload-artifacts:
-              project_location: << parameters.project_location >>
-    
+  django: pennlabs/django@0.0.1
 executors:
   docker-publisher:
     environment:
@@ -185,9 +72,9 @@ workflows:
   build-and-deploy:
     jobs:
       # - test
-      - django-test/check:
+      - django/check:
           name: django-test
-          project_name: Platform
+          project-name: Platform
       - build:
           requires:
             - django-test
