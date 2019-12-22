@@ -11,6 +11,7 @@ from accounts.models import PennAffiliation, Student
 class BackendTestCase(TestCase):
     def setUp(self):
         self.shibboleth_attributes = {
+            "username": "user",
             "first_name": "",
             "last_name": "",
             "email": "",

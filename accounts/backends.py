@@ -33,7 +33,9 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         if not remote_user or remote_user == -1:
             return
         User = get_user_model()
-        user, created = User.objects.get_or_create(pennid=remote_user)
+        user, created = User.objects.get_or_create(
+            pennid=remote_user, defaults={"username": shibboleth_attributes["username"]}
+        )
 
         # Add initial attributes on first log in
         if created:
