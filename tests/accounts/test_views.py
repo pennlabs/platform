@@ -8,7 +8,8 @@ from django.utils import timezone
 from django.utils.six.moves.urllib.parse import quote
 from oauth2_provider.models import get_access_token_model, get_application_model
 
-from accounts.serializers import UserSerializer
+from accounts.models import User
+from accounts.serializers import UserSearchSerializer, UserSerializer
 
 
 class LoginViewTestCase(TestCase):
@@ -142,3 +143,51 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertDictEqual(content, {"active": False})
+
+
+class UserSearchTestCase(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create(
+            pennid=1, username="test1", first_name="Test", last_name="Userabc"
+        )
+        self.user2 = User.objects.create(
+            pennid=2, username="test2", first_name="Testing", last_name="User"
+        )
+        self.token = "abc123"
+        self.AccessToken = get_access_token_model()
+        self.AccessToken.objects.create(
+            user=self.user1,
+            token=self.token,
+            expires=timezone.now() + datetime.timedelta(days=1),
+            scope="read",
+        )
+        self.client = Client()
+        self.auth_headers = {"HTTP_AUTHORIZATION": f"Bearer {self.token}"}
+
+    def test_short_query(self):
+        response = self.client.get(reverse("accounts:search") + "?q=t", **self.auth_headers)
+        self.assertFalse(response.json())
+        self.assertNotIn(UserSearchSerializer(self.user1).data, response.json())
+        self.assertNotIn(UserSearchSerializer(self.user2).data, response.json())
+
+    def test_full_name(self):
+        response = self.client.get(
+            reverse("accounts:search") + "?q=test%20user", **self.auth_headers
+        )
+        self.assertIn(UserSearchSerializer(self.user1).data, response.json())
+        self.assertIn(UserSearchSerializer(self.user2).data, response.json())
+
+    def test_exact_pennkey_user1(self):
+        response = self.client.get(reverse("accounts:search") + "?q=test1", **self.auth_headers)
+        self.assertIn(UserSearchSerializer(self.user1).data, response.json())
+        self.assertNotIn(UserSearchSerializer(self.user2).data, response.json())
+
+    def test_exact_pennkey_user2(self):
+        response = self.client.get(reverse("accounts:search") + "?q=test2", **self.auth_headers)
+        self.assertNotIn(UserSearchSerializer(self.user1).data, response.json())
+        self.assertIn(UserSearchSerializer(self.user2).data, response.json())
+
+    def test_first_name(self):
+        response = self.client.get(reverse("accounts:search") + "?q=tes", **self.auth_headers)
+        self.assertIn(UserSearchSerializer(self.user1).data, response.json())
+        self.assertIn(UserSearchSerializer(self.user2).data, response.json())
