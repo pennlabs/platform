@@ -3,6 +3,7 @@ import json
 
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse
 from django.shortcuts import redirect
@@ -11,10 +12,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
+from rest_framework import generics
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
-from accounts.serializers import UserSerializer
+from accounts.models import User
+from accounts.serializers import UserSearchSerializer, UserSerializer
 
 
 class LoginView(View):
@@ -84,6 +87,37 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
                     status=200,
                     content_type="application/json",
                 )
+
+
+class UserSearchView(PennView, generics.ListAPIView):
+    """
+    Search for users by first name, last name, or pennkey. Authentication Required.
+    """
+
+    serializer_class = UserSearchSerializer
+
+    def get_queryset(self):
+        """
+        anc
+        """
+        query = self.request.query_params.get("q", "")
+        if len(query) < 2:  # Do not show anything if query is less than two characters
+            return None
+        qs = User.objects.none()
+        if " " in query:  # First and last name provided
+            first, last = query.split()
+            qs = qs.union(
+                User.objects.filter(
+                    Q(first_name__istartswith=first) & Q(last_name__istartswith=last)
+                )
+            )
+        else:  # Pennkey or first name provided
+            # Exact pennkey match
+            qs = qs.union(User.objects.filter(username__iexact=query))
+
+            # Starts with first_name
+            qs = qs.union(User.objects.filter(first_name__istartswith=query))
+        return qs
 
 
 class ProtectedViewSet(PennView):

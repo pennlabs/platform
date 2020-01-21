@@ -20,6 +20,12 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
+class UserSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "username")
+
+
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
 
