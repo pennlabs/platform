@@ -7,20 +7,20 @@ applications:
     secret: platform
     ingress:
       hosts:
-        - host: platform.pennlabs.org
+        - host: platform-test.pennlabs.org
           paths: ["/"]
     extraEnv:
       - name: DOMAIN
-        value: platform.pennlabs.org
+        value: platform-test.pennlabs.org
       - name: DJANGO_SETTINGS_MODULE
         value: Platform.settings.production
     secretMounts:
-      - name: platform
-        item: NGINX_CERT
-        path: "/etc/nginx/cert.pem"
-      - name: platform
-        item: NGINX_KEY
-        path: "/etc/nginx/key.pem"
+      # - name: platform
+      #   item: NGINX_CERT
+      #   path: "/etc/nginx/cert.pem"
+      # - name: platform
+      #   item: NGINX_KEY
+      #   path: "/etc/nginx/key.pem"
       - name: platform
         item: SHIBBOLETH_CERT
         path: "/etc/shibboleth/sp-cert.pem"
