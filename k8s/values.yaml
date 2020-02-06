@@ -16,14 +16,14 @@ applications:
         value: Platform.settings.production
     secretMounts:
       # - name: platform
-      #   item: NGINX_CERT
+      #   item: NGINX-CERT
       #   path: "/etc/nginx/cert.pem"
       # - name: platform
-      #   item: NGINX_KEY
+      #   item: NGINX-KEY
       #   path: "/etc/nginx/key.pem"
       - name: platform
-        item: SHIBBOLETH_CERT
+        item: SHIBBOLETH-CERT
         path: "/etc/shibboleth/sp-cert.pem"
       - name: platform
-        item: SHIBBOLETH_KEY
+        item: SHIBBOLETH-KEY
         path: "/etc/shibboleth/sp-key.pem"
