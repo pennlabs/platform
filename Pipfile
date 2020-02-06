@@ -5,10 +5,13 @@ verify_ssl = true
 
 [dev-packages]
 codecov = "*"
+black = "==19.10b0"
 unittest-xml-reporting = "*"
 flake8 = "*"
 flake8-isort = "*"
 flake8-quotes = "*"
+django-debug-toolbar = "*"
+django-extensions = "*"
 
 [packages]
 dj-database-url = "*"
@@ -17,7 +20,7 @@ djangorestframework-api-key = "*"
 mysqlclient = "*"
 sentry-sdk = "*"
 django-oauth-toolkit = "*"
-django-cors-middleware = "*"
+django-cors-headers = "*"
 django = "*"
 pyyaml = "*"
 uwsgi = "*"

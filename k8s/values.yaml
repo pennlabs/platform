@@ -1,0 +1,29 @@
+deploy_version: 0.1.14
+image_tag: latest
+
+applications:
+  - name: platform
+    image: pennlabs/platform
+    secret: platform
+    ingress:
+      hosts:
+        - host: platform-test.pennlabs.org
+          paths: ["/"]
+    extraEnv:
+      - name: DOMAIN
+        value: platform-test.pennlabs.org
+      - name: DJANGO_SETTINGS_MODULE
+        value: Platform.settings.production
+    secretMounts:
+      # - name: platform
+      #   item: NGINX_CERT
+      #   path: "/etc/nginx/cert.pem"
+      # - name: platform
+      #   item: NGINX_KEY
+      #   path: "/etc/nginx/key.pem"
+      - name: platform
+        item: SHIBBOLETH_CERT
+        path: "/etc/shibboleth/sp-cert.pem"
+      - name: platform
+        item: SHIBBOLETH_KEY
+        path: "/etc/shibboleth/sp-key.pem"

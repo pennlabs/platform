@@ -1,143 +1,31 @@
 version: 2.1
-executors:
-  docker-publisher:
-    environment:
-      IMAGE_NAME: pennlabs/platform
-    docker:
-      - image: circleci/buildpack-deps:buster
-jobs:
-  test:
-    working_directory: ~/pennlabs
-    docker:
-      - image: circleci/python:3.7
-        environment:
-          PIPENV_VENV_IN_PROJECT: true
-          DATABASE_URL: mysql://root:password@127.0.0.1:3306/circle_test
-      - image: circleci/mysql:latest
-        command: --default-authentication-plugin=mysql_native_password
-        environment:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: circle_test
-    steps:
-      - checkout
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
-      - restore_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-      - run:
-          name: Install dependencies
-          command: |
-            sudo pip install pipenv
-            pipenv install -d
-      - save_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-          paths:
-            - ".venv"
-            - "/usr/local/bin"
-            - "/usr/local/lib/python3.7/site-packages"
-      - run:
-          name: Lint
-          command: |
-            pipenv run flake8 .
-      - run:
-          name: Run tests
-          command: |
-            pipenv run coverage run manage.py test --settings=Platform.settings.ci
-      - run:
-          name: Upload code coverage
-          command: |
-            pipenv run codecov
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-results
-          destination: trl
-  build:
-    executor: docker-publisher
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build Docker image
-          command: |
-            docker build -t $IMAGE_NAME:latest .
-      - run:
-          name: Archive Docker image
-          command: docker save -o image.tar $IMAGE_NAME
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./image.tar
-  publish:
-    executor: docker-publisher
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - setup_remote_docker
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
-      - run:
-          name: Publish Docker Image to Docker Hub
-          command: |
-            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            IMAGE_TAG="0.0.${CIRCLE_BUILD_NUM}"
-            docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
-            docker push $IMAGE_NAME:latest
-            docker push $IMAGE_NAME:$IMAGE_TAG
-  deploy-master:
-    working_directory: ~/pennlabs
-    docker:
-      - image: circleci/python:3.7
-    steps:
-      - checkout
-      - run:
-          command: |
-            echo -e "Host apps.pennlabs.org\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run:
-          name: Deploy master to Dokku
-          command: |
-            git push dokku@apps.pennlabs.org:platform master
-  deploy-development:
-    working_directory: ~/pennlabs
-    docker:
-      - image: circleci/python:3.7
-    steps:
-      - checkout
-      - run:
-          command: |
-            echo -e "Host apps.pennlabs.org\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run:
-          name: Deploy master to Dokku
-          command: |
-            git push dokku@apps.pennlabs.org:platform-dev development
+orbs:
+  docker: circleci/docker@0.5.19
+  django-tools: pennlabs/django-tools@0.0.2
+  helm-tools: pennlabs/helm-tools@0.1.7
+
+branch-filters: &branch-filters
+  filters:
+    branches:
+      only:
+        - master
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - test
-      - build:
+      - django-tools/check:
+          project-name: "Platform"
+      - docker/publish:
           requires:
-            - test
-          filters:
-            branches:
-              only: master
-      - publish:
-          requires:
-            - build
+            - django-tools/check
+          cache_from: "pennlabs/platform:latest"
+          image: pennlabs/platform
+          tag: "${CIRCLE_SHA1},latest"
           context: docker-publish
-          filters:
-            branches:
-              only: master          
-      - deploy-master:
+          <<: *branch-filters
+      - helm-tools/deploy:
           requires:
-            - publish
-          filters:
-            branches:
-              only: master
-      - deploy-development:
-          requires:
-            - test
-          filters:
-            branches:
-              only: development
+            - docker/publish
+          context: k8s-deploy
+          <<: *branch-filters

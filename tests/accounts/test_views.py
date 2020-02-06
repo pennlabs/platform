@@ -1,11 +1,11 @@
 import calendar
 import datetime
+from urllib.parse import quote
 
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.six.moves.urllib.parse import quote
 from oauth2_provider.models import get_access_token_model, get_application_model
 
 from accounts.models import User

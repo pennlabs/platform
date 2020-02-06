@@ -4,7 +4,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from Platform.settings.base import *  # noqa
-from Platform.settings.base import DATABASES
+from Platform.settings.base import DATABASES, DOMAIN
 
 
 DEBUG = False
@@ -16,17 +16,19 @@ DATABASES["default"]["OPTIONS"] = {"charset": "utf8mb4"}
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Allow production host headers
-ALLOWED_HOSTS = ["platform.pennlabs.org", "platform.apps.pennlabs.org"]
+ALLOWED_HOSTS = [DOMAIN]
 
+# Make sure SECRET_KEY is set to a secret in production
+SECRET_KEY = os.environ.get("SECRET_KEY", None)
+
+# Sentry settings
 SENTRY_URL = os.environ.get("SENTRY_URL", "")
-
 sentry_sdk.init(dsn=SENTRY_URL, integrations=[DjangoIntegration()])
 
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
-    "auth.pennlabs.org",
     "pennbasics.com",
     "penncfa.com",
     "pennclubs.com",
@@ -34,4 +36,6 @@ CORS_ORIGIN_WHITELIST = (
     "penncourseplan.com",
     "penncoursereview.com",
     "pennlabs.org",
+    "studentlife.pennlabs.org",
+    "api.pennlabs.org",
 )

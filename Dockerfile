@@ -1,7 +1,11 @@
-FROM pennlabs/shibboleth-sp-nginx
+FROM pennlabs/shibboleth-sp-nginx:3.0.4
+
+LABEL maintainer="Penn Labs"
 
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
+
+WORKDIR /app/
 
 # Install dependencies
 RUN apt-get update \
@@ -20,22 +24,25 @@ COPY docker/nginx-default.conf /etc/nginx/conf.d/default.conf
 COPY docker/shib_clear_headers /etc/nginx/
 COPY docker/supervisord.conf /etc/supervisor/
 
-# Copy platform dependencies
+# Copy project dependencies
 COPY Pipfile* /app/
 
-# Install platform dependencies
-WORKDIR /app/
+# Install project dependencies
 RUN pipenv install --system
 
-# Copy platform
+# Copy project files
 COPY . /app/
 
+ENV DJANGO_SETTINGS_MODULE Platform.settings.production
+ENV SECRET_KEY 'temporary key just to build the docker image'
+
 # Collect static files
-RUN python3.7 /app/manage.py collectstatic
+RUN python3 /app/manage.py collectstatic --noinput
+
+# Copy mime definitions
+COPY docker/mime.types /etc/mime.types
 
 # Copy start script
 COPY docker/platform-run /usr/local/bin/
-
-EXPOSE 443
 
 CMD ["platform-run"]
