@@ -10,6 +10,8 @@ applications:
       hosts:
         - host: platform-test.pennlabs.org
           paths: ["/"]
+      annotations:
+        ingress.kubernetes.io/protocol: http
     extraEnv:
       - name: DOMAIN
         value: platform-test.pennlabs.org
