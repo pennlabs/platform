@@ -5,6 +5,7 @@ applications:
   - name: platform
     image: pennlabs/platform
     secret: platform
+    port: 443
     ingress:
       hosts:
         - host: platform.pennlabs.org
