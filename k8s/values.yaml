@@ -8,11 +8,11 @@ applications:
     port: 443
     ingress:
       hosts:
-        - host: platform.pennlabs.org
+        - host: platform-test.pennlabs.org
           paths: ["/"]
     extraEnv:
       - name: DOMAIN
-        value: platform.pennlabs.org
+        value: platform-test.pennlabs.org
       - name: DJANGO_SETTINGS_MODULE
         value: Platform.settings.production
     secretMounts:
