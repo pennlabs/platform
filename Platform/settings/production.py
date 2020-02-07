@@ -29,13 +29,13 @@ sentry_sdk.init(dsn=SENTRY_URL, integrations=[DjangoIntegration()])
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
-    "pennbasics.com",
-    "penncfa.com",
-    "pennclubs.com",
-    "penncoursealert.com",
-    "penncourseplan.com",
-    "penncoursereview.com",
-    "pennlabs.org",
-    "studentlife.pennlabs.org",
-    "api.pennlabs.org",
+    "https://pennbasics.com",
+    "https://penncfa.com",
+    "https://pennclubs.com",
+    "https://penncoursealert.com",
+    "https://penncourseplan.com",
+    "https://penncoursereview.com",
+    "https://pennlabs.org",
+    "https://studentlife.pennlabs.org",
+    "https://api.pennlabs.org",
 )
