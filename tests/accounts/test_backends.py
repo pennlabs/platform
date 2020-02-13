@@ -2,10 +2,11 @@ from unittest.mock import patch
 
 from django.contrib import auth
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from accounts.backends import ShibbolethRemoteUserBackend
-from accounts.models import PennAffiliation, Student
+from accounts.models import Student
 
 
 class BackendTestCase(TestCase):
@@ -39,16 +40,14 @@ class BackendTestCase(TestCase):
             "last_name": "user",
             "affiliation": ["student", "member"],
         }
-        student_affiliation = PennAffiliation.objects.create(name="student")
+        student_affiliation = Group.objects.create(name="student")
         user = auth.authenticate(remote_user=1, shibboleth_attributes=attributes)
         self.assertEqual(user.first_name, "test")
         self.assertEqual(user.last_name, "user")
-        self.assertEqual(user.affiliation.get(name="student"), student_affiliation)
-        self.assertEqual(
-            user.affiliation.get(name="member"), PennAffiliation.objects.get(name="member")
-        )
-        self.assertEqual(len(user.affiliation.all()), 2)
-        self.assertEqual(len(PennAffiliation.objects.all()), 2)
+        self.assertEqual(user.groups.get(name="student"), student_affiliation)
+        self.assertEqual(user.groups.get(name="member"), Group.objects.get(name="member"))
+        self.assertEqual(len(user.groups.all()), 2)
+        self.assertEqual(len(Group.objects.all()), 2)
 
     def test_update_user_with_attributes(self):
         attributes = {

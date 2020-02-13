@@ -2,8 +2,9 @@ import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
+from django.contrib.auth.models import Group
 
-from accounts.models import PennAffiliation, Student
+from accounts.models import Student
 
 
 class ShibbolethRemoteUserBackend(RemoteUserBackend):
@@ -49,11 +50,12 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             if key != "affiliation" and getattr(user, key) is not value:
                 setattr(user, key, value)
 
-        # Update affiliations with every log in
-        user.affiliation.clear()
+        # Update groups with every log in
+        user.groups.clear()
         for affiliation_name in shibboleth_attributes["affiliation"]:
-            affiliation, _ = PennAffiliation.objects.get_or_create(name=affiliation_name)
-            user.affiliation.add(affiliation)
+            if affiliation_name:  # Some users don't have any affiliation somehow ¯\_(ツ)_/¯
+                group, _ = Group.objects.get_or_create(name=affiliation_name)
+                user.groups.add(group)
 
         # Create a student object if the user is a student
         if "student" in shibboleth_attributes["affiliation"]:
