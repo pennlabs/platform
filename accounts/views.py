@@ -115,16 +115,18 @@ class UserSearchView(PennView, generics.ListAPIView):
             q1 = Q(first_name__iexact=first) & Q(last_name__iexact=last)
             q2 = Q(first_name__istartswith=first) & Q(last_name__iexact=last)
             q3 = Q(first_name__istartswith=first) & Q(last_name__istartswith=last)
-            qs = User.objects.filter(q1 | q2 | q3)
-            .annotate(
-                search_type_ordering=Case(
-                   When(q1, then=Value(2)),
-                   When(q2, then=Value(1)),
-                   When(q3, then=Value(0)),
-                   default=Value(-1),
-                   output_field=IntegerField(),
-                )
-            ).order_by('-search_type_ordering')
+            qs = (
+                User.objects.filter(q1 | q2 | q3)
+                .annotate(
+                    search_type_ordering=Case(
+                       When(q1, then=Value(2)),
+                       When(q2, then=Value(1)),
+                       When(q3, then=Value(0)),
+                       default=Value(-1),
+                       output_field=IntegerField(),
+                    )
+                ).order_by('-search_type_ordering')
+            )
         else:
             # Returns the following results in sorted order:
             # 1. Exact first name match
@@ -138,18 +140,20 @@ class UserSearchView(PennView, generics.ListAPIView):
             q3 = Q(first_name__istartswith=query)
             q4 = Q(last_name__istartswith=query)
             q5 = Q(username__iexact=query)
-            qs = User.objects.filter(q1 | q2 | q3 | q4 | q5)
-            .annotate(
-                search_type_ordering=Case(
-                   When(q1, then=Value(5)),
-                   When(q2, then=Value(4)),
-                   When(q3, then=Value(3)),
-                   When(q4, then=Value(2)),
-                   When(q5, then=Value(1)),
-                   default=Value(-1),
-                   output_field=IntegerField(),
-                )
-            ).order_by('-search_type_ordering')
+            qs = (
+                User.objects.filter(q1 | q2 | q3 | q4 | q5)
+                .annotate(
+                    search_type_ordering=Case(
+                       When(q1, then=Value(5)),
+                       When(q2, then=Value(4)),
+                       When(q3, then=Value(3)),
+                       When(q4, then=Value(2)),
+                       When(q5, then=Value(1)),
+                       default=Value(-1),
+                       output_field=IntegerField(),
+                    )
+                ).order_by('-search_type_ordering')
+            )
         return qs
 
 
