@@ -117,6 +117,9 @@ class UserSearchView(PennView, generics.ListAPIView):
 
             # Starts with first_name
             qs = qs.union(User.objects.filter(first_name__istartswith=query))
+
+            # Starts with last_name
+            qs = qs.union(User.objects.filter(last_name__istartswith=query))
         return qs
 
 
