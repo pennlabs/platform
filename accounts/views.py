@@ -119,13 +119,14 @@ class UserSearchView(PennView, generics.ListAPIView):
                 User.objects.filter(q1 | q2 | q3)
                 .annotate(
                     search_type_ordering=Case(
-                       When(q1, then=Value(2)),
-                       When(q2, then=Value(1)),
-                       When(q3, then=Value(0)),
-                       default=Value(-1),
-                       output_field=IntegerField(),
+                        When(q1, then=Value(2)),
+                        When(q2, then=Value(1)),
+                        When(q3, then=Value(0)),
+                        default=Value(-1),
+                        output_field=IntegerField(),
                     )
-                ).order_by("-search_type_ordering")
+                )
+                .order_by("-search_type_ordering")
             )
         else:
             # Returns the following results in sorted order:
@@ -144,15 +145,16 @@ class UserSearchView(PennView, generics.ListAPIView):
                 User.objects.filter(q1 | q2 | q3 | q4 | q5)
                 .annotate(
                     search_type_ordering=Case(
-                       When(q1, then=Value(5)),
-                       When(q2, then=Value(4)),
-                       When(q3, then=Value(3)),
-                       When(q4, then=Value(2)),
-                       When(q5, then=Value(1)),
-                       default=Value(-1),
-                       output_field=IntegerField(),
+                        When(q1, then=Value(5)),
+                        When(q2, then=Value(4)),
+                        When(q3, then=Value(3)),
+                        When(q4, then=Value(2)),
+                        When(q5, then=Value(1)),
+                        default=Value(-1),
+                        output_field=IntegerField(),
                     )
-                ).order_by("-search_type_ordering")
+                )
+                .order_by("-search_type_ordering")
             )
         return qs
 
