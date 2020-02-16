@@ -125,7 +125,7 @@ class UserSearchView(PennView, generics.ListAPIView):
                        default=Value(-1),
                        output_field=IntegerField(),
                     )
-                ).order_by('-search_type_ordering')
+                ).order_by("-search_type_ordering")
             )
         else:
             # Returns the following results in sorted order:
@@ -152,7 +152,7 @@ class UserSearchView(PennView, generics.ListAPIView):
                        default=Value(-1),
                        output_field=IntegerField(),
                     )
-                ).order_by('-search_type_ordering')
+                ).order_by("-search_type_ordering")
             )
         return qs
 
