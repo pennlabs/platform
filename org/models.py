@@ -56,9 +56,11 @@ class Member(models.Model):
         ordering = ["student__user__first_name"]
 
 
-@receiver(post_save, sender=Member, dispatch_uid="rebuild_website")
+@receiver(post_save, dispatch_uid="rebuild_website")
 def rebuild_website(sender, instance, **kwargs):
+    if sender not in [Member, Role, Team]:
+        return
     if settings.REBUILD_WEBHOOK_URL is not None:
         requests.post(settings.REBUILD_WEBHOOK_URL)
     else:
-        print("Site rebuild triggered.")
+        print("website build triggered")
