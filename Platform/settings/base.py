@@ -154,3 +154,6 @@ AUTH_USER_MODEL = "accounts.User"
 EMAIL_WEB_SERVICE_URL = os.environ.get("EMAIL_WEB_SERVICE_URL", "http://127.0.0.1")
 EMAIL_WEB_SERVICE_USERNAME = os.environ.get("EMAIL_WEB_SERVICE_USERNAME", "")
 EMAIL_WEB_SERVICE_PASSWORD = os.environ.get("EMAIL_WEB_SERVICE_PASSWORD", "")
+
+# Rebuild website on change
+REBUILD_WEBHOOK_URL = os.environ.get("REBUILD_WEBHOOK_URL", None)
