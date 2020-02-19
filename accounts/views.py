@@ -97,9 +97,6 @@ class UserSearchView(PennView, generics.ListAPIView):
     serializer_class = UserSearchSerializer
 
     def get_queryset(self):
-        """
-        anc
-        """
         query = self.request.query_params.get("q", "")
         if len(query) < 2:  # Do not show anything if query is less than two characters
             return None
