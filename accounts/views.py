@@ -3,7 +3,7 @@ import json
 
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
+from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse
 from django.shortcuts import redirect
@@ -97,26 +97,62 @@ class UserSearchView(PennView, generics.ListAPIView):
     serializer_class = UserSearchSerializer
 
     def get_queryset(self):
-        """
-        anc
-        """
         query = self.request.query_params.get("q", "")
         if len(query) < 2:  # Do not show anything if query is less than two characters
             return None
         qs = User.objects.none()
         if " " in query:  # First and last name provided
-            first, last = query.split()
-            qs = qs.union(
-                User.objects.filter(
-                    Q(first_name__istartswith=first) & Q(last_name__istartswith=last)
-                )
-            )
-        else:  # Pennkey or first name provided
-            # Exact pennkey match
-            qs = qs.union(User.objects.filter(username__iexact=query))
+            # Returns the following results in sorted order:
+            # 1. Exact match on first and last name
+            # 2. Starting match on first name and exact match on last name
+            # 3. Starting match on first and last name
 
-            # Starts with first_name
-            qs = qs.union(User.objects.filter(first_name__istartswith=query))
+            first, last = query.split()
+
+            q1 = Q(first_name__iexact=first) & Q(last_name__iexact=last)
+            q2 = Q(first_name__istartswith=first) & Q(last_name__iexact=last)
+            q3 = Q(first_name__istartswith=first) & Q(last_name__istartswith=last)
+            qs = (
+                User.objects.filter(q1 | q2 | q3)
+                .annotate(
+                    search_type_ordering=Case(
+                        When(q1, then=Value(2)),
+                        When(q2, then=Value(1)),
+                        When(q3, then=Value(0)),
+                        default=Value(-1),
+                        output_field=IntegerField(),
+                    )
+                )
+                .order_by("-search_type_ordering")
+            )
+        else:
+            # Returns the following results in sorted order:
+            # 1. Exact first name match
+            # 2. Exact last name match
+            # 3. Starting first name match
+            # 4. Starting last name match
+            # 5. Exact pennkey match
+
+            q1 = Q(first_name__iexact=query)
+            q2 = Q(last_name__iexact=query)
+            q3 = Q(first_name__istartswith=query)
+            q4 = Q(last_name__istartswith=query)
+            q5 = Q(username__iexact=query)
+            qs = (
+                User.objects.filter(q1 | q2 | q3 | q4 | q5)
+                .annotate(
+                    search_type_ordering=Case(
+                        When(q1, then=Value(5)),
+                        When(q2, then=Value(4)),
+                        When(q3, then=Value(3)),
+                        When(q4, then=Value(2)),
+                        When(q5, then=Value(1)),
+                        default=Value(-1),
+                        output_field=IntegerField(),
+                    )
+                )
+                .order_by("-search_type_ordering")
+            )
         return qs
 
 
