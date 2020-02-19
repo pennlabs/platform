@@ -11,15 +11,6 @@ class User(AbstractUser):
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
 
-    class Meta:
-        permissions = (
-            ("cfa_admin", "Admin for Common Funding Application"),
-            ("clubs_admin", "Admin for Penn Clubs"),
-            ("courses_admin", "Admin for Penn Courses"),
-            ("pcr_admin", "Admin for Penn Course Review"),
-            ("studentlife_admin", "Admin for Student Life"),
-        )
-
 
 class Student(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)

@@ -40,18 +40,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(create_groups),
         migrations.RemoveField(model_name="user", name="affiliation"),
         migrations.DeleteModel(name="PennAffiliation"),
-        migrations.AlterModelOptions(
-            name="user",
-            options={
-                "permissions": (
-                    ("cfa_admin", "Admin for Common Funding Application"),
-                    ("clubs_admin", "Admin for Penn Clubs"),
-                    ("courses_admin", "Admin for Penn Courses"),
-                    ("pcr_admin", "Admin for Penn Course Review"),
-                    ("studentlife_admin", "Admin for Student Life"),
-                )
-            },
-        ),
         migrations.RunPython(copy_permissions),
         migrations.RemoveField(model_name="user", name="product_permission"),
         migrations.DeleteModel(name="ProductPermission"),
