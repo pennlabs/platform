@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.models import Permission
 
-from accounts.models import PennAffiliation, ProductPermission, Student, User
+from accounts.models import Student, User
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -23,32 +24,20 @@ class UserAdmin(admin.ModelAdmin):
     readonly_fields = ("username", "pennid", "last_login", "date_joined")
     search_fields = ("username", "first_name", "last_name")
     list_display = ("username", "first_name", "last_name", "is_staff")
-    list_filter = ("is_staff", "is_superuser", "is_active", "affiliation")
+    list_filter = ("is_staff", "is_superuser", "is_active", "groups")
+    filter_horizontal = ("groups", "user_permissions")
+    ordering = ("username",)
     fieldsets = (
+        (None, {"fields": ("username", "pennid")}),
+        (("Personal info"), {"fields": ("first_name", "last_name", "email")}),
         (
-            None,
-            {
-                "fields": (
-                    "username",
-                    "pennid",
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "is_superuser",
-                    "is_staff",
-                    "is_active",
-                    "affiliation",
-                    "product_permission",
-                    "last_login",
-                    "date_joined",
-                )
-            },
+            ("Permissions"),
+            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")},
         ),
-        ("Advanced", {"classes": ("collapse",), "fields": ("groups", "user_permissions")}),
+        (("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
 
-admin.site.register(PennAffiliation)
-admin.site.register(ProductPermission)
+admin.site.register(Permission)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(User, UserAdmin)

@@ -33,8 +33,9 @@ class StudentSerializerTestCase(TestCase):
             "last_name": "Last",
             "username": "student",
             "email": "test@test.com",
-            "affiliation": [],
-            "product_permission": [],
+            "groups": [],
+            "user_permissions": [],
+            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
         self.assertEqual(self.serializer.data, sample_response)
 
@@ -59,7 +60,8 @@ class UserSerializerTestCase(TestCase):
             "last_name": "Last",
             "username": "student",
             "email": "test@test.com",
-            "affiliation": [],
-            "product_permission": [],
+            "groups": [],
+            "user_permissions": [],
+            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
         self.assertEqual(self.serializer.data, sample_response)

@@ -4,8 +4,13 @@ from accounts.models import Student, User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    affiliation = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
-    product_permission = serializers.SlugRelatedField(many=True, read_only=True, slug_field="id")
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    user_permissions = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="codename"
+    )
+    product_permission = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="codename", source="user_permissions"
+    )  # TODO: remove this once all products update to new version of DLA
 
     class Meta:
         model = User
@@ -15,8 +20,9 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "username",
             "email",
-            "affiliation",
+            "groups",
             "product_permission",
+            "user_permissions",
         )
 
 

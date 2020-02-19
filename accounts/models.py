@@ -6,11 +6,10 @@ from django.db import models
 
 
 class User(AbstractUser):
-    # implicit username field from AbstractUser that contains the user's PennKey
+    # implicit username, email, first_name, and last_name fields
+    # from AbstractUser that contains the user's PennKey
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    affiliation = models.ManyToManyField("PennAffiliation")
-    product_permission = models.ManyToManyField("ProductPermission", blank=True)
 
 
 class Student(models.Model):
@@ -20,18 +19,3 @@ class Student(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-class PennAffiliation(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-
-class ProductPermission(models.Model):
-    id = models.SlugField(max_length=255, primary_key=True)
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
