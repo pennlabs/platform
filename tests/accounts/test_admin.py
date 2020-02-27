@@ -30,6 +30,7 @@ class StudentAdminTestCase(TestCase):
 
 class LabsAdminTestCase(TestCase):
     check = os.environ.get("DJANGO_SETTINGS_MODULE", "") == "Platform.settings.development"
+
     @skipIf(check, "This test doesn't matter in development")
     def test_admin_not_logged_in(self):
         response = self.client.get(reverse("admin:login") + "?next=/admin/")
