@@ -60,7 +60,7 @@ class LabsAdminSite(admin.AdminSite):
 
 if settings.SHIB_ADMIN:
     """
-    Replace the default admin site with a custom one to log in users through platform.
+    Replace the default admin site with a custom one to log in users through shibboleth.
     Also copy all registered models from the default admin site
     """
     labs_admin = LabsAdminSite()
