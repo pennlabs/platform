@@ -38,7 +38,9 @@ class LabsAdminTestCase(TestCase):
         self.assertRedirects(response, redirect, fetch_redirect_response=False)
 
     def test_admin_logged_in(self):
-        get_user_model().objects.create_user(username="user", password="password", is_staff=True)
+        get_user_model().objects.create_user(
+            pennid=1, username="user", password="password", is_staff=True
+        )
         self.client.login(username="user", password="password")
         response = self.client.get(reverse("admin:login") + "?next=/admin/")
         redirect = "/admin/"
