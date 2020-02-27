@@ -1,5 +1,10 @@
+import os
+from unittest import skipIf
+
 from django.contrib.admin.sites import AdminSite
+from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 
 from accounts.admin import StudentAdmin
 from accounts.models import Student, User
@@ -21,3 +26,19 @@ class StudentAdminTestCase(TestCase):
 
     def test_last_name(self):
         self.assertEqual(self.sa.last_name(self.student), self.user.last_name)
+
+
+class LabsAdminTestCase(TestCase):
+    check = os.environ.get("DJANGO_SETTINGS_MODULE", "") == "Platform.settings.development"
+    @skipIf(check, "This test doesn't matter in development")
+    def test_admin_not_logged_in(self):
+        response = self.client.get(reverse("admin:login") + "?next=/admin/")
+        redirect = reverse("accounts:login") + "?next=/admin/"
+        self.assertRedirects(response, redirect, fetch_redirect_response=False)
+
+    def test_admin_logged_in(self):
+        get_user_model().objects.create_user(username="user", password="password", is_staff=True)
+        self.client.login(username="user", password="password")
+        response = self.client.get(reverse("admin:login") + "?next=/admin/")
+        redirect = "/admin/"
+        self.assertRedirects(response, redirect, fetch_redirect_response=False)
