@@ -151,6 +151,10 @@ OAUTH2_PROVIDER = {
 
 AUTH_USER_MODEL = "accounts.User"
 
+# Enable admin login through shibboleth
+SHIB_ADMIN = True
+
+# Other settings
 EMAIL_WEB_SERVICE_URL = os.environ.get("EMAIL_WEB_SERVICE_URL", "http://127.0.0.1")
 EMAIL_WEB_SERVICE_USERNAME = os.environ.get("EMAIL_WEB_SERVICE_USERNAME", "")
 EMAIL_WEB_SERVICE_PASSWORD = os.environ.get("EMAIL_WEB_SERVICE_PASSWORD", "")
