@@ -27,6 +27,7 @@ pyyaml = "*"
 uwsgi = "*"
 uritemplate = "*"
 shortener = "*"
+django-runtime-options = "*"
 
 [requires]
 python_version = "3.7"
