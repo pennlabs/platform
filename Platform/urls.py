@@ -11,6 +11,7 @@ urlpatterns = [
     path("", include("application.urls")),
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
+    path("options/", include("options.urls", namespace="options")),
     path("org/", include("org.urls")),
     path("services/", include("services.urls")),
     path(

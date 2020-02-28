@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "oauth2_provider",
     "corsheaders",
     "shortener.apps.ShortenerConfig",
+    "options.apps.OptionsConfig",
     "org.apps.OrgConfig",
     "accounts.apps.AccountsConfig",
     "services.apps.ServicesConfig",
