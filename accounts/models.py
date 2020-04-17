@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class User(AbstractUser):
@@ -21,7 +22,7 @@ class Student(models.Model):
         return self.user.username
 
 class Email(models.Model):
-    # optional additional emails that users can add
+    # optional additional user emails 
     email = models.EmailField()
     user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING, through='EmailVerification')
 
@@ -29,4 +30,14 @@ class EmailVerification(models.Model):
     # through model to keep track of whether email was verified
     user = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING)
     email = models.ForeignKey(Email, on_delete=models.CASCADE)
+    verified = models.BooleanField(default=False)
+
+class PhoneNumber(models.Model):
+    # optional user phone numbers
+    phone_number = PhoneNumberField()
+    user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING, through='PhoneNumberVerification')
+
+class PhoneNumberVerification(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING)
+    email = models.ForeignKey(PhoneNumber, on_delete=models.CASCADE)
     verified = models.BooleanField(default=False)
