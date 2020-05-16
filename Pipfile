@@ -29,6 +29,7 @@ uritemplate = "*"
 shortener = "*"
 django-runtime-options = "*"
 django-phonenumber-field = "*"
+phonenumbers = "*"
 
 [requires]
 python_version = "3.7"
