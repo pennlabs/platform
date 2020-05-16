@@ -28,6 +28,7 @@ uwsgi = "*"
 uritemplate = "*"
 shortener = "*"
 django-runtime-options = "*"
+django-phonenumber-field = "*"
 
 [requires]
 python_version = "3.7"
