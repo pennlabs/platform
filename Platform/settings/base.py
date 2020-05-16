@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "services.apps.ServicesConfig",
     "application",
+    "phonenumber_field",
 ]
 
 
