@@ -8,28 +8,32 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0003_auto_20200421_2056'),
+        ("accounts", "0003_auto_20200421_2056"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='email',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='emails', to=settings.AUTH_USER_MODEL),
+            model_name="email",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="emails",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='phonenumber',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="phonenumber",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterField(
-            model_name='student',
-            name='graduation_year',
-            field=models.IntegerField(null=True),
+            model_name="student", name="graduation_year", field=models.IntegerField(null=True),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='preferred_name',
+            model_name="user",
+            name="preferred_name",
             field=models.CharField(blank=True, max_length=225),
         ),
     ]
