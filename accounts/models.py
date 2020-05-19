@@ -11,21 +11,21 @@ class User(AbstractUser):
     # from AbstractUser that contains the user's PennKey
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    preferred_name = models.CharField(max_length=100, blank=True)
+    preferred_name = models.CharField(max_length=225, blank=True)
 
 
 class Student(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
     major = models.CharField(max_length=255, blank=True)
     school = models.CharField(max_length=255, blank=True)
-    graduation_year = models.CharField(max_length=4, blank=True)
+    graduation_year = models.IntegerField()
 
     def __str__(self):
         return self.user.username
 
 
 class Email(models.Model):
-    user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.CASCADE)
     email = models.EmailField()
     # whether this email is the primary email
     primary_email = models.BooleanField(default=False)
@@ -33,7 +33,7 @@ class Email(models.Model):
 
 
 class PhoneNumber(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     phone_number = PhoneNumberField()
     primary_number = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
