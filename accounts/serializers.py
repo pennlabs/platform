@@ -26,8 +26,8 @@ class UserSerializer(serializers.ModelSerializer):
             "user_permissions",
         )
 
-    def get_first_name(sefl, obj):
-        if obj.preferred_name is not None:
+    def get_first_name(self, obj):
+        if obj.preferred_name != "":
             return obj.preferred_name
         else:
             return obj.first_name
@@ -40,8 +40,8 @@ class UserSearchSerializer(serializers.ModelSerializer):
         model = User
         fields = ("first_name", "last_name", "username")
 
-    def get_first_name(sefl, obj):
-        if obj.preferred_name is not None:
+    def get_first_name(self, obj):
+        if obj.preferred_name != "":
             return obj.preferred_name
         else:
             return obj.first_name
