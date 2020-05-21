@@ -4,6 +4,7 @@ from accounts.models import Student, User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    first_name = serializers.SerializerMethodField()
     groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     user_permissions = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="codename"
@@ -25,11 +26,25 @@ class UserSerializer(serializers.ModelSerializer):
             "user_permissions",
         )
 
+    def get_first_name(sefl, obj):
+        if obj.preferred_name is not None:
+            return obj.preferred_name
+        else:
+            return obj.first_name
+
 
 class UserSearchSerializer(serializers.ModelSerializer):
+    first_name = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ("first_name", "last_name", "username")
+
+    def get_first_name(sefl, obj):
+        if obj.preferred_name is not None:
+            return obj.preferred_name
+        else:
+            return obj.first_name
 
 
 class StudentSerializer(serializers.ModelSerializer):
