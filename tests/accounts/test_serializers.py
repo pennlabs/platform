@@ -40,20 +40,6 @@ class StudentSerializerTestCase(TestCase):
         self.user_preferred_name.student.school = "School"
         self.serializer_preferred_name = StudentSerializer(self.user_preferred_name.student)
 
-    def test_str_preferred_name_provided(self):
-        sample_response = {
-            "major": "Major",
-            "school": "School",
-            "first_name": "Preferred",
-            "last_name": "Last2",
-            "username": "student2",
-            "email": "test2@test.com",
-            "groups": [],
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-        self.assertEqual(self.serializer_preferred_name.data, sample_response)
-
     def test_str_no_preferred_name(self):
         sample_response = {
             "major": "Major",
@@ -67,6 +53,20 @@ class StudentSerializerTestCase(TestCase):
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
         self.assertEqual(self.serializer.data, sample_response)
+
+    def test_str_preferred_name_provided(self):
+        sample_response = {
+            "major": "Major",
+            "school": "School",
+            "first_name": "Preferred",
+            "last_name": "Last2",
+            "username": "student2",
+            "email": "test2@test.com",
+            "groups": [],
+            "user_permissions": [],
+            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
+        }
+        self.assertEqual(self.serializer_preferred_name.data, sample_response)
 
 
 class UserSerializerTestCase(TestCase):
@@ -93,19 +93,6 @@ class UserSerializerTestCase(TestCase):
         )
         self.serializer_preferred_name = UserSerializer(self.user)
 
-    def test_str_preferred_name_provided(self):
-        sample_response = {
-            "pennid": 2,
-            "first_name": "Preferred",
-            "last_name": "Last2",
-            "username": "student2",
-            "email": "test2@test.com",
-            "groups": [],
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-        self.assertEqual(self.serializer_preferred_name.data, sample_response)
-
     def test_str_no_preferred_name(self):
         sample_response = {
             "pennid": 1,
@@ -118,3 +105,16 @@ class UserSerializerTestCase(TestCase):
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
         self.assertEqual(self.serializer.data, sample_response)
+        
+    def test_str_preferred_name_provided(self):
+        sample_response = {
+            "pennid": 2,
+            "first_name": "Preferred",
+            "last_name": "Last2",
+            "username": "student2",
+            "email": "test2@test.com",
+            "groups": [],
+            "user_permissions": [],
+            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
+        }
+        self.assertEqual(self.serializer_preferred_name.data, sample_response)
