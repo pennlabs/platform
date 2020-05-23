@@ -91,7 +91,7 @@ class UserSerializerTestCase(TestCase):
             email="test2@test.com",
             preferred_name="Preferred",
         )
-        self.serializer_preferred_name = UserSerializer(self.user)
+        self.serializer_preferred_name = UserSerializer(self.user_preferred_name)
 
     def test_str_no_preferred_name(self):
         sample_response = {
