@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import Student, User
+from accounts.models import Student, User, PhoneNumber, Email
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -61,3 +61,15 @@ class StudentSerializer(serializers.ModelSerializer):
             if key != "pennid":
                 representation[key] = user_representation[key]
         return representation
+
+
+class PhoneNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhoneNumber
+        fields = ["phone_number", "primary_number", "verified"]
+
+
+class EmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Email
+        fields = ["email", "primary_email", "verified"]

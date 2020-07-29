@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
@@ -154,6 +154,11 @@ class UserSearchView(PennView, generics.ListAPIView):
                 .order_by("-search_type_ordering")
             )
         return qs
+
+
+class UserUpdateViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    
 
 
 class ProtectedViewSet(PennView):
