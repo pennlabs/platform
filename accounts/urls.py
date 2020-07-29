@@ -7,6 +7,7 @@ from accounts.views import (
     LogoutView,
     ProtectedViewSet,
     UserSearchView,
+    UserUpdateView,
     UUIDIntrospectTokenView,
 )
 
@@ -17,6 +18,7 @@ app_name = "accounts"
 urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
+    path("me/", UserUpdateView.as_view(), name="me"),
     path("search/", UserSearchView.as_view(), name="search"),
     path("authorize/", AuthorizationView.as_view(), name="authorize"),
     path("token/", TokenView.as_view(), name="token"),
