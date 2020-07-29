@@ -32,7 +32,7 @@ class Email(models.Model):
     verified = models.BooleanField(default=False)
 
 
-class PhoneNumber(models.Model):
+class PhoneNumberModel(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     phone_number = PhoneNumberField()
     primary_number = models.BooleanField(default=False)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import Student, User, PhoneNumber, Email
+from accounts.models import Student, User, PhoneNumberModel, Email
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -64,9 +64,15 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class PhoneNumberSerializer(serializers.ModelSerializer):
+    phone_number = serializers.SerializerMethodField()
+
     class Meta:
-        model = PhoneNumber
+        model = PhoneNumberModel
         fields = ["phone_number", "primary_number", "verified"]
+
+    def get_phone_number(self, obj):
+        # PhoneNumberField() is an object; turns it into string
+        return obj.phone_number.as_e164
 
 
 class EmailSerializer(serializers.ModelSerializer):

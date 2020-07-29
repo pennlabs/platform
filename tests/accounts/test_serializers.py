@@ -3,9 +3,15 @@ import datetime
 import pytz
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from phonenumber_field.phonenumber import PhoneNumber
 
-from accounts.models import Student
-from accounts.serializers import StudentSerializer, UserSerializer
+from accounts.models import Student, PhoneNumberModel, Email
+from accounts.serializers import (
+    StudentSerializer,
+    UserSerializer,
+    PhoneNumberSerializer,
+    EmailSerializer,
+)
 
 
 class StudentSerializerTestCase(TestCase):
@@ -105,7 +111,7 @@ class UserSerializerTestCase(TestCase):
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
         self.assertEqual(self.serializer.data, sample_response)
-        
+
     def test_str_preferred_name_provided(self):
         sample_response = {
             "pennid": 2,
@@ -118,3 +124,41 @@ class UserSerializerTestCase(TestCase):
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
         self.assertEqual(self.serializer_preferred_name.data, sample_response)
+
+
+class PhoneNumberSerializerTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+        self.primary_number = PhoneNumberModel.objects.create(
+            user=self.user, phone_number="+41524204242", primary_number=True, verified=True
+        )
+        self.non_primary_number = PhoneNumberModel.objects.create(
+            user=self.user, phone_number="+12150000000"
+        )
+
+        self.serializer_primary = PhoneNumberSerializer(self.primary_number)
+        self.serializer_non_primary = PhoneNumberSerializer(self.non_primary_number)
+
+    def test_primary_number(self):
+        sample_response = {
+            "phone_number": PhoneNumber.from_string(phone_number="+41524204242").as_e164,
+            "primary_number": True,
+            "verified": True,
+        }
+        self.assertEqual(self.serializer_primary.data, sample_response)
+
+    def test_non_primary_number(self):
+        sample_response = {
+            "phone_number": PhoneNumber.from_string(phone_number="+12150000000").as_e164,
+            "primary_number": False,
+            "verified": False,
+        }
+        self.assertEqual(self.serializer_non_primary.data, sample_response)
+
