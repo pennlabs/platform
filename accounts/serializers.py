@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import Student, User, PhoneNumberModel, Email
+from accounts.models import Email, PhoneNumberModel, Student, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -27,10 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def get_first_name(self, obj):
-        if obj.preferred_name != "":
-            return obj.preferred_name
-        else:
-            return obj.first_name
+        return obj.get_preferred_name()
 
 
 class UserSearchSerializer(serializers.ModelSerializer):
@@ -41,10 +38,7 @@ class UserSearchSerializer(serializers.ModelSerializer):
         fields = ("first_name", "last_name", "username")
 
     def get_first_name(self, obj):
-        if obj.preferred_name != "":
-            return obj.preferred_name
-        else:
-            return obj.first_name
+        return obj.get_preferred_name()
 
 
 class StudentSerializer(serializers.ModelSerializer):
