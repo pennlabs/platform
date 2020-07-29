@@ -162,3 +162,39 @@ class PhoneNumberSerializerTestCase(TestCase):
         }
         self.assertEqual(self.serializer_non_primary.data, sample_response)
 
+
+class EmailSerializerTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+        self.email_primary = Email.objects.create(
+            user=self.user, email="primary@test.com", primary_email=True
+        )
+        self.email_non_primary = Email.objects.create(
+            user=self.user, email="nonprimary@test.com", verified=True
+        )
+
+        self.serializer_primary = EmailSerializer(self.email_primary)
+        self.serializer_non_primary = EmailSerializer(self.email_non_primary)
+
+    def test_email_primary(self):
+        sample_response = {
+            "email": "primary@test.com",
+            "primary_email": True,
+            "verified": False,
+        }
+        self.assertEqual(self.serializer_primary.data, sample_response)
+
+    def test_email_non_primary(self):
+        sample_response = {
+            "email": "nonprimary@test.com",
+            "primary_email": False,
+            "verified": True,
+        }
+        self.assertEqual(self.serializer_non_primary.data, sample_response)
