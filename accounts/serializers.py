@@ -25,6 +25,15 @@ class UserSerializer(serializers.ModelSerializer):
             "product_permission",
             "user_permissions",
         )
+        read_only_fields = (
+            "pennid",
+            "last_name",
+            "username",
+            "email",
+            "groups",
+            "product_permission",
+            "user_permissions",
+        )
 
     def get_first_name(self, obj):
         return obj.get_preferred_name()
