@@ -158,7 +158,7 @@ class UserSearchView(PennView, generics.ListAPIView):
 
 class UserUpdateViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    
+    serializer_class = UserSerializer
 
 
 class ProtectedViewSet(PennView):
