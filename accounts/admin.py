@@ -32,7 +32,7 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ("username",)
     fieldsets = (
         (None, {"fields": ("username", "pennid")}),
-        (("Personal info"), {"fields": ("first_name", "last_name", "email")}),
+        (("Personal info"), {"fields": ("preferred_name", "first_name", "last_name", "email")}),
         (
             ("Permissions"),
             {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")},

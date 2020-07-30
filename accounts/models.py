@@ -13,6 +13,12 @@ class User(AbstractUser):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
 
+    def get_preferred_name(self):
+        if self.preferred_name != "":
+            return self.preferred_name
+        else:
+            return self.first_name
+
 
 class Student(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
