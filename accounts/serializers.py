@@ -4,7 +4,8 @@ from accounts.models import Email, PhoneNumberModel, Student, User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    first_name = serializers.SerializerMethodField()
+    # SerializerMethodFields are read_only
+    first_name = serializers.CharField(source="get_preferred_name", required=False)
     groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     user_permissions = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="codename"
@@ -25,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             "product_permission",
             "user_permissions",
         )
+
         read_only_fields = (
             "pennid",
             "last_name",
@@ -35,8 +37,13 @@ class UserSerializer(serializers.ModelSerializer):
             "user_permissions",
         )
 
-    def get_first_name(self, obj):
-        return obj.get_preferred_name()
+    def update(self, instance, validated_data):
+        instance.preferred_name = validated_data.get("get_preferred_name", instance.preferred_name)
+        if instance.preferred_name == instance.first_name:
+            instance.preferred_name = ""
+
+        instance.save()
+        return instance
 
 
 class UserSearchSerializer(serializers.ModelSerializer):
