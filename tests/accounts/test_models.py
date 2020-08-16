@@ -13,3 +13,25 @@ class StudentTestCase(TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.student), self.user.username)
+
+
+class UserTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1, username="student", first_name="first", last_name="last", password="secret",
+        )
+
+        self.user2 = get_user_model().objects.create_user(
+            pennid=2,
+            username="student2",
+            password="secret2",
+            first_name="first2",
+            last_name="last2",
+            preferred_name="prefer",
+        )
+
+    def test_get_preferred_name_none(self):
+        self.assertEqual(self.user.get_preferred_name(), "first")
+
+    def test_get_preferred_name_with_preferred(self):
+        self.assertEqual(self.user2.get_preferred_name(), "prefer")
