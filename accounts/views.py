@@ -31,7 +31,7 @@ class LoginView(View):
         pennid = int(request.META.get("HTTP_EMPLOYEENUMBER", "-1"))
         pennkey = request.META.get("HTTP_EPPN", "").lower().split("@")[0]
         first_name = request.META.get("HTTP_GIVENNAME", "").title()
-        last_name = request.META.get("HTTP_SN", "").lower().capitalize()
+        last_name = request.META.get("HTTP_SN", "").lower().title()
         affiliation = request.META.get("HTTP_UNSCOPED_AFFILIATION", "").split(";")
         shibboleth_attributes = {
             "username": pennkey,

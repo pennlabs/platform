@@ -25,7 +25,7 @@ class LoginViewTestCase(TestCase):
             "HTTP_EMPLOYEENUMBER": "1",
             "HTTP_EPPN": "test",
             "HTTP_GIVENNAME": "test",
-            "HTTP_SN": "user",
+            "HTTP_SN": "user-hyphenated",
             "HTTP_MAIL": "test@student.edu",
         }
         params = reverse("accounts:authorize") + "?client_id=abc123&response_type=code&state=abc"
@@ -33,6 +33,9 @@ class LoginViewTestCase(TestCase):
         base_url = "/accounts/authorize/"
         sample_response = base_url + "?client_id=abc123&response_type=code&state=abc"
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+        user = get_user_model().objects.get(username="test")
+        self.assertEqual(user.first_name, "Test")
+        self.assertEqual(user.last_name, "User-Hyphenated")
 
 
 class LogoutViewTestCase(TestCase):
