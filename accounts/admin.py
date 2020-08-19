@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from accounts.models import Student, User
+from accounts.models import Email, PhoneNumberModel, Student, User
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -32,18 +32,28 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ("username",)
     fieldsets = (
         (None, {"fields": ("username", "pennid")}),
-        (("Personal info"), {"fields": ("preferred_name", "first_name", "last_name", "email")}),
+        (("Personal info"), {"fields": ("preferred_name", "first_name", "last_name", "email")},),
         (
             ("Permissions"),
-            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")},
+            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions",)},
         ),
         (("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
 
+class PhoneNumberAdmin(admin.ModelAdmin):
+    pass
+
+
+class EmailAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Permission)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(User, UserAdmin)
+admin.site.register(PhoneNumberModel, PhoneNumberAdmin)
+admin.site.register(Email, EmailAdmin)
 
 
 class LabsAdminSite(admin.AdminSite):
