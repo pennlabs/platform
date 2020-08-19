@@ -29,7 +29,9 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="student", name="graduation_year", field=models.IntegerField(null=True),
+            model_name="student",
+            name="graduation_year",
+            field=models.IntegerField(null=True),
         ),
         migrations.AlterField(
             model_name="user",

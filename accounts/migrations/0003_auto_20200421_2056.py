@@ -29,19 +29,25 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 (
                     "phone_number",
-                    phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None),
+                    phonenumber_field.modelfields.PhoneNumberField(
+                        max_length=128, region=None
+                    ),
                 ),
                 ("primary_number", models.BooleanField(default=False)),
                 ("verified", models.BooleanField(default=False)),
                 (
                     "user",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to=settings.AUTH_USER_MODEL,
                     ),
                 ),
             ],
@@ -52,7 +58,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("primary_email", models.BooleanField(default=False)),

@@ -40,6 +40,10 @@ class Email(models.Model):
 
 class PhoneNumberModel(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberField(unique=True)
     primary_number = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        # PhoneNumberField() is an object; turns it into string
+        return obj.phone_number.as_e164

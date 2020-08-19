@@ -74,15 +74,9 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class PhoneNumberSerializer(serializers.ModelSerializer):
-    phone_number = serializers.SerializerMethodField()
-
     class Meta:
         model = PhoneNumberModel
         fields = ["phone_number", "primary_number", "verified"]
-
-    def get_phone_number(self, obj):
-        # PhoneNumberField() is an object; turns it into string
-        return obj.phone_number.as_e164
 
 
 class EmailSerializer(serializers.ModelSerializer):
