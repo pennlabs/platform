@@ -46,4 +46,4 @@ class PhoneNumberModel(models.Model):
 
     def __str__(self):
         # PhoneNumberField() is an object; turns it into string
-        return obj.phone_number.as_e164
+        return self.phone_number.as_e164
