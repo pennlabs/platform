@@ -40,7 +40,7 @@ class Email(models.Model):
 
 class PhoneNumberModel(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    phone_number = PhoneNumberField(unique=True)
+    phone_number = PhoneNumberField(unique=True, blank=True, default=None)
     primary_number = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
 
