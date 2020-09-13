@@ -7,6 +7,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
+from rest_framework.test import force_authenticate
 
 from accounts.models import User
 from accounts.serializers import UserSearchSerializer, UserSerializer
@@ -191,3 +192,31 @@ class UserSearchTestCase(TestCase):
         response = self.client.get(reverse("accounts:search") + "?q=tes", **self.auth_headers)
         self.assertIn(UserSearchSerializer(self.user1).data, response.json())
         self.assertIn(UserSearchSerializer(self.user2).data, response.json())
+
+
+class UserViewTestCase(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create(
+            pennid=1, username="test1", first_name="first1", last_name="last1", password="pw1"
+        )
+        self.factory = APIRequestFactory()
+        self.view = UserView.as_view()
+
+    def test_retrieve(self):
+        self.client.login(username="test1", password="pw1")
+        request = self.factory.get("accounts/me")
+        force_authenticate(request, user=self.user1)
+        # self.assertEqual(response.json().get("username"), "test1")
+        response = self.view(request)
+        self.assertIn(response.status_code, [200, 201], response.content)
+
+    def test_new_preferred_name(self):
+        self.client.login(username="test1", password="pw1")
+        self.client.patch(
+            reverse("accounts:me"),
+            {"get_preferred_name": "new_preferred"},
+            content_type="application/json",
+        )
+        print("preferred: ", self.user1.preferred_name)
+        self.assertEqual(self.user1.preferred_name, "new_preferred")
+        self.assertEqual(self.user1.first_name, "first1")

@@ -160,3 +160,16 @@ SHIB_ADMIN = True
 EMAIL_WEB_SERVICE_URL = os.environ.get("EMAIL_WEB_SERVICE_URL", "http://127.0.0.1")
 EMAIL_WEB_SERVICE_USERNAME = os.environ.get("EMAIL_WEB_SERVICE_USERNAME", "")
 EMAIL_WEB_SERVICE_PASSWORD = os.environ.get("EMAIL_WEB_SERVICE_PASSWORD", "")
+
+# Twilio Settings
+
+TWILIO_SID = os.environ.get("TWILIO_SID", "")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_TOKEN", "")
+TWILIO_NUMBER = os.environ.get("TWILIO_NUMBER", "")
+
+# Email Settings
+
+EMAIL_TOOLS = {
+    "FROM_EMAIL": f"Penn Labs <accounts@pennlabs.org>",
+    "TEMPLATE_DIRECTORY": os.path.join(BASE_DIR, "Platform", "templates", "emails"),
+}

@@ -13,6 +13,8 @@ class User(AbstractUser):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
 
+    VERIFICATION_EXPIRATION_MINUTES = 10
+
     def get_preferred_name(self):
         if self.preferred_name != "":
             return self.preferred_name
@@ -33,15 +35,20 @@ class Student(models.Model):
 class Email(models.Model):
     user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.CASCADE)
     email = models.EmailField()
-    # whether this email is the primary email
-    primary_email = models.BooleanField(default=False)
+    primary = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
+    verification_timestamp = models.DateTimeField(blank=True, null=True)
     verified = models.BooleanField(default=False)
 
 
 class PhoneNumberModel(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        get_user_model(), related_name="phone_numbers", on_delete=models.CASCADE
+    )
     phone_number = PhoneNumberField(unique=True, blank=True, default=None)
-    primary_number = models.BooleanField(default=False)
+    primary = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
+    verification_timestamp = models.DateTimeField(blank=True, null=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):

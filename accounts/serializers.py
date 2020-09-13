@@ -1,6 +1,9 @@
 from rest_framework import serializers
+from django.utils import timezone
+from django.utils.crypto import get_random_string
 
 from accounts.models import Email, PhoneNumberModel, Student, User
+from accounts.verification import sendSMSVerification, sendEmailVerification
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -76,10 +79,80 @@ class StudentSerializer(serializers.ModelSerializer):
 class PhoneNumberSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneNumberModel
-        fields = ["phone_number", "primary_number", "verified"]
+        fields = ["id", "phone_number", "primary", "verified", "verification_code"]
+        extra_kwargs = {"verification_code": {"write_only": True}}
+
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+        instance.verified = False
+        instance.primary = False
+        instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+        instance.verification_timestamp = timezone.now()
+        instance.user = self.context["request"].user
+        instance.save()
+        sendSMSVerification(instance.phone_number, instance.verification_code)
+        return instance
+
+    def update(self, instance, validated_data):
+        if "verification_code" in validated_data:
+            elapsed_time = timezone.now() - instance.verification_timestamp
+            if (
+                validated_data["verification_code"] == instance.verification_code
+                and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
+            ):
+                if self.context["request"].user.phone_numbers.filter(verified=True).count() == 0:
+                    instance.primary = True
+                instance.verified = True
+            elif elapsed_time.total_seconds() >= User.VERIFICATION_EXPIRATION_MINUTES * 60:
+                raise serializers.ValidationError(
+                    detail={"detail": "Verification code has expired"}
+                )
+            else:
+                raise serializers.ValidationError(detail={"detail": "Incorrect verification code"})
+        if "primary" in validated_data and validated_data["primary"]:
+            self.context["request"].user.phone_numbers.update(primary=False)
+            instance.primary = True
+
+        instance.save()
+        return instance
 
 
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Email
-        fields = ["email", "primary_email", "verified"]
+        fields = ["id", "email", "primary", "verified", "verification_code"]
+        extra_kwargs = {"verification_code": {"write_only": True}}
+
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+        instance.verified = False
+        instance.primary = False
+        instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+        instance.verification_timestamp = timezone.now()
+        instance.user = self.context["request"].user
+        instance.save()
+        sendEmailVerification(instance.email, instance.verification_code)
+        return instance
+
+    def update(self, instance, validated_data):
+        if "verification_code" in validated_data:
+            elapsed_time = timezone.now() - instance.verification_timestamp
+            if (
+                validated_data["verification_code"] == instance.verification_code
+                and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
+            ):
+                if self.context["request"].user.emails.filter(verified=True).count() == 0:
+                    instance.primary = True
+                instance.verified = True
+            elif elapsed_time.total_seconds() >= User.VERIFICATION_EXPIRATION_MINUTES * 60:
+                raise serializers.ValidationError(
+                    detail={"detail": "Verification code has expired"}
+                )
+            else:
+                raise serializers.ValidationError(detail={"detail": "Incorrect verification code"})
+        if "primary" in validated_data and validated_data["primary"]:
+            self.context["request"].user.emails.update(primary=False)
+            instance.primary = True
+
+        instance.save()
+        return instance

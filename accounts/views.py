@@ -12,13 +12,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
 from accounts.models import User
-from accounts.serializers import UserSearchSerializer, UserSerializer
+from accounts.serializers import (
+    EmailSerializer,
+    PhoneNumberSerializer,
+    UserSearchSerializer,
+    UserSerializer,
+)
 
 
 class LoginView(View):
@@ -66,7 +71,7 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
             token = get_access_token_model().objects.get(token=token_value)
         except ObjectDoesNotExist:
             return HttpResponse(
-                content=json.dumps({"active": False}), status=401, content_type="application/json"
+                content=json.dumps({"active": False}), status=401, content_type="application/json",
             )
         else:
             if token.is_valid():
@@ -80,7 +85,7 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
                 if token.user:
                     data["user"] = UserSerializer(token.user).data
                 return HttpResponse(
-                    content=json.dumps(data), status=200, content_type="application/json"
+                    content=json.dumps(data), status=200, content_type="application/json",
                 )
             else:
                 return HttpResponse(
@@ -157,12 +162,86 @@ class UserSearchView(PennView, generics.ListAPIView):
         return qs
 
 
-class UserUpdateView(generics.RetrieveUpdateAPIView):
+class UserView(generics.RetrieveUpdateAPIView):
+    """
+    get:
+    Return information about the logged in user.
+
+    update:
+    Update information about the logged in user.
+    You must specify all of the fields or use a patch request.
+
+    patch:
+    Update information about the logged in user.
+    Only updates fields that are passed to the server.
+    """
+
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    # lookup_field = "pennid"
 
     def get_object(self):
         return self.request.user
+
+
+class PhoneNumberViewSet(viewsets.ModelViewSet):
+    """
+    retrieve:
+    Return a single phone number with all information fields present.
+
+    list:
+    Return a list of phone numbers associated with current user.
+
+    create:
+    Add new unverified phone number.
+
+    update:
+    Update all fields.
+    You must specify all of the fields or use a patch request.
+
+    partial_update:
+    Update certain fields.
+    Only specify the fields that you want to change.
+
+    destroy:
+    Delete a phone number.
+    """
+
+    serializer_class = PhoneNumberSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.phone_numbers.all()
+
+
+class EmailViewSet(viewsets.ModelViewSet):
+    """
+    retrieve:
+    Return a single email with all information fields present.
+
+    list:
+    Return a list of emails associated with current user.
+
+    create:
+    Add new unverified email.
+
+    update:
+    Update all fields.
+    You must specify all of the fields or use a patch request.
+
+    partial_update:
+    Update certain fields.
+    Only specify the fields that you want to change.
+
+    destroy:
+    Delete an email.
+    """
+
+    serializer_class = EmailSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.emails.all()
 
 
 class ProtectedViewSet(PennView):
