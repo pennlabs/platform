@@ -1,9 +1,9 @@
-from rest_framework import serializers
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from rest_framework import serializers
 
 from accounts.models import Email, PhoneNumberModel, Student, User
-from accounts.verification import sendSMSVerification, sendEmailVerification
+from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
 class UserSerializer(serializers.ModelSerializer):

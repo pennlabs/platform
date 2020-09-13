@@ -22,9 +22,7 @@ def copy_permissions(apps, schema_editor):
         ContentType = apps.get_model("contenttypes", "ContentType")
         for user in User.objects.all():
             for product_permission in user.product_permission.all():
-                content_type = ContentType.objects.get(
-                    app_label="accounts", model="user"
-                )
+                content_type = ContentType.objects.get(app_label="accounts", model="user")
                 perm, _ = Permission.objects.get_or_create(
                     codename=product_permission.id,
                     name=product_permission.name,

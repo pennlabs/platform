@@ -40,6 +40,9 @@ class Email(models.Model):
     verification_timestamp = models.DateTimeField(blank=True, null=True)
     verified = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.user} - {self.email}"
+
 
 class PhoneNumberModel(models.Model):
     user = models.ForeignKey(
@@ -52,5 +55,4 @@ class PhoneNumberModel(models.Model):
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        # PhoneNumberField() is an object; turns it into string
-        return self.phone_number.as_e164
+        return f"{self.user} - {self.phone_number}"

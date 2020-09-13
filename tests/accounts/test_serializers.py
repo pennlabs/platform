@@ -5,12 +5,12 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from phonenumber_field.phonenumber import PhoneNumber
 
-from accounts.models import Student, PhoneNumberModel, Email
+from accounts.models import Email, PhoneNumberModel, Student
 from accounts.serializers import (
+    EmailSerializer,
+    PhoneNumberSerializer,
     StudentSerializer,
     UserSerializer,
-    PhoneNumberSerializer,
-    EmailSerializer,
 )
 
 
@@ -184,17 +184,9 @@ class EmailSerializerTestCase(TestCase):
         self.serializer_non_primary = EmailSerializer(self.email_non_primary)
 
     def test_email_primary(self):
-        sample_response = {
-            "email": "primary@test.com",
-            "primary_email": True,
-            "verified": False,
-        }
+        sample_response = {"email": "primary@test.com", "primary_email": True, "verified": False}
         self.assertEqual(self.serializer_primary.data, sample_response)
 
     def test_email_non_primary(self):
-        sample_response = {
-            "email": "nonprimary@test.com",
-            "primary_email": False,
-            "verified": True,
-        }
+        sample_response = {"email": "nonprimary@test.com", "primary_email": False, "verified": True}
         self.assertEqual(self.serializer_non_primary.data, sample_response)

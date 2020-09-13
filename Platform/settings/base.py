@@ -45,13 +45,14 @@ INSTALLED_APPS = [
     "rest_framework_api_key",
     "oauth2_provider",
     "corsheaders",
+    "phonenumber_field",
+    "email_tools.apps.EmailToolsConfig",
     "shortener.apps.ShortenerConfig",
     "options.apps.OptionsConfig",
     "org.apps.OrgConfig",
     "accounts.apps.AccountsConfig",
     "services.apps.ServicesConfig",
     "application",
-    "phonenumber_field",
 ]
 
 
@@ -170,6 +171,6 @@ TWILIO_NUMBER = os.environ.get("TWILIO_NUMBER", "")
 # Email Settings
 
 EMAIL_TOOLS = {
-    "FROM_EMAIL": f"Penn Labs <accounts@pennlabs.org>",
+    "FROM_EMAIL": "Penn Labs <accounts@pennlabs.org>",
     "TEMPLATE_DIRECTORY": os.path.join(BASE_DIR, "Platform", "templates", "emails"),
 }
