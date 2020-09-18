@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from accounts.models import PhoneNumberModel, Student
+from accounts.models import Email, PhoneNumberModel, Student
 
 
 class StudentTestCase(TestCase):
@@ -43,9 +43,25 @@ class PhoneNumberModelTestCase(TestCase):
             pennid=1, username="student", first_name="first", last_name="last", password="secret"
         )
 
+        self.phone_number = "+15550000000"
         self.number = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12150000000", primary=True, verified=False
+            user=self.user, phone_number=self.phone_number, primary=True, verified=False
         )
 
     def test_str(self):
-        self.assertEqual(str(self.number), "student - +12150000000")
+        self.assertEqual(str(self.number), f"{self.user} - {self.phone_number}")
+
+
+class EmailTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+        )
+
+        self.email_address = "example@example.com"
+        self.email = Email.objects.create(
+            user=self.user, email=self.email_address, primary=True, verified=False
+        )
+
+    def test_str(self):
+        self.assertEqual(str(self.email), f"{self.user} - {self.email_address}")
