@@ -80,15 +80,16 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneNumberModel
         fields = ["id", "phone_number", "primary", "verified", "verification_code"]
+        read_only_fields = ["verified"]
         extra_kwargs = {"verification_code": {"write_only": True}}
 
     def create(self, validated_data):
+        validated_data["user"] = self.context["request"].user
         instance = super().create(validated_data)
         instance.verified = False
         instance.primary = False
         instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
         instance.verification_timestamp = timezone.now()
-        instance.user = self.context["request"].user
         instance.save()
         sendSMSVerification(instance.phone_number, instance.verification_code)
         return instance
