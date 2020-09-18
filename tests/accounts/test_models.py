@@ -44,8 +44,8 @@ class PhoneNumberModelTestCase(TestCase):
         )
 
         self.number = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12150000000", primary_number=True, verified=False
+            user=self.user, phone_number="+12150000000", primary=True, verified=False
         )
 
     def test_str(self):
-        self.assertEqual(str(self.number), "+12150000000")
+        self.assertEqual(str(self.number), "student - +12150000000")
