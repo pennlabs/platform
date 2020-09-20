@@ -1,0 +1,78 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
+    <style type="text/css">
+        .content-box {
+            border: 2px #F5F8FE;
+            border-style: solid;
+            padding: 1.5em;
+        }
+
+        .title {
+            margin-top: 0;
+        }
+
+        .header-logo {
+            width: 120px;
+            padding-bottom: 15px;
+            padding-top: 20px;
+            padding-left: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 30px;
+        }
+
+        .footer p {
+            font-size: 12px;
+        }
+
+        h1 {
+            font-family: 'Lato', sans-serif;
+        }
+
+        p {
+            font-family: 'Lato', sans-serif;
+        }
+
+        .link-container {
+            text-align: center;
+            padding: 10px;
+            margin: 25px;
+        }
+
+        .link-container a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+
+        .link-container h1 {
+            font-family: 'Lato', sans-serif;
+            display: inline;
+            padding: 10px 20px;
+            border: 3px solid #4285F4;
+        }
+
+        span.line {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="https://ohq.io">
+        <img src="https://cdn.mcauto-images-production.sendgrid.net/d1623489cc8dbe1a/e60e7de0-8c49-4734-8109-307a3a1bd2ab/772x380.png"
+            class="header-logo">
+    </a>
+
+    <div class="content-box">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+        <a href="https://ohq.io/">OHQ</a>
+        <br />
+        Made with <span style="color: red">&hearts;</span> by <a href="https://pennlabs.org/">Penn Labs</a> </div>
+</body>
