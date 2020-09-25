@@ -43,12 +43,17 @@ class UserSerializer(serializers.ModelSerializer):
             "user_permissions",
         )
 
+    # Users are pulled from Penn DB, so come with no preferred
+    # name. Thus, this logic only needs to happen on update.
     def update(self, instance, validated_data):
-        instance.preferred_name = validated_data.get("get_preferred_name", instance.preferred_name)
-        if instance.preferred_name == instance.first_name:
-            instance.preferred_name = ""
+        if validated_data["get_preferred_name"]:
+            # print("data: ", validated_data)
+            instance.preferred_name = validated_data["get_preferred_name"]
+            # print("preferred: " + instance.preferred_name)
+            if instance.preferred_name == instance.first_name:
+                instance.preferred_name = ""
 
-        instance.save()
+            instance.save()
         return instance
 
 

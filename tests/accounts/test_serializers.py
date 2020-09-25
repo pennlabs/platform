@@ -13,7 +13,13 @@ from accounts.serializers import (
     PhoneNumberSerializer,
     StudentSerializer,
     UserSerializer,
+    UserSearchSerializer,
 )
+
+
+class FakeRequest:
+    def __init__(self, user):
+        self.user = user
 
 
 class StudentSerializerTestCase(TestCase):
@@ -127,10 +133,68 @@ class UserSerializerTestCase(TestCase):
         }
         self.assertEqual(self.serializer_preferred_name.data, sample_response)
 
+    def test_update_preferred_valid_name(self):
+        data = {
+            "first_name": "new_preferred",
+        }
+        serializer = UserSerializer(self.user, data=data)
 
-class FakeRequest:
-    def __init__(self, user):
-        self.user = user
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+        self.assertEqual(self.user.preferred_name, "new_preferred")
+        self.assertEqual(self.user.first_name, "First")
+
+    def test_preferred_same_as_first(self):
+        data = {
+            "first_name": "First2",
+        }
+        serializer = UserSerializer(self.user_preferred_name, data=data)
+
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+        self.assertEqual(self.user_preferred_name.preferred_name, "")
+        self.assertEqual(self.user_preferred_name.first_name, "First2")
+
+
+class UserSearchSerializerTestCase(TestCase):
+    def setUp(self):
+        self.date = pytz.timezone("America/New_York").localize(datetime.datetime(2019, 1, 1))
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+        self.serializer = UserSearchSerializer(self.user)
+
+        self.user_preferred_name = get_user_model().objects.create_user(
+            pennid=2,
+            username="student2",
+            password="secret2",
+            first_name="First2",
+            last_name="Last2",
+            email="test2@test.com",
+            preferred_name="Preferred",
+        )
+        self.serializer_preferred_name = UserSearchSerializer(self.user_preferred_name)
+
+    def test_str_no_preferred_name(self):
+        sample_response = {
+            "first_name": "First",
+            "last_name": "Last",
+            "username": "student",
+        }
+        self.assertEqual(self.serializer.data, sample_response)
+
+    def test_str_preferred_name_provided(self):
+        sample_response = {
+            "first_name": "Preferred",
+            "last_name": "Last2",
+            "username": "student2",
+        }
+        self.assertEqual(self.serializer_preferred_name.data, sample_response)
 
 
 class PhoneNumberSerializerTestCase(TestCase):

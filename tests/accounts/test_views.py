@@ -10,8 +10,13 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 
-from accounts.models import User
-from accounts.serializers import UserSearchSerializer, UserSerializer
+from accounts.models import User, PhoneNumberModel, Email
+from accounts.serializers import (
+    UserSearchSerializer,
+    UserSerializer,
+    PhoneNumberSerializer,
+    EmailSerializer,
+)
 
 
 class LoginViewTestCase(TestCase):
@@ -208,20 +213,69 @@ class UserViewTestCase(TestCase):
         response = self.client.get(reverse("accounts:me"))
         self.assertEqual(json.loads(response.content), self.serializer.data)
 
-    # def test_retrieve(self):
-    #     self.client.force_authenticate(user=self.user1)
-    #     response = self.client.get(reverse("accounts:me"))
-    #     print(response.content)
-    #     self.assertEqual(200, response.status_code)
-    #     # self.assertIn(response.status_code, [200, 201], response.content)
 
-    # def test_new_preferred_name(self):
-    #     self.client.login(username="test1", password="pw1")
-    #     self.client.patch(
-    #         reverse("accounts:me"),
-    #         {"get_preferred_name": "new_preferred"},
-    #         content_type="application/json",
-    #     )
-    #     print("preferred: ", self.user1.preferred_name)
-    #     self.assertEqual(self.user1.preferred_name, "new_preferred")
-    #     self.assertEqual(self.user1.first_name, "first1")
+class PhoneNumberViewTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            pennid=1, username="test1", first_name="first1", last_name="last1"
+        )
+
+        self.number1 = PhoneNumberModel.objects.create(
+            user=self.user,
+            phone_number="+12150001111",
+            primary=False,
+            verified=False,
+            verification_code="123456",
+            verification_timestamp=timezone.now(),
+        )
+        self.number2 = PhoneNumberModel.objects.create(
+            user=self.user, phone_number="+12058869999", primary=True,
+        )
+        self.number3 = PhoneNumberModel.objects.create(
+            user=self.user, phone_number="+16170031234", primary=False,
+        )
+
+        self.client = APIClient()
+        self.serializer1 = PhoneNumberSerializer(self.number1)
+        self.serializer2 = PhoneNumberSerializer(self.number2)
+        self.serializer3 = PhoneNumberSerializer(self.number3)
+
+    def test_get_queryset(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse("accounts:me-phonenumber-list"))
+        self.assertEqual(
+            json.loads(response.content),
+            [self.serializer1.data, self.serializer2.data, self.serializer3.data],
+        )
+
+
+class EmailViewTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            pennid=1, username="test1", first_name="first1", last_name="last1"
+        )
+        self.email1 = Email.objects.create(
+            user=self.user,
+            email="example@test.com",
+            primary=True,
+            verification_timestamp=timezone.now(),
+        )
+        self.email2 = Email.objects.create(
+            user=self.user,
+            email="example2@test.com",
+            primary=False,
+            verification_code="123456",
+            verification_timestamp=timezone.now(),
+        )
+
+        self.client = APIClient()
+        self.serializer1 = EmailSerializer(self.email1)
+        self.serializer2 = EmailSerializer(self.email2)
+
+    def test_get_queryset(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse("accounts:me-email-list"))
+        self.assertEqual(
+            json.loads(response.content), [self.serializer1.data, self.serializer2.data],
+        )
+
