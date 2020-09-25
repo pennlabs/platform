@@ -227,32 +227,11 @@ class PhoneNumberSerializerTestCase(TestCase):
         # print("before save")
 
         serializer.save()
+        self.number2.refresh_from_db()
+        self.number3.refresh_from_db()
 
-        # print("after save 1 ")
-        # print(self.number2.primary)
-        # print(self.number3.primary)
-        # print("query")
-        # print(PhoneNumberModel.objects.filter(user=self.user)[0].primary)
-        # print(PhoneNumberModel.objects.filter(user=self.user)[1].primary)
-        # print(PhoneNumberModel.objects.filter(user=self.user)[2].primary)
-
-        # serializer2 = PhoneNumberSerializer(
-        #     self.number2, data={"primary": False}, context={"request": FakeRequest(self.user)}
-        # )
-
-        # serializer2.is_valid()
-        # serializer2.save()
-        # self.number2.save()
-
-        # print("after save 2 ")
-        # print(self.number2.primary)
-        # print(self.number3.primary)
-        # print("query")
-        # print(PhoneNumberModel.objects.filter(user=self.user)[0].primary)
-        # print(PhoneNumberModel.objects.filter(user=self.user)[1].primary)
-        # print(PhoneNumberModel.objects.filter(user=self.user)[2].primary)
-        self.assertTrue(self.user.phone_numbers.all()[2].primary)
-        self.assertFalse(self.user.phone_numbers.all()[1].primary)
+        self.assertTrue(self.number3.primary)
+        self.assertFalse(self.number2.primary)
 
     def test_verification_timeout(self):
         data = {
@@ -361,8 +340,11 @@ class EmailSerializerTestCase(TestCase):
 
         serializer.save()
 
-        self.assertTrue(self.user.emails.all()[1].primary)
-        self.assertFalse(self.user.emails.all()[0].primary)
+        self.email1.refresh_from_db()
+        self.email2.refresh_from_db()
+
+        self.assertTrue(self.email2.primary)
+        self.assertFalse(self.email1.primary)
 
     def test_verification_timeout(self):
         data = {
