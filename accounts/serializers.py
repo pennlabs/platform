@@ -47,9 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
     # name. Thus, this logic only needs to happen on update.
     def update(self, instance, validated_data):
         if validated_data["get_preferred_name"]:
-            # print("data: ", validated_data)
             instance.preferred_name = validated_data["get_preferred_name"]
-            # print("preferred: " + instance.preferred_name)
             if instance.preferred_name == instance.first_name:
                 instance.preferred_name = ""
 
@@ -90,14 +88,6 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
         fields = ["id", "phone_number", "primary", "verified", "verification_code"]
         read_only_fields = ["verified"]
         extra_kwargs = {"verification_code": {"write_only": True}}
-
-    # def validate_phone_number(self, value):
-    #     print("validate phone number called")
-    #     print(self.context["request"].user.phone_numbers.filter(phone_number=value).count())
-    #     if self.context["request"].user.phone_numbers.filter(phone_number=value).count() > 0:
-    #         print("caught error")
-    #         raise serializers.ValidationError("Duplicate phone number used")
-    #     return super.validate_phone_number(value)
 
     def create(self, validated_data):
         validated_data["user"] = self.context["request"].user
