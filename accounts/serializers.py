@@ -1,9 +1,6 @@
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
-from rest_framework.exceptions import APIException
-from rest_framework.response import Response
-
 
 from accounts.models import Email, PhoneNumberModel, Student, User
 from accounts.verification import sendEmailVerification, sendSMSVerification

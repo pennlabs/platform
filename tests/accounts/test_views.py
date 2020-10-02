@@ -10,12 +10,12 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 
-from accounts.models import User, PhoneNumberModel, Email
+from accounts.models import Email, PhoneNumberModel, User
 from accounts.serializers import (
+    EmailSerializer,
+    PhoneNumberSerializer,
     UserSearchSerializer,
     UserSerializer,
-    PhoneNumberSerializer,
-    EmailSerializer,
 )
 
 
@@ -278,4 +278,3 @@ class EmailViewTestCase(TestCase):
         self.assertEqual(
             json.loads(response.content), [self.serializer1.data, self.serializer2.data],
         )
-

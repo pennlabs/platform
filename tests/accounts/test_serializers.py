@@ -1,19 +1,18 @@
 import datetime
 
 import pytz
-from rest_framework import serializers
-from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from phonenumber_field.phonenumber import PhoneNumber
+from django.utils import timezone
+from rest_framework import serializers
 
 from accounts.models import Email, PhoneNumberModel, Student, User
 from accounts.serializers import (
     EmailSerializer,
     PhoneNumberSerializer,
     StudentSerializer,
-    UserSerializer,
     UserSearchSerializer,
+    UserSerializer,
 )
 
 
@@ -434,4 +433,3 @@ class EmailSerializerTestCase(TestCase):
             with self.assertRaises(serializers.ValidationError):
                 serializer.save()
         self.assertFalse(email.verified)
-
