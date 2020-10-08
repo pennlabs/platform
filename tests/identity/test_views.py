@@ -133,6 +133,19 @@ class RefreshTestCase(TestCase):
         self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
         self.assertNotIn("access", content)
 
+    def test_refresh_no_use(self):
+        now = time.time()
+        token = jwt.JWT(header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "iat": now})
+        token.make_signed_token(self.key)
+        auth_headers = {
+            "HTTP_AUTHORIZATION": f"Bearer {token.serialize}",
+        }
+        response = self.client.get(reverse("identity:refresh"), **auth_headers)
+        content = response.json()
+        self.assertIsInstance(content, dict)
+        self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
+        self.assertNotIn("access", content)
+
     def test_unauthenticated(self):
         response = self.client.get(reverse("identity:refresh"))
         content = response.json()
