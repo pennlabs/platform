@@ -1,14 +1,16 @@
-from http import HTTPStatus
-from django.test import Client, TestCase
-from django.urls import reverse
-from oauth2_provider.models import get_application_model
-from django.contrib.auth import get_user_model
 import base64
-from jwcrypto import jwk, jwt
-from django.conf import settings
 import json
 import time
-from identity.views import SIGNING_ALG, EXPIRY_TIME
+from http import HTTPStatus
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from django.urls import reverse
+from identity.views import SIGNING_ALG
+from jwcrypto import jwk, jwt
+from oauth2_provider.models import get_application_model
+
 
 class AttestTestCase(TestCase):
     def setUp(self):
@@ -29,8 +31,9 @@ class AttestTestCase(TestCase):
 
     def test_valid_attest(self):
         app = self.application
+        auth_encoded = base64.b64encode(f"{app.client_id}:{app.client_secret}".encode("utf-8"))
         auth_headers = {
-            'HTTP_HTTP_AUTHORIZATION': 'Basic ' + base64.b64encode(f"{app.client_id}:{app.client_secret}".encode("utf-8")).decode("utf-8"),
+            "HTTP_HTTP_AUTHORIZATION": f"Basic {auth_encoded.decode('utf-8')}",
         }
         response = self.client.post(reverse("identity:attest"), **auth_headers)
         content = response.json()
@@ -52,9 +55,8 @@ class AttestTestCase(TestCase):
         self.assertNotIn("exp", refresh_claims)
 
     def test_bad_secret(self):
-        app = self.application
         auth_headers = {
-            'HTTP_HTTP_AUTHORIZATION': 'Basic worniuvoasnlksdfjlksjdflk',
+            "HTTP_HTTP_AUTHORIZATION": "Basic worniuvoasnlksdfjlksjdflk",
         }
         response = self.client.post(reverse("identity:attest"), **auth_headers)
         content = response.json()
@@ -64,7 +66,6 @@ class AttestTestCase(TestCase):
         self.assertNotIn("refresh", content)
 
     def test_no_auth(self):
-        app = self.application
         auth_headers = {}
         response = self.client.post(reverse("identity:attest"), **auth_headers)
         content = response.json()
@@ -72,6 +73,7 @@ class AttestTestCase(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.UNAUTHORIZED)
         self.assertNotIn("access", content)
         self.assertNotIn("refresh", content)
+
 
 class JwksTestCase(TestCase):
     def setUp(self):
@@ -88,6 +90,7 @@ class JwksTestCase(TestCase):
         self.assertEqual(self.key.key_type, found_key.key_type)
         self.assertTrue(found_key.has_public)
         self.assertFalse(found_key.has_private)
+
 
 class RefreshTestCase(TestCase):
     def setUp(self):
@@ -107,7 +110,7 @@ class RefreshTestCase(TestCase):
         )
         token.make_signed_token(self.key)
         auth_headers = {
-            'HTTP_AUTHORIZATION': 'Bearer ' + token.serialize(),
+            "HTTP_AUTHORIZATION": f"Bearer {token.serialize()}",
         }
         response = self.client.get(reverse("identity:refresh"), **auth_headers)
         content = response.json()
@@ -132,7 +135,7 @@ class RefreshTestCase(TestCase):
         )
         token.make_signed_token(self.key)
         auth_headers = {
-            'HTTP_AUTHORIZATION': 'Bearer ' + token.serialize(),
+            "HTTP_AUTHORIZATION": f"Bearer {token.serialize}",
         }
         response = self.client.get(reverse("identity:refresh"), **auth_headers)
         content = response.json()

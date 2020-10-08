@@ -1,11 +1,5 @@
 from django.urls import path
-from oauth2_provider.views import AuthorizationView, TokenView
-
-from identity.views import (
-    AttestView,
-    JwksInfoView,
-    RefreshJWTView
-)
+from identity.views import AttestView, JwksInfoView, RefreshJWTView
 
 
 app_name = "identity"

@@ -1,17 +1,19 @@
-from oauth2_provider.views.mixins import OAuthLibMixin
-from django.views.generic import View
-from oauth2_provider.settings import oauth2_settings
-from django.conf import settings
-from jwcrypto import jwk, jwt
 import json
-from django.http import JsonResponse
 import time
 from http import HTTPStatus
+
+from django.conf import settings
+from django.http import JsonResponse
 from django.utils.text import slugify
+from django.views.generic import View
+from jwcrypto import jwk, jwt
+from oauth2_provider.settings import oauth2_settings
+from oauth2_provider.views.mixins import OAuthLibMixin
+
 
 id_privkey = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
 SIGNING_ALG = "RS256"
-EXPIRY_TIME = 15 * 60 # 15 minutes
+EXPIRY_TIME = 15 * 60  # 15 minutes
 
 
 class AttestView(OAuthLibMixin, View):
@@ -103,14 +105,14 @@ class RefreshJWTView(View):
             )
 
 
-"""
-Minting JWTs with the following claims:
-- use -> access - this says that this JWT is strictly an access JWT
-- iat -> now - this says that this JWT isn't active until the current time.
-  this protects us from attacks from clock skew
-- exp -> expiry_time - this makes sure our JWT is only valid for EXPIRY_TIME
-"""
 def mint_access_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
+    """
+    Minting JWTs with the following claims:
+    - use -> access - this says that this JWT is strictly an access JWT
+    - iat -> now - this says that this JWT isn't active until the current time.
+    this protects us from attacks from clock skew
+    - exp -> expiry_time - this makes sure our JWT is only valid for EXPIRY_TIME
+    """
     now = time.time()
     expiry_time = now + EXPIRY_TIME
     token = jwt.JWT(
@@ -126,13 +128,13 @@ def mint_access_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
     return token
 
 
-"""
-Minting JWTs with the following claims:
-- use -> refresh - this says that this JWT is strictly a refresh JWT
-- iat -> now - this says that this JWT isn't active until the current time.
-  this protects us from attacks from clock skew
-"""
 def mint_refresh_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
+    """
+    Minting JWTs with the following claims:
+    - use -> refresh - this says that this JWT is strictly a refresh JWT
+    - iat -> now - this says that this JWT isn't active until the current time.
+    this protects us from attacks from clock skew
+    """
     now = time.time()
     token = jwt.JWT(
         header={"alg": SIGNING_ALG},
