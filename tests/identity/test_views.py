@@ -101,12 +101,7 @@ class RefreshTestCase(TestCase):
     def test_valid_refresh(self):
         now = time.time()
         token = jwt.JWT(
-            header={"alg": SIGNING_ALG},
-            claims={
-                "sub": self.urn,
-                "use": "refresh",
-                "iat": now,
-            }
+            header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "use": "refresh", "iat": now}
         )
         token.make_signed_token(self.key)
         auth_headers = {
@@ -126,12 +121,7 @@ class RefreshTestCase(TestCase):
     def test_refresh_with_access(self):
         now = time.time()
         token = jwt.JWT(
-            header={"alg": SIGNING_ALG},
-            claims={
-                "sub": self.urn,
-                "use": "access",
-                "iat": now,
-            }
+            header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "use": "access", "iat": now}
         )
         token.make_signed_token(self.key)
         auth_headers = {

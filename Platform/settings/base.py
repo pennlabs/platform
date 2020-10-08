@@ -25,7 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", "o7ql0!vuk0%rgrh9p2bihq#pege$qqlm@zo#8&t==%&za33m*2")
-IDENTITY_RSA_PRIVATE_KEY = os.environ.get("IDENTITY_RSA_PRIVATE_KEY", """-----BEGIN RSA PRIVATE KEY-----
+IDENTITY_RSA_PRIVATE_KEY = os.environ.get(
+    "IDENTITY_RSA_PRIVATE_KEY",
+    """-----BEGIN RSA PRIVATE KEY-----
 MIICXQIBAAKBgQCbCYh5h2NmQuBqVO6G+/CO+cHm9VBzsb0MeA6bbQfDnbhstVOT
 j0hcnZJzDjYc6ajBZZf6gxVP9xrdm9Uh599VI3X5PFXLbMHrmzTAMzCGIyg+/fnP
 0gocYxmCX2+XKyj/Zvt1pUX8VAN2AhrJSfxNDKUHERTVEV9bRBJg4F0C3wIDAQAB
@@ -39,7 +41,8 @@ uEy0EN6n09AKb8gS9QH1STgAqh+ltjMkeMe3C2DKYK5/QU9/Pc58lWl1FkcCQG67
 ZamQgxjcvJ85FvymS1aqW45KwNysIlzHjFo2jMlMf7dN6kobbPMQftDENLJvLWIT
 qoFyGycdsxZiPAIyZSECQQCZFn3Dl6hnJxWZH8Fsa9hj79kZ/WVkIXGmtdgt0fNr
 dTnvCVtA59ne4LEVie/PMH/odQWY0SxVm/76uBZv/1vY
------END RSA PRIVATE KEY-----""")
+-----END RSA PRIVATE KEY-----""",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

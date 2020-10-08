@@ -23,6 +23,7 @@ class AttestView(OAuthLibMixin, View):
     This endpoint returns a refresh JWT with an unlimited lifetime and an access JWT with
     a short lifetime.
     """
+
     server_class = oauth2_settings.OAUTH2_SERVER_CLASS
     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
     oauthlib_backend_class = oauth2_settings.OAUTH2_BACKEND_CLASS
@@ -44,10 +45,7 @@ class AttestView(OAuthLibMixin, View):
         access_jwt = mint_access_jwt(id_privkey, urn)
         refresh_jwt = mint_refresh_jwt(id_privkey, urn)
         return JsonResponse(
-            data={
-                "access": access_jwt.serialize(),
-                "refresh": refresh_jwt.serialize(),
-            }
+            data={"access": access_jwt.serialize(), "refresh": refresh_jwt.serialize()}
         )
 
 
@@ -58,13 +56,7 @@ class JwksInfoView(View):
 
     # building out JWKS view at init time so we don't have to recalculate it for each request
     def __init__(self, **kwargs):
-        data = {
-            "keys": [{
-                "alg": SIGNING_ALG,
-                "use": "sig",
-                "kid": id_privkey.thumbprint()
-            }]
-        }
+        data = {"keys": [{"alg": SIGNING_ALG, "use": "sig", "kid": id_privkey.thumbprint()}]}
         data["keys"][0].update(json.loads(id_privkey.export_public()))
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
@@ -80,12 +72,12 @@ class RefreshJWTView(View):
     """
     View used for refreshing access JWTs
     """
+
     def get(self, request, *args, **kwargs):
         auth_header = request.META.get("HTTP_AUTHORIZATION")
         if auth_header is None:
             return JsonResponse(
-                data={"error": "no authorization provided"},
-                status=HTTPStatus.UNAUTHORIZED,
+                data={"error": "no authorization provided"}, status=HTTPStatus.UNAUTHORIZED,
             )
         refresh_jwt_raw = auth_header.split(" ")[1]
         try:
@@ -95,9 +87,7 @@ class RefreshJWTView(View):
                 raise Exception("expected JWT with `use -> refresh` claim")
             urn = claims["sub"]
             new_access_jwt = mint_access_jwt(id_privkey, urn)
-            return JsonResponse(
-                data={"access": new_access_jwt.serialize()}
-            )
+            return JsonResponse(data={"access": new_access_jwt.serialize()})
         except Exception as e:
             return JsonResponse(
                 data={"error": f"failure validating refresh jwt: {e}"},
@@ -117,12 +107,7 @@ def mint_access_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
     expiry_time = now + EXPIRY_TIME
     token = jwt.JWT(
         header={"alg": SIGNING_ALG},
-        claims={
-            "sub": urn,
-            "use": "access",
-            "iat": now,
-            "exp": expiry_time,
-        }
+        claims={"sub": urn, "use": "access", "iat": now, "exp": expiry_time},
     )
     token.make_signed_token(key)
     return token
@@ -136,13 +121,6 @@ def mint_refresh_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
     this protects us from attacks from clock skew
     """
     now = time.time()
-    token = jwt.JWT(
-        header={"alg": SIGNING_ALG},
-        claims={
-            "sub": urn,
-            "use": "refresh",
-            "iat": now,
-        }
-    )
+    token = jwt.JWT(header={"alg": SIGNING_ALG}, claims={"sub": urn, "use": "refresh", "iat": now})
     token.make_signed_token(key)
     return token
