@@ -4,10 +4,10 @@ from oauth2_provider.settings import oauth2_settings
 from django.conf import settings
 from jwcrypto import jwk, jwt
 import json
-from django.http import HTTPResponse, JsonResponse
+from django.http import JsonResponse
 import time
 from http import HTTPStatus
-from jwcrypto.common import JWException
+from django.utils.text import slugify
 
 id_privkey = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
 SIGNING_ALG = "RS256"
@@ -25,13 +25,22 @@ class AttestView(OAuthLibMixin, View):
     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
     oauthlib_backend_class = oauth2_settings.OAUTH2_BACKEND_CLASS
 
+    def __init__(self, **kwargs):
+        self.validator = self.get_validator_class()()
+        super().__init__(**kwargs)
+
     def post(self, request, *args, **kwargs):
+        request.client = None
+        authenticated = self.validator.authenticate_client(request, *args, **kwargs)
+        if not authenticated:
+            return JsonResponse(data={"error": "unauthenticated"}, status=HTTPStatus.UNAUTHORIZED)
+
         # pulls out name as recorded in DOT application database
-        local_name = request.client.name.lower()
+        local_name = slugify(request.client.name)
         # example urn: `urn:pennlabs.org:ohq`
         urn = f"urn:pennlabs.org:{local_name}"
-        access_jwt = mint_access_jwt(urn)
-        refresh_jwt = mint_refresh_jwt(urn)
+        access_jwt = mint_access_jwt(id_privkey, urn)
+        refresh_jwt = mint_refresh_jwt(id_privkey, urn)
         return JsonResponse(
             data={
                 "access": access_jwt.serialize(),
@@ -65,7 +74,7 @@ class JwksInfoView(View):
         return self.jwks_response
 
 
-class RefreshView(View):
+class RefreshJWTView(View):
     """
     View used for refreshing access JWTs
     """
@@ -83,7 +92,7 @@ class RefreshView(View):
             if "use" not in claims or claims["use"] != "refresh":
                 raise Exception("expected JWT with `use -> refresh` claim")
             urn = claims["sub"]
-            new_access_jwt = mint_access_jwt(urn)
+            new_access_jwt = mint_access_jwt(id_privkey, urn)
             return JsonResponse(
                 data={"access": new_access_jwt.serialize()}
             )
@@ -101,7 +110,7 @@ Minting JWTs with the following claims:
   this protects us from attacks from clock skew
 - exp -> expiry_time - this makes sure our JWT is only valid for EXPIRY_TIME
 """
-def mint_access_jwt(urn: str) -> jwt.JWT:
+def mint_access_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
     now = time.time()
     expiry_time = now + EXPIRY_TIME
     token = jwt.JWT(
@@ -113,7 +122,7 @@ def mint_access_jwt(urn: str) -> jwt.JWT:
             "exp": expiry_time,
         }
     )
-    token.make_signed_token(id_privkey)
+    token.make_signed_token(key)
     return token
 
 
@@ -123,7 +132,7 @@ Minting JWTs with the following claims:
 - iat -> now - this says that this JWT isn't active until the current time.
   this protects us from attacks from clock skew
 """
-def mint_refresh_jwt(urn: str) -> jwt.JWT:
+def mint_refresh_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
     now = time.time()
     token = jwt.JWT(
         header={"alg": SIGNING_ALG},
@@ -133,5 +142,5 @@ def mint_refresh_jwt(urn: str) -> jwt.JWT:
             "iat": now,
         }
     )
-    token.make_signed_token(id_privkey)
+    token.make_signed_token(key)
     return token
