@@ -29,6 +29,7 @@ uwsgi = "*"
 uritemplate = "*"
 shortener = "*"
 django-runtime-options = "*"
+jwcrypto = "*"
 
 [requires]
 python_version = "3.7"
