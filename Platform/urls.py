@@ -14,7 +14,7 @@ urlpatterns = [
     path("options/", include("options.urls", namespace="options")),
     path("org/", include("org.urls")),
     path("services/", include("services.urls")),
-    path("identity/", include("identity.urls")),
+    path("identity/", include("identity.urls", namespace="identity")),
     path(
         "openapi/",
         get_schema_view(title="Platform Documentation", public=True),

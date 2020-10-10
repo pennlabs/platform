@@ -1,19 +1,17 @@
 import json
-import time
 from http import HTTPStatus
 
 from django.conf import settings
 from django.http import JsonResponse
 from django.utils.text import slugify
 from django.views.generic import View
+from identity.utils import SIGNING_ALG, mint_access_jwt, mint_refresh_jwt
 from jwcrypto import jwk, jwt
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
 
 
 id_privkey = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
-SIGNING_ALG = "RS256"
-EXPIRY_TIME = 15 * 60  # 15 minutes
 
 
 class AttestView(OAuthLibMixin, View):
@@ -42,16 +40,20 @@ class AttestView(OAuthLibMixin, View):
         local_name = slugify(request.client.name)
         # example urn: `urn:pennlabs.org:ohq`
         urn = f"urn:pennlabs.org:{local_name}"
-        access_jwt = mint_access_jwt(id_privkey, urn)
-        refresh_jwt = mint_refresh_jwt(id_privkey, urn)
         return JsonResponse(
-            data={"access": access_jwt.serialize(), "refresh": refresh_jwt.serialize()}
+            data={
+                "access": mint_access_jwt(id_privkey, urn).serialize(),
+                "refresh": mint_refresh_jwt(id_privkey, urn).serialize(),
+            }
         )
 
 
 class JwksInfoView(View):
     """
     View used to show json web key set document
+
+    Largely copied from the Django Oauth Toolkit implementation:
+    https://github.com/jazzband/django-oauth-toolkit/blob/4655c030be15616ba6e0872253a2c15a897d9701/oauth2_provider/views/oidc.py#L61  # noqa
     """
 
     # building out JWKS view at init time so we don't have to recalculate it for each request
@@ -79,9 +81,14 @@ class RefreshJWTView(View):
             return JsonResponse(
                 data={"error": "no authorization provided"}, status=HTTPStatus.UNAUTHORIZED,
             )
-        refresh_jwt_raw = auth_header.split(" ")[1]
+        split_header = auth_header.split(" ")
+        if len(split_header) < 2 or split_header[0] != "Bearer":
+            return JsonResponse(
+                data={"error": "please provide authorization with bearer token"},
+                status=HTTPStatus.UNAUTHORIZED,
+            )
         try:
-            refresh_jwt = jwt.JWT(key=id_privkey, jwt=refresh_jwt_raw)
+            refresh_jwt = jwt.JWT(key=id_privkey, jwt=split_header[1])
             claims = json.loads(refresh_jwt.claims)
             if "use" not in claims or claims["use"] != "refresh":
                 raise Exception("expected JWT with `use -> refresh` claim")
@@ -93,34 +100,3 @@ class RefreshJWTView(View):
                 data={"error": f"failure validating refresh jwt: {e}"},
                 status=HTTPStatus.BAD_REQUEST,
             )
-
-
-def mint_access_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
-    """
-    Minting JWTs with the following claims:
-    - use -> access - this says that this JWT is strictly an access JWT
-    - iat -> now - this says that this JWT isn't active until the current time.
-    this protects us from attacks from clock skew
-    - exp -> expiry_time - this makes sure our JWT is only valid for EXPIRY_TIME
-    """
-    now = time.time()
-    expiry_time = now + EXPIRY_TIME
-    token = jwt.JWT(
-        header={"alg": SIGNING_ALG},
-        claims={"sub": urn, "use": "access", "iat": now, "exp": expiry_time},
-    )
-    token.make_signed_token(key)
-    return token
-
-
-def mint_refresh_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
-    """
-    Minting JWTs with the following claims:
-    - use -> refresh - this says that this JWT is strictly a refresh JWT
-    - iat -> now - this says that this JWT isn't active until the current time.
-    this protects us from attacks from clock skew
-    """
-    now = time.time()
-    token = jwt.JWT(header={"alg": SIGNING_ALG}, claims={"sub": urn, "use": "refresh", "iat": now})
-    token.make_signed_token(key)
-    return token
