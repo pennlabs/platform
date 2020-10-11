@@ -214,14 +214,10 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
         return self.request.user.phone_numbers.all()
 
     def destroy(self, request, *args, **kwargs):
-        # can't delete if it's the last number
-        if len(self.get_queryset()) < 2:
-            return HttpResponse("You can't delete the only phonenumber", status=405)
-
         is_primary = self.get_object().primary
         self.get_object().delete()
-        if is_primary:
-            next_number = self.get_queryset()[0]
+        if is_primary and len(self.get_queryset().filter(verified=True)) > 0:
+            next_number = self.get_queryset().filter(verified=True)[0]
             next_number.primary = True
             next_number.save()
         return HttpResponse("Number successfully deleted", status=200)
@@ -257,13 +253,13 @@ class EmailViewSet(viewsets.ModelViewSet):
         return self.request.user.emails.all()
 
     def destroy(self, request, *args, **kwargs):
-        if len(self.get_queryset()) < 2:
-            return HttpResponse("You can't delete the only email", status=405)
+        if len(self.get_queryset().filter(verified=True)) < 2:
+            return HttpResponse("You can't delete the only verified email", status=405)
 
         is_primary = self.get_object().primary
         self.get_object().delete()
-        if is_primary:
-            next_email = self.get_queryset()[0]
+        if is_primary and len(self.get_queryset().filter(verified=True)) > 0:
+            next_email = self.get_queryset().filter(verified=True)[0]
             next_email.primary = True
             next_email.save()
         return HttpResponse("Email successfully deleted", status=200)

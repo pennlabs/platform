@@ -221,25 +221,20 @@ class PhoneNumberViewTestCase(TestCase):
         )
 
         self.number1 = PhoneNumberModel.objects.create(
-            user=self.user,
-            phone_number="+12150001111",
-            primary=False,
-            verified=False,
-            verification_code="123456",
-            verification_timestamp=timezone.now(),
+            user=self.user, phone_number="+12150001111", primary=False, verified=False,
         )
         self.number2 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12058869999", primary=True,
+            user=self.user, phone_number="+12058869999", primary=True, verified=True,
         )
         self.number3 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+16170031234", primary=False,
+            user=self.user, phone_number="+16170031234", primary=False, verified=True,
         )
 
         self.user2 = User.objects.create(
-            pennid=2, username="test2", first_name="first2", last_name="last2"
+            pennid=2, username="test2", first_name="first2", last_name="last2",
         )
         self.number4 = PhoneNumberModel.objects.create(
-            user=self.user2, phone_number="+12158989000", primary=True,
+            user=self.user2, phone_number="+12158989000", primary=True, verified=True,
         )
 
         self.client = APIClient()
@@ -257,29 +252,29 @@ class PhoneNumberViewTestCase(TestCase):
 
     def test_destroy_nonprimary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-phonenumber-detail", kwargs={"pk": 1}))
+        response = self.client.delete(reverse("accounts:me-phonenumber-detail", args=[1]))
         self.assertEqual(response.status_code, 200)
+        self.number2.refresh_from_db()
+        self.number3.refresh_from_db()
         self.assertTrue(self.number2.primary)
         self.assertFalse(self.number3.primary)
-        self.assertFalse(self.user.phone_numbers.filter(pk=1).exists())
+        self.assertFalse(self.user.phone_numbers.filter(phone_number="+12150001111").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-phonenumber-detail", kwargs={"pk": 2}))
+        response = self.client.delete(reverse("accounts:me-phonenumber-detail", args=[2]))
         self.assertEqual(response.status_code, 200)
         self.number1.refresh_from_db()
         self.number3.refresh_from_db()
-        self.assertTrue(self.number1.primary)
-        self.assertFalse(self.number3.primary)
-        self.assertFalse(self.user.phone_numbers.filter(pk=2).exists())
+        self.assertTrue(self.number3.primary)
+        self.assertFalse(self.number1.primary)
+        self.assertFalse(self.user.phone_numbers.filter(phone_number="+12058869999").exists())
 
     def test_destroy_only_number(self):
         self.client.force_authenticate(user=self.user2)
-        response = self.client.delete(reverse("accounts:me-phonenumber-detail", kwargs={"pk": 4}))
-        self.assertEqual(response.status_code, 405)
-        self.number4.refresh_from_db()
-        self.assertTrue(self.user2.phone_numbers.filter(pk=4).exists())
-        self.assertTrue(self.number4.primary)
+        response = self.client.delete(reverse("accounts:me-phonenumber-detail", args=[4]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(len(self.user2.phone_numbers.all()), 0)
 
 
 class EmailViewTestCase(TestCase):
@@ -288,54 +283,62 @@ class EmailViewTestCase(TestCase):
             pennid=1, username="test1", first_name="first1", last_name="last1"
         )
         self.email1 = Email.objects.create(
-            user=self.user,
-            email="example@test.com",
-            primary=True,
-            verification_timestamp=timezone.now(),
+            user=self.user, email="example@test.com", primary=True, verified=True,
         )
         self.email2 = Email.objects.create(
-            user=self.user,
-            email="example2@test.com",
-            primary=False,
-            verification_code="123456",
-            verification_timestamp=timezone.now(),
+            user=self.user, email="example2@test.com", primary=False, verified=False,
+        )
+        self.email3 = Email.objects.create(
+            user=self.user, email="example3@test.com", primary=False, verified=True,
         )
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2"
         )
-        self.email3 = Email.objects.create(
-            user=self.user2, email="example2@test.com", primary=True,
+        self.email4 = Email.objects.create(
+            user=self.user2, email="example4@test.com", primary=True, verified=True
+        )
+        self.email5 = Email.objects.create(
+            user=self.user2, email="example5@test.com", primary=False, verified=False
         )
         self.client = APIClient()
         self.serializer1 = EmailSerializer(self.email1)
         self.serializer2 = EmailSerializer(self.email2)
+        self.serializer3 = EmailSerializer(self.email3)
 
     def test_get_queryset(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("accounts:me-email-list"))
         self.assertEqual(
-            json.loads(response.content), [self.serializer1.data, self.serializer2.data],
+            json.loads(response.content),
+            [self.serializer1.data, self.serializer2.data, self.serializer3.data],
         )
 
     def test_destroy_nonprimary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-email-detail", kwargs={"pk": 2}))
+        response = self.client.delete(reverse("accounts:me-email-detail", args=[2]))
         self.assertEqual(response.status_code, 200)
+        self.email1.refresh_from_db()
+        self.email3.refresh_from_db()
         self.assertTrue(self.email1.primary)
-        self.assertFalse(self.user.emails.filter(pk=2).exists())
+        self.assertFalse(self.email3.primary)
+        self.assertFalse(self.user.emails.filter(email="example2@test.com").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-email-detail", kwargs={"pk": 1}))
+        response = self.client.delete(reverse("accounts:me-email-detail", args=[1]))
         self.assertEqual(response.status_code, 200)
         self.email2.refresh_from_db()
-        self.assertTrue(self.email2.primary)
-        self.assertFalse(self.user.emails.filter(pk=1).exists())
-
-    def test_destroy_only_number(self):
-        self.client.force_authenticate(user=self.user2)
-        response = self.client.delete(reverse("accounts:me-email-detail", kwargs={"pk": 3}))
-        self.assertEqual(response.status_code, 405)
         self.email3.refresh_from_db()
-        self.assertTrue(self.user2.emails.filter(pk=3).exists())
+        self.assertFalse(self.email2.primary)
         self.assertTrue(self.email3.primary)
+        self.assertFalse(self.user.emails.filter(email="example@test.com").exists())
+
+    def test_destroy_only_verified_email(self):
+        self.client.force_authenticate(user=self.user2)
+        response = self.client.delete(reverse("accounts:me-email-detail", args=[4]))
+        self.assertEqual(response.status_code, 405)
+        self.email4.refresh_from_db()
+        self.email5.refresh_from_db()
+        self.assertTrue(self.email4.primary)
+        self.assertFalse(self.email5.primary)
+        self.assertTrue(self.user2.emails.filter(email="example4@test.com").exists())
