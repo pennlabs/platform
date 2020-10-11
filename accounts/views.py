@@ -216,7 +216,7 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         # can't delete if it's the last number
         if len(self.get_queryset()) < 2:
-            return HttpResponse("You can't delete the only phonenumber")
+            return HttpResponse("You can't delete the only phonenumber", status=405)
 
         is_primary = self.get_object().primary
         self.get_object().delete()
@@ -224,7 +224,7 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
             next_number = self.get_queryset()[0]
             next_number.primary = True
             next_number.save()
-        return HttpResponse("Number successfully deleted")
+        return HttpResponse("Number successfully deleted", status=200)
 
 
 class EmailViewSet(viewsets.ModelViewSet):
@@ -257,17 +257,16 @@ class EmailViewSet(viewsets.ModelViewSet):
         return self.request.user.emails.all()
 
     def destroy(self, request, *args, **kwargs):
-        # can't delete if it's the last number
         if len(self.get_queryset()) < 2:
-            return HttpResponse("You can't delete the only phonenumber")
+            return HttpResponse("You can't delete the only email", status=405)
 
         is_primary = self.get_object().primary
         self.get_object().delete()
         if is_primary:
-            next_number = self.get_queryset()[0]
-            next_number.primary = True
-            next_number.save()
-        return HttpResponse("Number successfully deleted")
+            next_email = self.get_queryset()[0]
+            next_email.primary = True
+            next_email.save()
+        return HttpResponse("Email successfully deleted", status=200)
 
 
 class ProtectedViewSet(PennView):
