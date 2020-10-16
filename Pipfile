@@ -29,7 +29,6 @@ uritemplate = "*"
 shortener = "*"
 django-runtime-options = "*"
 django-phonenumber-field = "*"
-phonenumbers = "*"
 django-email-tools = "*"
 twilio = "*"
 

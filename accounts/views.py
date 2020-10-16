@@ -5,7 +5,7 @@ from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -178,7 +178,6 @@ class UserView(generics.RetrieveUpdateAPIView):
 
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-    # lookup_field = "pennid"
 
     def get_object(self):
         return self.request.user
@@ -216,11 +215,11 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         is_primary = self.get_object().primary
         self.get_object().delete()
-        if is_primary and len(self.get_queryset().filter(verified=True)) > 0:
-            next_number = self.get_queryset().filter(verified=True)[0]
+        next_number = self.get_queryset().filter(verified=True).first()
+        if is_primary and next_number is not None:
             next_number.primary = True
             next_number.save()
-        return HttpResponse("Number successfully deleted", status=200)
+        return JsonResponse({"message": "Phone number successfully deleted", "status": 200})
 
 
 class EmailViewSet(viewsets.ModelViewSet):
@@ -253,16 +252,18 @@ class EmailViewSet(viewsets.ModelViewSet):
         return self.request.user.emails.all()
 
     def destroy(self, request, *args, **kwargs):
-        if len(self.get_queryset().filter(verified=True)) < 2:
-            return HttpResponse("You can't delete the only verified email", status=405)
+        if self.get_queryset().filter(verified=True).count() < 2:
+            return JsonResponse(
+                {"message": "You can't delete the only verified email", "status": 405}
+            )
 
         is_primary = self.get_object().primary
         self.get_object().delete()
-        if is_primary and len(self.get_queryset().filter(verified=True)) > 0:
-            next_email = self.get_queryset().filter(verified=True)[0]
+        next_email = self.get_queryset().filter(verified=True).first()
+        if is_primary and next_email is not None:
             next_email.primary = True
             next_email.save()
-        return HttpResponse("Email successfully deleted", status=200)
+        return JsonResponse({"message": "Email successfully deleted", "status": 200})
 
 
 class ProtectedViewSet(PennView):
