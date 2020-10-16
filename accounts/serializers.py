@@ -30,15 +30,15 @@ class UserSerializer(serializers.ModelSerializer):
             "user_permissions",
         )
 
-        read_only_fields = (
-            "pennid",
-            "last_name",
-            "username",
-            "email",
-            "groups",
-            "product_permission",
-            "user_permissions",
-        )
+        # read_only_fields = (
+        #     "pennid",
+        #     "last_name",
+        #     "username",
+        #     "email",
+        #     "groups",
+        #     "product_permission",
+        #     "user_permissions",
+        # )
 
     # Users are pulled from Penn DB, so come with no preferred
     # name. Thus, this logic only needs to happen on update.
