@@ -241,6 +241,7 @@ class PhoneNumberViewTestCase(TestCase):
         self.serializer1 = PhoneNumberSerializer(self.number1)
         self.serializer2 = PhoneNumberSerializer(self.number2)
         self.serializer3 = PhoneNumberSerializer(self.number3)
+        self.expected_response = {"message": "Phone number successfully deleted", "status": 200}
 
     def test_get_queryset(self):
         self.client.force_authenticate(user=self.user)
@@ -252,28 +253,34 @@ class PhoneNumberViewTestCase(TestCase):
 
     def test_destroy_nonprimary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-phonenumber-detail", args=[1]))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.delete(
+            reverse("accounts:me-phonenumber-detail", args=[self.number1.id])
+        )
         self.number2.refresh_from_db()
         self.number3.refresh_from_db()
         self.assertTrue(self.number2.primary)
         self.assertFalse(self.number3.primary)
+        self.assertEqual(json.loads(response.content), self.expected_response)
         self.assertFalse(self.user.phone_numbers.filter(phone_number="+12150001111").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-phonenumber-detail", args=[2]))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.delete(
+            reverse("accounts:me-phonenumber-detail", args=[self.number2.id])
+        )
         self.number1.refresh_from_db()
         self.number3.refresh_from_db()
         self.assertTrue(self.number3.primary)
         self.assertFalse(self.number1.primary)
+        self.assertEqual(json.loads(response.content), self.expected_response)
         self.assertFalse(self.user.phone_numbers.filter(phone_number="+12058869999").exists())
 
     def test_destroy_only_number(self):
         self.client.force_authenticate(user=self.user2)
-        response = self.client.delete(reverse("accounts:me-phonenumber-detail", args=[4]))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.delete(
+            reverse("accounts:me-phonenumber-detail", args=[self.number4.id])
+        )
+        self.assertEqual(json.loads(response.content), self.expected_response)
         self.assertEquals(len(self.user2.phone_numbers.all()), 0)
 
 
@@ -304,6 +311,11 @@ class EmailViewTestCase(TestCase):
         self.serializer1 = EmailSerializer(self.email1)
         self.serializer2 = EmailSerializer(self.email2)
         self.serializer3 = EmailSerializer(self.email3)
+        self.success_response = {"message": "Email successfully deleted", "status": 200}
+        self.failure_response = {
+            "message": "You can't delete the only verified email",
+            "status": 405,
+        }
 
     def test_get_queryset(self):
         self.client.force_authenticate(user=self.user)
@@ -315,30 +327,30 @@ class EmailViewTestCase(TestCase):
 
     def test_destroy_nonprimary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-email-detail", args=[2]))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.delete(reverse("accounts:me-email-detail", args=[self.email2.id]))
         self.email1.refresh_from_db()
         self.email3.refresh_from_db()
         self.assertTrue(self.email1.primary)
         self.assertFalse(self.email3.primary)
+        self.assertEqual(json.loads(response.content), self.success_response)
         self.assertFalse(self.user.emails.filter(email="example2@test.com").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-email-detail", args=[1]))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.delete(reverse("accounts:me-email-detail", args=[self.email1.id]))
         self.email2.refresh_from_db()
         self.email3.refresh_from_db()
         self.assertFalse(self.email2.primary)
         self.assertTrue(self.email3.primary)
+        self.assertEqual(json.loads(response.content), self.success_response)
         self.assertFalse(self.user.emails.filter(email="example@test.com").exists())
 
     def test_destroy_only_verified_email(self):
         self.client.force_authenticate(user=self.user2)
-        response = self.client.delete(reverse("accounts:me-email-detail", args=[4]))
-        self.assertEqual(response.status_code, 405)
+        response = self.client.delete(reverse("accounts:me-email-detail", args=[self.email4.id]))
         self.email4.refresh_from_db()
         self.email5.refresh_from_db()
         self.assertTrue(self.email4.primary)
         self.assertFalse(self.email5.primary)
+        self.assertEqual(json.loads(response.content), self.failure_response)
         self.assertTrue(self.user2.emails.filter(email="example4@test.com").exists())
