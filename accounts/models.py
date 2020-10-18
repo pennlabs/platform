@@ -6,6 +6,17 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class Major(models.Model):
+    """
+    Represents a school (ex: Engineering, Wharton, etc).
+    """
+
+    name = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
 class User(AbstractUser):
     # implicit username, email, first_name, and last_name fields
     # from AbstractUser that contains the user's PennKey
@@ -24,7 +35,8 @@ class User(AbstractUser):
 
 class Student(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
-    major = models.CharField(max_length=255, blank=True)
+    # major = models.CharField(max_length=255, blank=True)
+    major = models.ManyToManyField(Major)
     school = models.CharField(max_length=255, blank=True)
     graduation_year = models.IntegerField(null=True)
 

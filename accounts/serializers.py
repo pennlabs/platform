@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
-from accounts.models import Email, PhoneNumberModel, Student, User
+from accounts.models import Email, PhoneNumberModel, Student, User, Major
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
@@ -159,3 +159,10 @@ class EmailSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+class MajorSerializer(serializers.ModelSerializer):
+    name = serializers.CharField()
+
+    class Meta:
+        model = Major
+        fields = ("id", "name")

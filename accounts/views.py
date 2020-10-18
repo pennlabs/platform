@@ -17,12 +17,12 @@ from rest_framework.permissions import IsAuthenticated
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
-from accounts.models import User
+from accounts.models import User, Major
 from accounts.serializers import (
     EmailSerializer,
     PhoneNumberSerializer,
     UserSearchSerializer,
-    UserSerializer,
+    UserSerializer, MajorSerializer,
 )
 
 
@@ -282,3 +282,22 @@ class LabsProtectedViewSet(LabsView):
 
     def get(self, request, format=None):
         return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
+
+class SchoolViewSet(viewsets.ModelViewSet):
+    """
+    list:
+    Retrieve a list of all of the schools (ex: Wharton, Engineering).
+
+    retrieve:
+    Retrieve a single school by ID.
+
+    create:
+    Add a new school to the list of schools.
+
+    destroy:
+    Delete a school from the list of schools.
+    """
+
+    serializer_class = MajorSerializer
+    # permission_classes = [ReadOnly | IsSuperuser]
+    queryset = Major.objects.all()

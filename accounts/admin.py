@@ -4,11 +4,11 @@ from django.contrib.auth.models import Permission
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from accounts.models import Email, PhoneNumberModel, Student, User
+from accounts.models import Email, PhoneNumberModel, Student, User, Major
 
 
 class StudentAdmin(admin.ModelAdmin):
-    readonly_fields = ("user",)
+    # readonly_fields = ("user",)
     search_fields = ("user__username", "user__first_name", "user__last_name")
     list_display = ("username", "first_name", "last_name")
     list_filter = ("school", "major")
@@ -24,7 +24,7 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(admin.ModelAdmin):
-    readonly_fields = ("username", "first_name", "last_name", "pennid", "last_login", "date_joined")
+    # readonly_fields = ("username", "first_name", "last_name", "pennid", "last_login", "date_joined")
     search_fields = ("username", "first_name", "last_name")
     list_display = ("username", "first_name", "last_name", "is_staff")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
@@ -40,12 +40,19 @@ class UserAdmin(admin.ModelAdmin):
         (("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
+class MajorAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+
+    def name(self, obj):
+        return obj.name
+
 
 admin.site.register(Permission)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(PhoneNumberModel)
 admin.site.register(Email)
+admin.site.register(Major, MajorAdmin)
 
 
 class LabsAdminSite(admin.AdminSite):
