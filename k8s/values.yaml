@@ -24,3 +24,10 @@ applications:
       - name: platform
         item: SHIBBOLETH_KEY
         path: "/etc/shibboleth/sp-key.pem"
+
+cronjobs:
+  - name: clear-expired-tokens
+    schedule: "0 0 * * 0"
+    image: pennlabs/platform
+    secret: platform
+    cmd: ["python", "manage.py", "cleartokens"]
