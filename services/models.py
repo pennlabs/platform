@@ -1,36 +1,36 @@
-from django.db import models
+# from django.db import models
 
-from org.models import Team
-
-
-class Service(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    location = models.URLField()
-    icon = models.URLField()
-    notes = models.TextField(blank=True)
-    team = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
-    routes = models.ManyToManyField("Endpoint")
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ["name"]
+# from org.models import Team
 
 
-class Endpoint(models.Model):
-    url = models.CharField(max_length=255)
-    description = models.TextField()
+# class Service(models.Model):
+#     name = models.CharField(max_length=255)
+#     description = models.TextField()
+#     location = models.URLField()
+#     icon = models.URLField()
+#     notes = models.TextField(blank=True)
+#     team = models.ForeignKey(Team, on_delete=models.DO_NOTHING)
+#     routes = models.ManyToManyField("Endpoint")
 
-    def __str__(self):
-        return self.url
+#     def __str__(self):
+#         return self.name
+
+#     class Meta:
+#         ordering = ["name"]
 
 
-class Update(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING)
-    title = models.CharField(max_length=255)
-    body = models.TextField()
+# class Endpoint(models.Model):
+#     url = models.CharField(max_length=255)
+#     description = models.TextField()
 
-    def __str__(self):
-        return self.title
+#     def __str__(self):
+#         return self.url
+
+
+# class Update(models.Model):
+#     service = models.ForeignKey(Service, on_delete=models.DO_NOTHING)
+#     title = models.CharField(max_length=255)
+#     body = models.TextField()
+
+#     def __str__(self):
+#         return self.title
