@@ -1,17 +1,14 @@
 import json
 from http import HTTPStatus
 
-from django.conf import settings
 from django.http import JsonResponse
 from django.utils.text import slugify
 from django.views.generic import View
-from identity.utils import SIGNING_ALG, mint_access_jwt, mint_refresh_jwt
-from jwcrypto import jwk, jwt
+from identity.utils import SIGNING_ALG, id_privkey, mint_access_jwt, mint_refresh_jwt
+from jwcrypto import jwt
+from jwcrypto.common import JWException
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
-
-
-id_privkey = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
 
 
 class AttestView(OAuthLibMixin, View):
@@ -91,11 +88,14 @@ class RefreshJWTView(View):
             refresh_jwt = jwt.JWT(key=id_privkey, jwt=split_header[1])
             claims = json.loads(refresh_jwt.claims)
             if "use" not in claims or claims["use"] != "refresh":
-                raise Exception("expected JWT with `use -> refresh` claim")
+                return JsonResponse(
+                    data={"error": "must provide use -> refresh claim"},
+                    status=HTTPStatus.BAD_REQUEST,
+                )
             urn = claims["sub"]
             new_access_jwt = mint_access_jwt(id_privkey, urn)
             return JsonResponse(data={"access": new_access_jwt.serialize()})
-        except Exception as e:
+        except JWException as e:
             return JsonResponse(
                 data={"error": f"failure validating refresh jwt: {e}"},
                 status=HTTPStatus.BAD_REQUEST,
