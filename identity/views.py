@@ -6,7 +6,6 @@ from django.utils.text import slugify
 from django.views.generic import View
 from identity.utils import SIGNING_ALG, id_privkey, mint_access_jwt, mint_refresh_jwt
 from jwcrypto import jwt
-from jwcrypto.common import JWException
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
 
@@ -17,6 +16,10 @@ class AttestView(OAuthLibMixin, View):
 
     This endpoint returns a refresh JWT with an unlimited lifetime and an access JWT with
     a short lifetime.
+
+    This client ID/secret code is based on DOT's code. We're not sure how the validation happens on
+    their end, so we're manually implementing our validation to be safe:
+    https://github.com/jazzband/django-oauth-toolkit/blob/342a63488fee02c86b1b3e5f399ce00a4f6765d5/oauth2_provider/views/base.py#L265  # noqa
     """
 
     server_class = oauth2_settings.OAUTH2_SERVER_CLASS
@@ -85,6 +88,8 @@ class RefreshJWTView(View):
                 status=HTTPStatus.UNAUTHORIZED,
             )
         try:
+            # this line will decode and validate the JWT, raising an exception for
+            # anything that cannot be decoded or validated
             refresh_jwt = jwt.JWT(key=id_privkey, jwt=split_header[1])
             claims = json.loads(refresh_jwt.claims)
             if "use" not in claims or claims["use"] != "refresh":
@@ -95,7 +100,7 @@ class RefreshJWTView(View):
             urn = claims["sub"]
             new_access_jwt = mint_access_jwt(id_privkey, urn)
             return JsonResponse(data={"access": new_access_jwt.serialize()})
-        except JWException as e:
+        except Exception as e:
             return JsonResponse(
                 data={"error": f"failure validating refresh jwt: {e}"},
                 status=HTTPStatus.BAD_REQUEST,

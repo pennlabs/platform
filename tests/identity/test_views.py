@@ -154,9 +154,6 @@ class RefreshTestCase(TestCase):
         self.assertNotIn("access", content)
 
     def test_incomplete_bearer(self):
-        now = time.time()
-        token = jwt.JWT(header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "iat": now})
-        token.make_signed_token(self.key)
         auth_headers = {
             "HTTP_AUTHORIZATION": "Bearer",
         }
@@ -164,4 +161,14 @@ class RefreshTestCase(TestCase):
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertEqual(HTTPStatus.UNAUTHORIZED, response.status_code)
+        self.assertNotIn("access", content)
+
+    def test_garbage_bearer(self):
+        auth_headers = {
+            "HTTP_AUTHORIZATION": "Bearer abc123",
+        }
+        response = self.client.get(reverse("identity:refresh"), **auth_headers)
+        content = response.json()
+        self.assertIsInstance(content, dict)
+        self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
         self.assertNotIn("access", content)
