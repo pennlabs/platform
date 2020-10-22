@@ -41,6 +41,7 @@ class UserAdmin(admin.ModelAdmin):
     )
 
 class MajorAdmin(admin.ModelAdmin):
+    list_filter = ["is_active"]
     list_display = ["name"]
 
     def name(self, obj):
