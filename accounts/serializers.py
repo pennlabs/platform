@@ -68,7 +68,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ("user", "major", "school")
+        fields = ("user", "graduation_year")
 
     def to_representation(self, obj):
         representation = super().to_representation(obj)

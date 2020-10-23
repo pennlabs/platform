@@ -34,8 +34,7 @@ class StudentSerializerTestCase(TestCase):
         )
         Student.objects.create(user=self.user)
         self.user.student.name = "Student"
-        self.user.student.major = "Major"
-        self.user.student.school = "School"
+        self.user.student.graduation_year = 2020
         self.serializer = StudentSerializer(self.user.student)
 
         self.user_preferred_name = get_user_model().objects.create_user(
@@ -49,18 +48,16 @@ class StudentSerializerTestCase(TestCase):
         )
         Student.objects.create(user=self.user_preferred_name)
         self.user_preferred_name.student.name = "Student"
-        self.user_preferred_name.student.major = "Major"
-        self.user_preferred_name.student.school = "School"
+        self.user_preferred_name.student.graduation_year = 2022
         self.serializer_preferred_name = StudentSerializer(self.user_preferred_name.student)
 
     def test_str_no_preferred_name(self):
         sample_response = {
-            "major": "Major",
-            "school": "School",
             "first_name": "First",
             "last_name": "Last",
             "username": "student",
             "email": "test@test.com",
+            "graduation_year": 2020,
             "groups": [],
             "user_permissions": [],
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
@@ -69,12 +66,11 @@ class StudentSerializerTestCase(TestCase):
 
     def test_str_preferred_name_provided(self):
         sample_response = {
-            "major": "Major",
-            "school": "School",
             "first_name": "Preferred",
             "last_name": "Last2",
             "username": "student2",
             "email": "test2@test.com",
+            "graduation_year": 2022,
             "groups": [],
             "user_permissions": [],
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
@@ -287,7 +283,6 @@ class PhoneNumberSerializerTestCase(TestCase):
             self.number3, data=data, context={"request": FakeRequest(self.user)}
         )
         self.assertTrue(serializer.is_valid())
-        # print("before save")
 
         serializer.save()
         self.number2.refresh_from_db()

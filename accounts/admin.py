@@ -11,7 +11,7 @@ class StudentAdmin(admin.ModelAdmin):
     readonly_fields = ("user",)
     search_fields = ("user__username", "user__first_name", "user__last_name")
     list_display = ("username", "first_name", "last_name")
-    list_filter = ("school", "major")
+    # list_filter = ("school", "major")
 
     def username(self, obj):
         return obj.user.username

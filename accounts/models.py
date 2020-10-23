@@ -24,9 +24,7 @@ class User(AbstractUser):
 
 class Student(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
-    major = models.CharField(max_length=255, blank=True)
-    school = models.CharField(max_length=255, blank=True)
-    graduation_year = models.IntegerField(null=True)
+    graduation_year = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.user.username
