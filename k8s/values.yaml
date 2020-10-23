@@ -27,7 +27,8 @@ applications:
 
 cronjobs:
   - name: clear-expired-tokens
-    schedule: "0 0 * * 0"
+    schedule: "0 5 * * 0"
     image: pennlabs/platform
     secret: platform
     cmd: ["python", "manage.py", "cleartokens"]
+    
