@@ -31,4 +31,3 @@ cronjobs:
     image: pennlabs/platform
     secret: platform
     cmd: ["python", "manage.py", "cleartokens"]
-    
