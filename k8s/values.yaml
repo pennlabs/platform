@@ -30,4 +30,4 @@ cronjobs:
     schedule: "0 5 * * 0"
     image: pennlabs/platform
     secret: platform
-    cmd: ["python", "manage.py", "cleartokens"]
+    cmd: ["python3", "manage.py", "cleartokens"]
