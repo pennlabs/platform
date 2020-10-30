@@ -26,10 +26,11 @@ class Command(BaseCommand):
             if "undergraduate" in major_url["href"]:
                 # create new major entry if it does not already exist
                 if Major.objects.filter(name=major_name).count() == 0:
-                    # print(major_name)
+                    # create automatically saves entry into the database as well
                     Major.objects.create(name=major_name, is_active=True)
 
         # iterate through existing majors and set active/inactive
         for existing_major in Major.objects.all():
             if existing_major.name not in listed_majors:
                 existing_major.is_active = False
+                existing_major.save()

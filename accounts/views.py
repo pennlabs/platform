@@ -120,7 +120,7 @@ class UserSearchView(PennView, generics.ListAPIView):
             q3 = Q(first_name__istartswith=first) & Q(last_name__istartswith=last)
             qs = (
                 User.objects.filter(q1 | q2 | q3)
-                .annotate(
+                    .annotate(
                     search_type_ordering=Case(
                         When(q1, then=Value(2)),
                         When(q2, then=Value(1)),
@@ -129,7 +129,7 @@ class UserSearchView(PennView, generics.ListAPIView):
                         output_field=IntegerField(),
                     )
                 )
-                .order_by("-search_type_ordering")
+                    .order_by("-search_type_ordering")
             )
         else:
             # Returns the following results in sorted order:
@@ -146,7 +146,7 @@ class UserSearchView(PennView, generics.ListAPIView):
             q5 = Q(username__iexact=query)
             qs = (
                 User.objects.filter(q1 | q2 | q3 | q4 | q5)
-                .annotate(
+                    .annotate(
                     search_type_ordering=Case(
                         When(q1, then=Value(5)),
                         When(q2, then=Value(4)),
@@ -157,7 +157,7 @@ class UserSearchView(PennView, generics.ListAPIView):
                         output_field=IntegerField(),
                     )
                 )
-                .order_by("-search_type_ordering")
+                    .order_by("-search_type_ordering")
             )
         return qs
 
@@ -283,23 +283,24 @@ class LabsProtectedViewSet(LabsView):
     def get(self, request, format=None):
         return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
 
-class MajorViewset(viewsets.ModelViewSet):
+
+class MajorViewSet(viewsets.ModelViewSet):
     """
     list:
-    Retrieve a list of all of the major (ex: Accounting, BS).
+    Retrieve a list of all of the active majors (ex: Accounting, BS).
 
     retrieve:
-    Retrieve a single major by ID.
+    Retrieve a single major by its name.
 
     create:
-    Add a new school to the list of majors.
+    Add a new major to the list of majors.
 
     destroy:
     Delete a major from the list of majors.
     """
 
-    # only return majors that are active
-
     serializer_class = MajorSerializer
     # permission_classes = [ReadOnly | IsSuperuser]
-    queryset = Major.objects.filter(is_active=True)
+
+    def get_queryset(self):
+        return Major.objects.filter(is_active=True)

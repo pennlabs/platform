@@ -10,12 +10,12 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 
-from accounts.models import Email, PhoneNumberModel, User
+from accounts.models import Email, PhoneNumberModel, User, Major
 from accounts.serializers import (
     EmailSerializer,
     PhoneNumberSerializer,
     UserSearchSerializer,
-    UserSerializer,
+    UserSerializer, MajorSerializer,
 )
 
 
@@ -109,7 +109,6 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         )
 
     def test_view_post_valid_token(self):
-
         auth_headers = {"HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token}
         response = self.client.post(
             reverse("accounts:introspect"), {"token": self.valid_token.token}, **auth_headers
@@ -212,6 +211,28 @@ class UserViewTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("accounts:me"))
         self.assertEqual(json.loads(response.content), self.serializer.data)
+
+
+class MajorViewTestCase(TestCase):
+
+    def setUp(self):
+        self.major_active_1 = Major.objects.create(name="Test Active Major", is_active=True)
+        self.major_inactive_1 = Major.objects.create(name="Test Inactive Major", is_active=False)
+
+        self.major_active_2 = Major.objects.create(name="Test Active Major 2", is_active=True)
+        self.major_inactive_2 = Major.objects.create(name="Test Inactive Major 2", is_active=False)
+
+        self.client = APIClient()
+        self.serializer_active_1 = MajorSerializer(self.major_active_1)
+        self.serializer_active_2 = MajorSerializer(self.major_active_2)
+
+        self.serializer_inactive_1 = MajorSerializer(self.major_inactive_1)
+        self.serializer_inactive_2 = MajorSerializer(self.major_inactive_2)
+
+    def test_get_queryset(self):
+        # print("Count:", Major.objects.filter(is_active=True).count())
+        response = self.client.get(reverse("accounts:majors-list"))
+        self.assertEqual(json.loads(response.content), [self.serializer_active_1.data, self.serializer_active_2.data])
 
 
 class PhoneNumberViewTestCase(TestCase):

@@ -6,19 +6,40 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts.models import Email, PhoneNumberModel, Student, User
+from accounts.models import Email, PhoneNumberModel, Student, User, Major
 from accounts.serializers import (
     EmailSerializer,
     PhoneNumberSerializer,
     StudentSerializer,
     UserSearchSerializer,
-    UserSerializer,
+    UserSerializer, MajorSerializer,
 )
 
 
 class FakeRequest:
     def __init__(self, user):
         self.user = user
+
+
+class MajorSerializerTestCase(TestCase):
+    def setUp(self):
+        self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
+        self.major_inactive = Major.objects.create(name="Test Inactive Major", is_active=False)
+
+        self.serializer_active = MajorSerializer(self.major_active)
+        self.serializer_inactive = MajorSerializer(self.major_inactive)
+
+    def test_active_major(self):
+        sample_response = {
+            "name": "Test Active Major"
+        }
+        self.assertEqual(self.serializer_active.data, sample_response)
+
+    def test_inactive_major(self):
+        sample_response = {
+            "name": "Test Inactive Major"
+        }
+        self.assertEqual(self.serializer_inactive.data, sample_response)
 
 
 class StudentSerializerTestCase(TestCase):
@@ -32,9 +53,15 @@ class StudentSerializerTestCase(TestCase):
             last_name="Last",
             email="test@test.com",
         )
+        Major.objects.create(name="Test Active Major", is_active=True)
+        Major.objects.create(name="Test Active Major 2", is_active=True)
+        Major.objects.create(name="Test Inactive Major", is_active=False)
+        Major.objects.create(name="Test Inactive Major 2", is_active=False)
+
         Student.objects.create(user=self.user)
         self.user.student.name = "Student"
-        self.user.student.major = "Major"
+        self.user.student.major.add(Major.objects.get(name="Test Active Major"))
+        self.user.student.major.add(Major.objects.get(name="Test Active Major 2"))
         self.user.student.school = "School"
         self.serializer = StudentSerializer(self.user.student)
 
@@ -49,13 +76,13 @@ class StudentSerializerTestCase(TestCase):
         )
         Student.objects.create(user=self.user_preferred_name)
         self.user_preferred_name.student.name = "Student"
-        self.user_preferred_name.student.major = "Major"
+        self.user_preferred_name.student.major.add(Major.objects.get(name="Test Inactive Major"))
         self.user_preferred_name.student.school = "School"
         self.serializer_preferred_name = StudentSerializer(self.user_preferred_name.student)
 
     def test_str_no_preferred_name(self):
         sample_response = {
-            "major": "Major",
+            "major": ["Test Active Major", "Test Active Major 2"],
             "school": "School",
             "first_name": "First",
             "last_name": "Last",
@@ -69,7 +96,7 @@ class StudentSerializerTestCase(TestCase):
 
     def test_str_preferred_name_provided(self):
         sample_response = {
-            "major": "Major",
+            "major": ["Test Inactive Major"],
             "school": "School",
             "first_name": "Preferred",
             "last_name": "Last2",

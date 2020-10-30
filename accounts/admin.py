@@ -40,6 +40,7 @@ class UserAdmin(admin.ModelAdmin):
         (("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
+
 class MajorAdmin(admin.ModelAdmin):
     list_filter = ["is_active"]
     list_display = ["name"]

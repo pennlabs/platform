@@ -14,8 +14,8 @@ class Major(models.Model):
     # add boolean field for active/inactive and if not found through scrape, set it false
 
     # boolean field for whether major is currently active/inactive
+    name = models.TextField(primary_key=True)
     is_active = models.BooleanField(default=True)
-    name = models.TextField()
 
     def __str__(self):
         return self.name

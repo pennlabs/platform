@@ -6,6 +6,12 @@ from accounts.models import Email, PhoneNumberModel, Student, User, Major
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
+class MajorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Major
+        fields = ("name",)
+
+
 class UserSerializer(serializers.ModelSerializer):
     # SerializerMethodFields are read_only
     first_name = serializers.CharField(source="get_preferred_name", required=False)
@@ -101,8 +107,8 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
         if "verification_code" in validated_data:
             elapsed_time = timezone.now() - instance.verification_timestamp
             if (
-                validated_data["verification_code"] == instance.verification_code
-                and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
+                    validated_data["verification_code"] == instance.verification_code
+                    and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
             ):
                 if self.context["request"].user.phone_numbers.filter(verified=True).count() == 0:
                     instance.primary = True
@@ -141,8 +147,8 @@ class EmailSerializer(serializers.ModelSerializer):
         if "verification_code" in validated_data:
             elapsed_time = timezone.now() - instance.verification_timestamp
             if (
-                validated_data["verification_code"] == instance.verification_code
-                and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
+                    validated_data["verification_code"] == instance.verification_code
+                    and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
             ):
                 if self.context["request"].user.emails.filter(verified=True).count() == 0:
                     instance.primary = True
@@ -159,10 +165,3 @@ class EmailSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-class MajorSerializer(serializers.ModelSerializer):
-    name = serializers.CharField()
-
-    class Meta:
-        model = Major
-        fields = ("id", "name")
