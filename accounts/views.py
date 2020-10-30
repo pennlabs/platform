@@ -15,7 +15,7 @@ from oauth2_provider.views import IntrospectTokenView
 from rest_framework import generics
 from sentry_sdk import capture_message
 
-from accounts.auth import LabsView, PennView
+from accounts.auth import PennView
 from accounts.models import User
 from accounts.serializers import UserSearchSerializer, UserSerializer
 
@@ -163,12 +163,3 @@ class ProtectedViewSet(PennView):
 
     def get(self, request, format=None):
         return HttpResponse({"secret_information": "this is a login protected route"})
-
-
-class LabsProtectedViewSet(LabsView):
-    """
-    An example api endpoint to test Penn Labs authentication.
-    """
-
-    def get(self, request, format=None):
-        return HttpResponse({"secret_information": "this is a Penn Labs protected route"})

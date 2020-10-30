@@ -40,11 +40,3 @@ class AuthTestCase(TestCase):
     def test_penn_view_student(self):
         request = self.client.get(reverse("accounts:protected"), **self.student_header)
         self.assertEqual(request.status_code, 200)
-
-    def test_labs_view_anonymous(self):
-        request = self.client.get(reverse("accounts:labsprotected"))
-        self.assertEqual(request.status_code, 403)
-
-    def test_labs_view_student(self):
-        request = self.client.get(reverse("accounts:labsprotected"), **self.student_header)
-        self.assertEqual(request.status_code, 403)
