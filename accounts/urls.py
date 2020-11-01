@@ -1,12 +1,7 @@
 from django.urls import path
 from oauth2_provider.views import AuthorizationView, TokenView
 
-from accounts.views import (
-    LoginView,
-    LogoutView,
-    UserSearchView,
-    UUIDIntrospectTokenView,
-)
+from accounts.views import LoginView, LogoutView, UserSearchView, UUIDIntrospectTokenView
 
 
 app_name = "accounts"
