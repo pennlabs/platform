@@ -15,7 +15,6 @@ from oauth2_provider.views import IntrospectTokenView
 from rest_framework import generics
 from sentry_sdk import capture_message
 
-from accounts.auth import PennView
 from accounts.models import User
 from accounts.serializers import UserSearchSerializer, UserSerializer
 
@@ -89,7 +88,7 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
                 )
 
 
-class UserSearchView(PennView, generics.ListAPIView):
+class UserSearchView(generics.ListAPIView):
     """
     Search for users by first name, last name, or pennkey. Authentication Required.
     """
@@ -154,12 +153,3 @@ class UserSearchView(PennView, generics.ListAPIView):
                 .order_by("-search_type_ordering")
             )
         return qs
-
-
-class ProtectedViewSet(PennView):
-    """
-    An example api endpoint to test user authentication.
-    """
-
-    def get(self, request, format=None):
-        return HttpResponse({"secret_information": "this is a login protected route"})
