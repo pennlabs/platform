@@ -230,7 +230,6 @@ class MajorViewTestCase(TestCase):
         self.serializer_inactive_2 = MajorSerializer(self.major_inactive_2)
 
     def test_get_queryset(self):
-        # print("Count:", Major.objects.filter(is_active=True).count())
         response = self.client.get(reverse("accounts:majors-list"))
         self.assertEqual(json.loads(response.content), [self.serializer_active_1.data, self.serializer_active_2.data])
 

@@ -1,0 +1,69 @@
+from abc import ABC
+
+from bs4 import BeautifulSoup
+from django.core.management.base import BaseCommand
+from accounts.models import Major
+import requests
+
+
+def contains_filters(listed_filters, desired_filters=set(), excluded_filters=set()):
+    # ensure no excluded filters appear
+    for curr_filter in excluded_filters:
+        if curr_filter in listed_filters:
+            return False
+
+    # ensure at least one desired filter appears
+    for curr_filter in desired_filters:
+        if curr_filter in listed_filters:
+            return True
+    return False
+
+
+class Command(BaseCommand):
+
+    # checks if at least one of the desired filters appears
+
+    def handle(self, *args, **kwargs):
+        # scrapes majors from the official penn catalog of all programs
+        # source = requests.get("https://catalog.upenn.edu/programs/").text
+        source = requests.get("https://catalog.upenn.edu/programs/").text
+
+        soup = BeautifulSoup(source, "lxml")
+
+        # iterate through all list tags with "item" in the class (all programs)
+        bachelor_filter = "filter_6"
+        master_filter = "filter_25"
+        phd_filter = "filter_7"
+        minor_filter = "filter_26"
+        desired_filters = {bachelor_filter, master_filter, phd_filter}
+        excluded_filters = {minor_filter}
+
+        listed_majors = set()
+        for program in soup.find_all("li", class_=lambda value: value and value.startswith("item ")):
+            curr_filter_list = program.attrs["class"]
+            # check if entry meets relevant desired and excluded filter criteria
+            if not contains_filters(curr_filter_list, desired_filters=desired_filters,
+                                    excluded_filters=excluded_filters):
+                continue
+
+            # grab the major name
+            major_name = program.find("span", class_="title").text
+
+            # create new major entry if it does not already exist
+            if Major.objects.filter(name=major_name).count() == 0:
+                curr_degree_type = Major.DEGREE_BACHELOR
+                if bachelor_filter in curr_filter_list:
+                    curr_degree_type = Major.DEGREE_BACHELOR
+                elif master_filter in curr_filter_list:
+                    curr_degree_type = Major.DEGREE_MASTER
+                elif phd_filter in curr_filter_list:
+                    curr_degree_type = Major.DEGREE_PHD
+                Major.objects.create(name=major_name, is_active=True, degree_type=curr_degree_type)
+
+            # keep track of found majors
+            listed_majors.add(major_name)
+
+        # iterate through existing majors and set active/inactive status
+        for existing_major in Major.objects.all():
+            existing_major.is_active = existing_major.name in listed_majors
+            existing_major.save()

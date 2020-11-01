@@ -6,10 +6,16 @@ from accounts.models import Email, PhoneNumberModel, Student, User, Major
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
-class MajorSerializer(serializers.ModelSerializer):
+class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
         fields = ("name",)
+
+
+class MajorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Major
+        fields = ("name", "degree_type")
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -35,6 +41,8 @@ class UserSerializer(serializers.ModelSerializer):
             "product_permission",
             "user_permissions",
         )
+
+        # xyz = serializer
 
         read_only_fields = (
             "pennid",

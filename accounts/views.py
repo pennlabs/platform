@@ -284,23 +284,18 @@ class LabsProtectedViewSet(LabsView):
         return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
 
 
-class MajorViewSet(viewsets.ModelViewSet):
+class MajorViewSet(generics.ListCreateAPIView):
     """
     list:
-    Retrieve a list of all of the active majors (ex: Accounting, BS).
+    Retrieve a list of all of the active majors/programs (ex: Accounting, BS).
 
     retrieve:
-    Retrieve a single major by its name.
-
-    create:
-    Add a new major to the list of majors.
-
-    destroy:
-    Delete a major from the list of majors.
+    Retrieve a single major/program by its name.
     """
 
     serializer_class = MajorSerializer
-    # permission_classes = [ReadOnly | IsSuperuser]
+    queryset = Major.objects.filter(is_active=True)
+    #permission_classes = []
 
-    def get_queryset(self):
-        return Major.objects.filter(is_active=True)
+    '''def get_queryset(self):
+        return Major.objects.filter(is_active=True)'''

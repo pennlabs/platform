@@ -20,12 +20,14 @@ app_name = "accounts"
 router = routers.SimpleRouter()
 router.register("me/phonenumber", PhoneNumberViewSet, basename="me-phonenumber")
 router.register("me/email/", EmailViewSet, basename="me-email")
-router.register("majors/", MajorViewSet, basename="majors")
+#router.register("majors/", MajorViewSet, basename="majors")
+
 
 urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("me/", UserView.as_view(), name="me"),
+    path("majors/", MajorViewSet.as_view(), name="majors"),
     path("search/", UserSearchView.as_view(), name="search"),
     path("authorize/", AuthorizationView.as_view(), name="authorize"),
     path("token/", TokenView.as_view(), name="token"),

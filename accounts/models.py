@@ -6,16 +6,36 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class School(models.Model):
+    """
+    Represents a school (ex: Engineering, Wharton, etc).
+    """
+
+    # boolean field for whether major is currently active/inactive
+    name = models.TextField(primary_key=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Major(models.Model):
     """
     Represents a school (ex: Engineering, Wharton, etc).
     """
 
-    # add boolean field for active/inactive and if not found through scrape, set it false
-
-    # boolean field for whether major is currently active/inactive
     name = models.TextField(primary_key=True)
+    # boolean field for whether major is currently active/inactive
     is_active = models.BooleanField(default=True)
+
+    DEGREE_BACHELOR = "Bachelor's"
+    DEGREE_MASTER = "Master's"
+    DEGREE_PHD = "PhD"
+    DEGREE_CHOICES = [
+        (DEGREE_BACHELOR, "Bachelor's"),
+        (DEGREE_MASTER, "Master's"),
+        (DEGREE_PHD, "PhD"),
+    ]
+    degree_type = models.CharField(max_length=10, choices=DEGREE_CHOICES, default=DEGREE_BACHELOR)
 
     def __str__(self):
         return self.name

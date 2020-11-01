@@ -15,7 +15,7 @@ class Command(BaseCommand):
         soup = BeautifulSoup(source, "lxml")
 
         # iterate through all list tags with "item" in the class (all programs)
-        listed_majors = {}
+        listed_majors = set()
         for program in soup.find_all("li", class_=lambda value: value and value.startswith("item")):
             # grab the href path
             major_url = program.find("a", href=True)
@@ -28,6 +28,8 @@ class Command(BaseCommand):
                 if Major.objects.filter(name=major_name).count() == 0:
                     # create automatically saves entry into the database as well
                     Major.objects.create(name=major_name, is_active=True)
+
+            listed_majors.add(major_name)
 
         # iterate through existing majors and set active/inactive
         for existing_major in Major.objects.all():
