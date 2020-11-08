@@ -8,7 +8,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class School(models.Model):
     """
-    Represents a school (ex: Engineering, Wharton, etc).
+    Represents a school (ex: School of Arts & Sciences).
     """
 
     # boolean field for whether major is currently active/inactive
@@ -20,7 +20,7 @@ class School(models.Model):
 
 class Major(models.Model):
     """
-    Represents a school (ex: Engineering, Wharton, etc).
+    Represents a Major (ex: Accounting, BS).
     """
 
     name = models.TextField(primary_key=True)
@@ -35,6 +35,7 @@ class Major(models.Model):
         (DEGREE_MASTER, "Master's"),
         (DEGREE_PHD, "PhD"),
     ]
+    # fixed choices for degree type
     degree_type = models.CharField(max_length=10, choices=DEGREE_CHOICES, default=DEGREE_BACHELOR)
 
     def __str__(self):
@@ -61,7 +62,8 @@ class Student(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
     # major = models.CharField(max_length=255, blank=True)
     major = models.ManyToManyField(Major)
-    school = models.CharField(max_length=255, blank=True)
+    # school = models.CharField(max_length=255, blank=True)
+    school = models.ManyToManyField(School)
     graduation_year = models.IntegerField(null=True)
 
     def __str__(self):

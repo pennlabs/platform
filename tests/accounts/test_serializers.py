@@ -6,19 +6,32 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts.models import Email, PhoneNumberModel, Student, User, Major
+from accounts.models import Email, PhoneNumberModel, Student, User, Major, School
 from accounts.serializers import (
     EmailSerializer,
     PhoneNumberSerializer,
     StudentSerializer,
     UserSearchSerializer,
-    UserSerializer, MajorSerializer,
+    UserSerializer, MajorSerializer, SchoolSerializer,
 )
 
 
 class FakeRequest:
     def __init__(self, user):
         self.user = user
+
+
+class SchoolSerializerTestCase(TestCase):
+    def setUp(self):
+        self.school = School.objects.create(name="Test School")
+
+        self.serializer = SchoolSerializer(self.school)
+
+    def test_active_major(self):
+        sample_response = {
+            "name": "Test School"
+        }
+        self.assertEqual(self.serializer.data, sample_response)
 
 
 class MajorSerializerTestCase(TestCase):

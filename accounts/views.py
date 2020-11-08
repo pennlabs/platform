@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
+from requests import Response
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 from sentry_sdk import capture_message
@@ -284,18 +285,16 @@ class LabsProtectedViewSet(LabsView):
         return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
 
 
-class MajorViewSet(generics.ListCreateAPIView):
+class MajorViewSet(generics.ListAPIView):
     """
     list:
     Retrieve a list of all of the active majors/programs (ex: Accounting, BS).
-
-    retrieve:
-    Retrieve a single major/program by its name.
     """
 
     serializer_class = MajorSerializer
-    queryset = Major.objects.filter(is_active=True)
-    #permission_classes = []
+    # queryset = Major.objects.filter(is_active=True)
+    # permission_classes = []
 
-    '''def get_queryset(self):
-        return Major.objects.filter(is_active=True)'''
+    def get_queryset(self):
+        return Major.objects.filter(is_active=True)
+

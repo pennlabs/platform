@@ -15,7 +15,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
-        fields = ("name", "degree_type")
+        fields = ("name",)
 
 
 class UserSerializer(serializers.ModelSerializer):

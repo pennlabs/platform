@@ -1,7 +1,33 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from accounts.models import Email, PhoneNumberModel, Student
+from accounts.models import Email, PhoneNumberModel, Student, Major, School
+
+
+class MajorModelTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+        )
+
+        self.major_name = "Test Major"
+        self.major = Major.objects.create(name=self.major_name)
+
+    def test_str(self):
+        self.assertEqual(str(self.major), f"{self.major_name}")
+
+
+class SchoolModelTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+        )
+
+        self.school_name = "Test School"
+        self.school = School.objects.create(name=self.school_name)
+
+    def test_str(self):
+        self.assertEqual(str(self.school_name), f"{self.school}")
 
 
 class StudentTestCase(TestCase):

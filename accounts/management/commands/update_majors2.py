@@ -1,5 +1,3 @@
-from abc import ABC
-
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
 from accounts.models import Major
@@ -30,7 +28,6 @@ class Command(BaseCommand):
 
         soup = BeautifulSoup(source, "lxml")
 
-        # iterate through all list tags with "item" in the class (all programs)
         bachelor_filter = "filter_6"
         master_filter = "filter_25"
         phd_filter = "filter_7"
@@ -39,6 +36,7 @@ class Command(BaseCommand):
         excluded_filters = {minor_filter}
 
         listed_majors = set()
+        # iterate through all list tags with "item" in the class (all programs)
         for program in soup.find_all("li", class_=lambda value: value and value.startswith("item ")):
             curr_filter_list = program.attrs["class"]
             # check if entry meets relevant desired and excluded filter criteria
