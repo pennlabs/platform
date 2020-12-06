@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
+from accounts.mixins import ManyToManySaveMixin
 from accounts.models import Email, PhoneNumberModel, Student, User, Major
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
@@ -77,20 +78,79 @@ class UserSearchSerializer(serializers.ModelSerializer):
         return obj.get_preferred_name()
 
 
-class StudentSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
+class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
+    # user = UserSerializer(required=True)
 
     class Meta:
         model = Student
-        fields = ("user", "major", "school")
+        fields = ("major", "school")
 
-    def to_representation(self, obj):
+        # many to many fields
+        save_related_fields = ["major", "school"]
+
+'''    def to_representation(self, obj):
         representation = super().to_representation(obj)
         user_representation = representation.pop("user")
         for key in user_representation:
             if key != "pennid":
                 representation[key] = user_representation[key]
-        return representation
+        return representation'''
+
+
+class UserSerializer2(serializers.ModelSerializer):
+    first_name = serializers.CharField(source="get_preferred_name", required=False)
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    user_permissions = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="codename"
+    )
+    product_permission = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="codename", source="user_permissions"
+    )  # TODO: remove this once all products update to new version of DLA
+    student = StudentSerializer()
+
+    class Meta:
+        model = User
+        fields = ("pennid",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "groups",
+            "product_permission",
+            "user_permissions",
+            "student")
+
+    def update(self, instance, validated_data):
+        if "student" in validated_data:
+            student_fields = validated_data.pop("student")
+            student_fields.save()
+
+        return super().update(instance, validated_data)
+
+
+    '''def update(self, instance, validated_data):
+        if "profile" in validated_data:
+            # get profile elements
+            profile_fields = validated_data.pop("profile")
+            # get instance of profile
+            profile = instance.profile
+            # get relevante valid fields
+            valid_fields = {f.name: f for f in Profile._meta.get_fields()}
+            for key, value in profile_fields.items():
+                if key in valid_fields:
+                    field = valid_fields[key]
+                    if isinstance(field, models.ManyToManyField):
+                        # 
+                        related_objects = getattr(profile, field.get_attname())
+                        related_objects.clear()
+                        for item in value:
+                            related_objects.add(field.related_model.objects.get(**item))
+                    else:
+                        setattr(profile, key, value)
+            profile.save()
+        
+        # pass along default update of other fields
+        return super().update(instance, validated_data)'''
 
 
 class PhoneNumberSerializer(serializers.ModelSerializer):

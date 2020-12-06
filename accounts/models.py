@@ -59,9 +59,9 @@ class User(AbstractUser):
 
 
 class Student(models.Model):
-    user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
+    user = models.OneToOneField(get_user_model(), related_name="student", on_delete=models.DO_NOTHING)
     # major = models.CharField(max_length=255, blank=True)
-    major = models.ManyToManyField(Major)
+    major = models.ManyToManyField(Major) # implicit field created in Major model that is accessible
     # school = models.CharField(max_length=255, blank=True)
     school = models.ManyToManyField(School)
     graduation_year = models.IntegerField(null=True)

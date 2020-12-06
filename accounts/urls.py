@@ -20,7 +20,6 @@ app_name = "accounts"
 router = routers.SimpleRouter()
 router.register("me/phonenumber", PhoneNumberViewSet, basename="me-phonenumber")
 router.register("me/email/", EmailViewSet, basename="me-email")
-# router.register("majors/", MajorViewSet, basename="majors")
 
 
 urlpatterns = [
