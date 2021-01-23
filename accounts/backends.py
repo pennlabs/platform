@@ -24,11 +24,11 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
 
             # Check if Penn ID doesn't exist somehow
             if len(response) == 0:
-                return ""
+                return None
 
             return response[0]["email"]
         except (requests.exceptions.RequestException):
-            return ""
+            return None
 
     def authenticate(self, request, remote_user, shibboleth_attributes):
         if not remote_user or remote_user == -1:
@@ -40,8 +40,11 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
 
         # Add initial attributes on first log in
         if created:
+            email = self.get_email(remote_user)
+            if email is None:
+                email = f"{shibboleth_attributes['username']}@upenn.edu"
             user.set_unusable_password()
-            user.email = self.get_email(remote_user)
+            user.email = email
             user.save()
             user = self.configure_user(request, user)
 
