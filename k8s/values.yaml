@@ -1,4 +1,4 @@
-deploy_version: 0.1.15
+deploy_version: 0.1.20
 image_tag: latest
 
 applications:
@@ -24,3 +24,10 @@ applications:
       - name: platform
         item: SHIBBOLETH_KEY
         path: "/etc/shibboleth/sp-key.pem"
+
+cronjobs:
+  - name: clear-expired-tokens
+    schedule: "0 5 * * 0"
+    image: pennlabs/platform
+    secret: platform
+    cmd: ["python3", "manage.py", "cleartokens"]
