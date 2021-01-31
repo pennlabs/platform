@@ -13,17 +13,17 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from requests import Response
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, mixins, status
 from rest_framework.permissions import IsAuthenticated
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
-from accounts.models import User, Major
+from accounts.models import User, Major, Student
 from accounts.serializers import (
     EmailSerializer,
     PhoneNumberSerializer,
     UserSearchSerializer,
-    UserSerializer, MajorSerializer,
+    UserSerializer, MajorSerializer, StudentSerializer,
 )
 
 
@@ -184,6 +184,46 @@ class UserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
+# update view, not viewset - prevents create
+
+# RetrieveUpdateAPIView
+
+class StudentView(generics.RetrieveUpdateAPIView):
+    '''
+    retrieve:
+    Return a single phone number with all information fields present.
+    create:
+    Add new unverified phone number.
+
+    update:
+    Update all fields.
+    You must specify all of the fields or use a patch request.
+    '''
+    serializer_class = StudentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.student
+
+'''    def update(self, request, *args, **kwargs):
+        data = request.data
+        curr_student = self.request.user.student
+
+        for attr, value in Student._meta.get_fields():
+            setattr(curr_student, attr, data.get(attr, value))
+        # curr_student.graduation_year = data.get("graduation_year", curr_student.graduation_year)
+
+        curr_student.save()
+
+        serializer = StudentSerializer(curr_student)
+        print("here ------")
+        print(serializer.data)
+
+        return JsonResponse(serializer.data)'''
+
+    # serialize user and serialize student and within user json object, userobject.student =
+
+
 class PhoneNumberViewSet(viewsets.ModelViewSet):
     """
     retrieve:
@@ -292,9 +332,9 @@ class MajorViewSet(generics.ListAPIView):
     """
 
     serializer_class = MajorSerializer
+
     # queryset = Major.objects.filter(is_active=True)
     # permission_classes = []
 
     def get_queryset(self):
         return Major.objects.filter(is_active=True)
-

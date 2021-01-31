@@ -10,12 +10,12 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 
-from accounts.models import Email, PhoneNumberModel, User, Major
+from accounts.models import Email, PhoneNumberModel, User, Major, School, Student
 from accounts.serializers import (
     EmailSerializer,
     PhoneNumberSerializer,
     UserSearchSerializer,
-    UserSerializer, MajorSerializer,
+    UserSerializer, MajorSerializer, StudentSerializer,
 )
 
 
@@ -235,6 +235,69 @@ class MajorViewTestCase(TestCase):
     def test_get_queryset(self):
         response = self.client.get(reverse("accounts:majors-list"))
         self.assertEqual(json.loads(response.content), [self.serializer_active_1.data, self.serializer_active_2.data])
+
+
+class StudentViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+        Major.objects.create(name="Test Active Major", is_active=True)
+        Major.objects.create(name="Test Active Major 2", is_active=True)
+        Major.objects.create(name="Test Active Major 3", is_active=True)
+
+        School.objects.create(name="Test School")
+
+        Student.objects.create(user=self.user)
+        self.user.student.major.add(Major.objects.get(name="Test Active Major"))
+        self.user.student.major.add(Major.objects.get(name="Test Active Major 2"))
+        self.user.student.school.add(School.objects.get(name="Test School"))
+        self.user.student.graduation_year = 2024
+        self.serializer = StudentSerializer(self.user.student)
+
+        self.client = APIClient()
+
+    def test_get_info(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse("accounts:me-student"), format="json")
+        # print(reverse("accounts:me-student"))
+        # print(json.loads(response.content))
+        self.assertEqual(json.loads(response.content), self.serializer.data)
+
+    def test_update_graduation_year(self):
+        self.client.force_authenticate(user=self.user)
+
+        update_data = {
+            "graduation_year": 2027
+        }
+
+        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+
+        # check status code of response
+
+        # print(self.serializer.data)
+        self.assertEqual(json.loads(response.content), self.serializer.data)
+
+    def test_update_major(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "major": ["Test Active Major", "Test Active Major 3"]
+        }
+
+        #             "major": [{"name": "Test Active Major"}, {"name": "Test Active Major 4"}]
+
+        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+
+        print(json.loads(response.content))
+        print(self.serializer.data)
+        self.assertEqual(response.status_code,200)
+        # self.assertEqual(json.loads(response.content), self.serializer.data)
 
 
 class PhoneNumberViewTestCase(TestCase):

@@ -83,7 +83,7 @@ class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ("major", "school")
+        fields = ("major", "school", "graduation_year")
 
         # many to many fields
         save_related_fields = ["major", "school"]
