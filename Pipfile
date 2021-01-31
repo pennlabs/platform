@@ -34,6 +34,7 @@ django-phonenumber-field = "*"
 django-email-tools = "*"
 twilio = "*"
 phonenumbers = "*"
+lxml = "*"
 
 [requires]
 python_version = "3"
