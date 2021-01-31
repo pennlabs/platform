@@ -15,7 +15,6 @@ class BackendTestCase(TestCase):
             "username": "user",
             "first_name": "",
             "last_name": "",
-            "email": "",
             "affiliation": [],
         }
 
@@ -32,6 +31,7 @@ class BackendTestCase(TestCase):
         auth.authenticate(remote_user=1, shibboleth_attributes=self.shibboleth_attributes)
         self.assertEqual(len(get_user_model().objects.all()), 1)
         self.assertEqual(get_user_model().objects.all()[0].pennid, 1)
+        self.assertEqual(get_user_model().objects.all()[0].email, "user@upenn.edu")
 
     def test_create_user_with_attributes(self):
         attributes = {
@@ -91,4 +91,4 @@ class BackendTestCase(TestCase):
     def test_get_email_no_exists(self, mock_response):
         mock_response.return_value.json.return_value = {"result_data": []}
         backend = ShibbolethRemoteUserBackend()
-        self.assertEqual(backend.get_email(1), "")
+        self.assertEqual(backend.get_email(1), None)
