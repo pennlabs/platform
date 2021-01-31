@@ -433,7 +433,6 @@ class PhoneNumberSerializerTestCase(TestCase):
             self.number3, data=data, context={"request": FakeRequest(self.user)}
         )
         self.assertTrue(serializer.is_valid())
-        # print("before save")
 
         serializer.save()
         self.number2.refresh_from_db()
