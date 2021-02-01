@@ -350,6 +350,4 @@ class SchoolView(generics.ListAPIView):
     serializer_class = SchoolSerializer
     filter_backends = [SearchFilter]
     search_fields = ['name']
-
-    def get_queryset(self):
-        return School.objects.filter()
+    queryset = School.objects.all()
