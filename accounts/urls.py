@@ -11,7 +11,10 @@ from accounts.views import (
     ProtectedViewSet,
     UserSearchView,
     UserView,
-    UUIDIntrospectTokenView, MajorViewSet, StudentView,
+    UUIDIntrospectTokenView,
+    MajorViewSet,
+    StudentView,
+    SchoolView,
 )
 
 
@@ -29,6 +32,7 @@ urlpatterns = [
     path("me/", UserView.as_view(), name="me"),
     path("me/student/", StudentView.as_view(), name="me-student"),
     path("majors/", MajorViewSet.as_view(), name="majors"),
+    path("schools/", SchoolView.as_view(), name="schools"),
     path("search/", UserSearchView.as_view(), name="search"),
     path("authorize/", AuthorizationView.as_view(), name="authorize"),
     path("token/", TokenView.as_view(), name="token"),

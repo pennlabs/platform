@@ -19,6 +19,17 @@ class MajorSerializer(serializers.ModelSerializer):
         fields = ("name",)
 
 
+class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
+    # user = UserSerializer(required=True)
+
+    class Meta:
+        model = Student
+        fields = ("major", "school", "graduation_year")
+
+        # many to many fields
+        save_related_fields = ["major", "school"]
+
+
 class UserSerializer(serializers.ModelSerializer):
     # SerializerMethodFields are read_only
     first_name = serializers.CharField(source="get_preferred_name", required=False)
@@ -29,6 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
     product_permission = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="codename", source="user_permissions"
     )  # TODO: remove this once all products update to new version of DLA
+    student = StudentSerializer()
 
     class Meta:
         model = User
@@ -41,6 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
             "groups",
             "product_permission",
             "user_permissions",
+            "student",
         )
 
         # xyz = serializer
@@ -64,6 +77,13 @@ class UserSerializer(serializers.ModelSerializer):
                 instance.preferred_name = ""
 
             instance.save()
+        if "student" in validated_data:
+            # Copied from DRF UpdateModelMixin
+            # https://github.com/encode/django-rest-framework/blob/master/rest_framework/mixins.py
+            data = validated_data.pop("student")
+            serializer = StudentSerializer(instance.student, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
         return instance
 
 
@@ -76,25 +96,6 @@ class UserSearchSerializer(serializers.ModelSerializer):
 
     def get_first_name(self, obj):
         return obj.get_preferred_name()
-
-
-class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
-    # user = UserSerializer(required=True)
-
-    class Meta:
-        model = Student
-        fields = ("major", "school", "graduation_year")
-
-        # many to many fields
-        save_related_fields = ["major", "school"]
-
-'''    def to_representation(self, obj):
-        representation = super().to_representation(obj)
-        user_representation = representation.pop("user")
-        for key in user_representation:
-            if key != "pennid":
-                representation[key] = user_representation[key]
-        return representation'''
 
 
 class UserSerializer2(serializers.ModelSerializer):
