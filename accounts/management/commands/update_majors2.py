@@ -31,8 +31,9 @@ class Command(BaseCommand):
         bachelor_filter = "filter_6"
         master_filter = "filter_25"
         phd_filter = "filter_7"
+        professional_filter = "filter_10"
         minor_filter = "filter_26"
-        desired_filters = {bachelor_filter, master_filter, phd_filter}
+        desired_filters = {bachelor_filter, master_filter, phd_filter, professional_filter}
         excluded_filters = {minor_filter}
 
         listed_majors = set()

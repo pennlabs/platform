@@ -326,7 +326,7 @@ class LabsProtectedViewSet(LabsView):
         return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
 
 
-class MajorViewSet(generics.ListAPIView):
+class MajorView(generics.ListAPIView):
     """
     list:
     Retrieve a list of all of the active majors/programs (ex: Accounting, BS).
@@ -334,7 +334,7 @@ class MajorViewSet(generics.ListAPIView):
 
     serializer_class = MajorSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name']
+    search_fields = ['name', 'degree_type']
     # queryset = Major.objects.filter(is_active=True)
     # permission_classes = []
 

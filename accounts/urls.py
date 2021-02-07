@@ -12,7 +12,7 @@ from accounts.views import (
     UserSearchView,
     UserView,
     UUIDIntrospectTokenView,
-    MajorViewSet,
+    MajorView,
     StudentView,
     SchoolView,
 )
@@ -31,7 +31,7 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("me/", UserView.as_view(), name="me"),
     path("me/student/", StudentView.as_view(), name="me-student"),
-    path("majors/", MajorViewSet.as_view(), name="majors"),
+    path("majors/", MajorView.as_view(), name="majors"),
     path("schools/", SchoolView.as_view(), name="schools"),
     path("search/", UserSearchView.as_view(), name="search"),
     path("authorize/", AuthorizationView.as_view(), name="authorize"),

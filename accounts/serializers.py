@@ -3,13 +3,13 @@ from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
 from accounts.mixins import ManyToManySaveMixin
-from accounts.models import Email, PhoneNumberModel, Student, User, Major
+from accounts.models import Email, PhoneNumberModel, Student, User, Major, School
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Major
+        model = School
         fields = ("name",)
 
 
@@ -20,13 +20,11 @@ class MajorSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
-    # user = UserSerializer(required=True)
 
     class Meta:
         model = Student
         fields = ("major", "school", "graduation_year")
 
-        # many to many fields
         save_related_fields = ["major", "school"]
 
 
@@ -55,8 +53,6 @@ class UserSerializer(serializers.ModelSerializer):
             "user_permissions",
             "student",
         )
-
-        # xyz = serializer
 
         read_only_fields = (
             "pennid",

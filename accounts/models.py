@@ -8,11 +8,10 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class School(models.Model):
     """
-    Represents a school (ex: School of Arts & Sciences).
+    Represents a School at the University of Pennsylvania.
     """
 
-    # boolean field for whether major is currently active/inactive
-    name = models.TextField(primary_key=True)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -20,17 +19,16 @@ class School(models.Model):
 
 class Major(models.Model):
     """
-    Represents a Major (ex: Accounting, BS).
+    Represents a Major at the University of Pennsylvania.
     """
 
-    name = models.TextField(primary_key=True)
-    # boolean field for whether major is currently active/inactive
+    name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
 
-    DEGREE_BACHELOR = "Bachelor's"
-    DEGREE_MASTER = "Master's"
-    DEGREE_PHD = "PhD"
-    DEGREE_PROFESSIONAL = "Professional"
+    DEGREE_BACHELOR = "BACHELORS"
+    DEGREE_MASTER = "MASTERS"
+    DEGREE_PHD = "PHD"
+    DEGREE_PROFESSIONAL = "PROFESSIONAL"
     DEGREE_CHOICES = [
         (DEGREE_BACHELOR, "Bachelor's"),
         (DEGREE_MASTER, "Master's"),
@@ -38,15 +36,13 @@ class Major(models.Model):
         (DEGREE_PROFESSIONAL, "Professional")
     ]
     # fixed choices for degree type
-    degree_type = models.CharField(max_length=10, choices=DEGREE_CHOICES, default=DEGREE_PROFESSIONAL)
+    degree_type = models.CharField(max_length=20, choices=DEGREE_CHOICES, default=DEGREE_PROFESSIONAL)
 
     def __str__(self):
         return self.name
 
 
 class User(AbstractUser):
-    # implicit username, email, first_name, and last_name fields
-    # from AbstractUser that contains the user's PennKey
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
@@ -61,10 +57,12 @@ class User(AbstractUser):
 
 
 class Student(models.Model):
+    """
+    Represents a Student at the University of Pennsylvania.
+    """
+
     user = models.OneToOneField(get_user_model(), related_name="student", on_delete=models.DO_NOTHING)
-    # major = models.CharField(max_length=255, blank=True)
-    major = models.ManyToManyField(Major) # implicit field created in Major model that is accessible
-    # school = models.CharField(max_length=255, blank=True)
+    major = models.ManyToManyField(Major)
     school = models.ManyToManyField(School)
     graduation_year = models.IntegerField(null=True)
 
