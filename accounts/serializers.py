@@ -16,7 +16,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
-        fields = ("name",)
+        fields = ("name", "degree_type")
 
 
 class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):

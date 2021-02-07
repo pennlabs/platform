@@ -30,13 +30,15 @@ class Major(models.Model):
     DEGREE_BACHELOR = "Bachelor's"
     DEGREE_MASTER = "Master's"
     DEGREE_PHD = "PhD"
+    DEGREE_PROFESSIONAL = "Professional"
     DEGREE_CHOICES = [
         (DEGREE_BACHELOR, "Bachelor's"),
         (DEGREE_MASTER, "Master's"),
         (DEGREE_PHD, "PhD"),
+        (DEGREE_PROFESSIONAL, "Professional")
     ]
     # fixed choices for degree type
-    degree_type = models.CharField(max_length=10, choices=DEGREE_CHOICES, default=DEGREE_BACHELOR)
+    degree_type = models.CharField(max_length=10, choices=DEGREE_CHOICES, default=DEGREE_PROFESSIONAL)
 
     def __str__(self):
         return self.name
