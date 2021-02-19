@@ -19,11 +19,8 @@ def contains_filters(listed_filters, desired_filters=set(), excluded_filters=set
 
 class Command(BaseCommand):
 
-    # checks if at least one of the desired filters appears
-
     def handle(self, *args, **kwargs):
         # scrapes majors from the official penn catalog of all programs
-        # source = requests.get("https://catalog.upenn.edu/programs/").text
         source = requests.get("https://catalog.upenn.edu/programs/").text
 
         soup = BeautifulSoup(source, "lxml")
