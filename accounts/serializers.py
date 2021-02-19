@@ -20,6 +20,8 @@ class MajorSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
+    major = MajorSerializer(many=True)
+    school = SchoolSerializer(many=True)
 
     class Meta:
         model = Student

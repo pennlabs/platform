@@ -185,10 +185,6 @@ class UserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
-# update view, not viewset - prevents create
-
-# RetrieveUpdateAPIView
-
 class StudentView(generics.RetrieveUpdateAPIView):
     '''
     retrieve:

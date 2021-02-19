@@ -39,7 +39,7 @@ class Major(models.Model):
     degree_type = models.CharField(max_length=20, choices=DEGREE_CHOICES, default=DEGREE_PROFESSIONAL)
 
     def __str__(self):
-        return self.name
+        return self.name + " " + self.degree_type
 
 
 class User(AbstractUser):

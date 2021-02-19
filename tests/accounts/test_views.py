@@ -248,14 +248,15 @@ class StudentViewTestCase(TestCase):
             last_name="Last",
             email="test@test.com",
         )
-        Major.objects.create(name="Test Active Major", is_active=True)
+        Major.objects.create(name="Test Active Major", is_active=True, degree_type="BACHELORS")
         Major.objects.create(name="Test Active Major 2", is_active=True)
         Major.objects.create(name="Test Active Major 3", is_active=True)
 
         School.objects.create(name="Test School")
+        School.objects.create(name="Test School 2")
 
         Student.objects.create(user=self.user)
-        self.user.student.major.add(Major.objects.get(name="Test Active Major"))
+        self.user.student.major.add(Major.objects.get(id=1))
         self.user.student.major.add(Major.objects.get(name="Test Active Major 2"))
         self.user.student.school.add(School.objects.get(name="Test School"))
         self.user.student.graduation_year = 2024
@@ -269,35 +270,45 @@ class StudentViewTestCase(TestCase):
         # print(reverse("accounts:me-student"))
         # print(json.loads(response.content))
         self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
 
     def test_update_graduation_year(self):
         self.client.force_authenticate(user=self.user)
-
         update_data = {
             "graduation_year": 2027
         }
+        self.user.student.graduation_year = 2027
 
         response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
 
-        # check status code of response
-
-        # print(self.serializer.data)
         self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
 
-    def test_update_major(self):
+    def test_update_with_existing_major(self):
         self.client.force_authenticate(user=self.user)
         update_data = {
-            "major": ["Test Active Major", "Test Active Major 3"]
+            "major": [{"name": "Test Active Major", "degree_type": "BACHELORS"},]
         }
-
-        #             "major": [{"name": "Test Active Major"}, {"name": "Test Active Major 4"}]
 
         response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
 
+        print("-----------")
         print(json.loads(response.content))
         print(self.serializer.data)
-        self.assertEqual(response.status_code,200)
-        # self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_with_existing_school(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "school": [{"name": "Test School 2"},]
+        }
+
+        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+
+        print("-----------")
+        print(json.loads(response.content))
+        print(self.serializer.data)
+        self.assertEqual(response.status_code, 200)
 
 
 class PhoneNumberViewTestCase(TestCase):
