@@ -204,9 +204,29 @@ class UserSearchTestCase(TestCase):
 
 class UserViewTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create(
-            pennid=1, username="test1", first_name="first1", last_name="last1"
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
         )
+
+        Major.objects.create(name="Test Active Major", is_active=True, degree_type="BACHELORS")
+        Major.objects.create(name="Test Active Major 2", degree_type="PHD", is_active=True)
+        Major.objects.create(name="Test Active Major 3", degree_type="PROFESSIONAL", is_active=True)
+
+        School.objects.create(name="Test School")
+        School.objects.create(name="Test School 2")
+
+        Student.objects.create(user=self.user)
+        self.user.student.major.add(Major.objects.get(name="Test Active Major"))
+        self.user.student.major.add(Major.objects.get(name="Test Active Major 2"))
+        self.user.student.school.add(School.objects.get(name="Test School"))
+        self.user.student.graduation_year = 2024
+        self.serializer = StudentSerializer(self.user.student)
+
         self.client = APIClient()
         self.serializer = UserSerializer(self.user)
 
@@ -214,6 +234,37 @@ class UserViewTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("accounts:me"))
         self.assertEqual(json.loads(response.content), self.serializer.data)
+        print(json.dumps(json.loads(response.content), indent=4))
+
+    def test_update_major(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "student": {
+                "major": [
+                    {
+                        "name": "Test Active Major 2",
+                        "degree_type": "PHD"
+                    },
+                    {
+                        "name": "Test Active Major 3",
+                        "degree_type": "PROFESSIONAL"
+                    }
+                ],
+                "school": [
+                    {
+                        "name": "Test School"
+                    }
+                ],
+                "graduation_year": 2026
+            }
+        }
+
+        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+
+        print("-----------")
+        print(json.dumps(json.loads(response.content), indent=4))
+        print(json.dumps(self.serializer.data, indent=4))
+        self.assertEqual(response.status_code, 200)
 
 
 class MajorViewTestCase(TestCase):

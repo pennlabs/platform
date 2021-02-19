@@ -8,7 +8,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class School(models.Model):
     """
-    Represents a School at the University of Pennsylvania.
+    Represents a school at the University of Pennsylvania.
     """
 
     name = models.CharField(max_length=100)
@@ -19,7 +19,7 @@ class School(models.Model):
 
 class Major(models.Model):
     """
-    Represents a Major at the University of Pennsylvania.
+    Represents a major at the University of Pennsylvania.
     """
 
     name = models.CharField(max_length=100)
