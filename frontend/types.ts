@@ -1,9 +1,15 @@
-export interface Major {
-    id: number;
+export interface NamedObject {
     name: string;
+    id: number;
 }
+
+export interface Major extends NamedObject {
+    degree_type: string;
+}
+
 export interface Student {
     major: Major[];
+    school: NamedObject[];
 }
 
 export interface Email {
@@ -39,5 +45,5 @@ export interface User {
  */
 export interface Option {
     label: string;
-    value: string;
+    value: number;
 }

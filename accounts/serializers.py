@@ -10,13 +10,16 @@ from accounts.verification import sendEmailVerification, sendSMSVerification
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
-        fields = ("name",)
+        fields = (
+            "id",
+            "name",
+        )
 
 
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
-        fields = ("name", "degree_type")
+        fields = ("id", "name", "degree_type")
 
 
 class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
