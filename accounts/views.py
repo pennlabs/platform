@@ -290,7 +290,8 @@ class LabsProtectedViewSet(LabsView):
 class MajorViewSet(viewsets.ReadOnlyModelViewSet):
     """
     list:
-    Retrieve a list of all of the active majors/programs
+    Retrieve a list of all of the active majors/programs 
+    (supports search functionality on name and degree type)
 
     retrieve:
     Retrieve a specific major by id
@@ -308,7 +309,8 @@ class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
     """
     list:
     Retrieve a list of all of the schools
-
+    (supports search functionality on name)
+    
     retrieve:
     Retrieve a specific school by id
     """
