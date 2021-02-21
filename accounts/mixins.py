@@ -1,10 +1,5 @@
-from django.core.exceptions import FieldDoesNotExist, MultipleObjectsReturned, ObjectDoesNotExist
-from django.db.models import BooleanField, DateTimeField, ManyToManyField
-from django.db.models.fields.reverse_related import ManyToOneRel
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from rest_framework import serializers
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 
 
 class ManyToManySaveMixin(object):
@@ -93,7 +88,7 @@ class ManyToManySaveMixin(object):
                 continue
             value = m2m_lists[field]
             if m2m["many"]:
-                # overrides list of objects associated with field (django handles rebuildling association table)
+                # overrides list of objects associated with fields
                 getattr(obj, field).set(value)
             else:
                 setattr(obj, field, value)

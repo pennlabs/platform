@@ -8,7 +8,7 @@ from accounts.models import Email, Major, PhoneNumberModel, School, Student, Use
 
 
 class StudentAdmin(admin.ModelAdmin):
-    # readonly_fields = ("user",)
+    readonly_fields = ("user",)
     search_fields = ("user__username", "user__first_name", "user__last_name")
     list_display = ("username", "first_name", "last_name")
     list_filter = ("school", "major")
@@ -24,7 +24,7 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(admin.ModelAdmin):
-    # readonly_fields = ("username", "first_name", "last_name", "pennid", "last_login", "date_joined")
+    readonly_fields = ("username", "first_name", "last_name", "pennid", "last_login", "date_joined")
     search_fields = ("username", "first_name", "last_name")
     list_display = ("username", "first_name", "last_name", "is_staff")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")

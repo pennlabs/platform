@@ -285,9 +285,6 @@ class UserViewTestCase(TestCase):
 
         response = self.client.patch(reverse("accounts:me"), update_data, format="json")
 
-        '''print("-----------")
-        print(json.dumps(json.loads(response.content), indent=4))
-        print(json.dumps(self.serializer.data, indent=4))'''
         self.assertEqual(response.status_code, 400)
 
     # add same major
