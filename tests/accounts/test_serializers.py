@@ -7,13 +7,16 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts.models import Email, PhoneNumberModel, Student, User, Major, School
+from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
 from accounts.serializers import (
     EmailSerializer,
+    MajorSerializer,
     PhoneNumberSerializer,
+    SchoolSerializer,
     StudentSerializer,
     UserSearchSerializer,
-    UserSerializer, MajorSerializer, SchoolSerializer, UserSerializer2,
+    UserSerializer,
+    UserSerializer2,
 )
 
 
@@ -29,9 +32,7 @@ class SchoolSerializerTestCase(TestCase):
         self.serializer = SchoolSerializer(self.school)
 
     def test_active_major(self):
-        sample_response = {
-            "name": "Test School"
-        }
+        sample_response = {"name": "Test School"}
         self.assertEqual(self.serializer.data, sample_response)
 
 
@@ -44,15 +45,11 @@ class MajorSerializerTestCase(TestCase):
         self.serializer_inactive = MajorSerializer(self.major_inactive)
 
     def test_active_major(self):
-        sample_response = {
-            "name": "Test Active Major"
-        }
+        sample_response = {"name": "Test Active Major"}
         self.assertEqual(self.serializer_active.data, sample_response)
 
     def test_inactive_major(self):
-        sample_response = {
-            "name": "Test Inactive Major"
-        }
+        sample_response = {"name": "Test Inactive Major"}
         self.assertEqual(self.serializer_inactive.data, sample_response)
 
 
@@ -81,19 +78,16 @@ class StudentSerializerTestCase(TestCase):
     def test_two_majors(self):
         sample_response = {
             "major": ["Test Active Major", "Test Active Major 2"],
-            "school": ["Test School"]
+            "school": ["Test School"],
         }
 
         # print(json.dumps(self.serializer.data, indent=4))
         self.assertEqual(self.serializer.data, sample_response)
 
     def test_remove_major(self):
-        sample_response = {
-            "major": ["Test Active Major"],
-            "school": ["Test School"]
-        }
+        sample_response = {"major": ["Test Active Major"], "school": ["Test School"]}
 
-        major_to_remove = Major.objects.get(name="Test Active Major 2");
+        major_to_remove = Major.objects.get(name="Test Active Major 2")
 
         self.user.student.major.remove(major_to_remove)
         # print(json.dumps(self.serializer.data, indent=4))
@@ -101,12 +95,9 @@ class StudentSerializerTestCase(TestCase):
         self.assertEqual(self.serializer.data, sample_response)
 
     def test_remove_school(self):
-        sample_response = {
-            "major": ["Test Active Major", "Test Active Major 2"],
-            "school": []
-        }
+        sample_response = {"major": ["Test Active Major", "Test Active Major 2"], "school": []}
 
-        school_to_remove = School.objects.get(name="Test School");
+        school_to_remove = School.objects.get(name="Test School")
 
         self.user.student.school.remove(school_to_remove)
         print(json.dumps(self.serializer.data, indent=4))
@@ -116,13 +107,12 @@ class StudentSerializerTestCase(TestCase):
     def test_remove_nonexistent_major(self):
         sample_response = {
             "major": ["Test Active Major", "Test Active Major Non Existent"],
-            "school": ["Test School"]
+            "school": ["Test School"],
         }
 
         print(json.dumps(self.serializer.data, indent=4))
 
         self.assertEqual(self.serializer.data, sample_response)
-
 
 
 class UserSerializerTestCase(TestCase):
@@ -230,10 +220,7 @@ class UserSerializer2TestCase(TestCase):
             "username": "student",
             "email": "test@test.com",
             "groups": [],
-            "student": {
-                "major": ["Test Active Major"],
-                "school": ["Test School"],
-            },
+            "student": {"major": ["Test Active Major"], "school": ["Test School"]},
             "user_permissions": [],
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
@@ -249,10 +236,7 @@ class UserSerializer2TestCase(TestCase):
             "username": "student",
             "email": "test@test.com",
             "groups": [],
-            "student": {
-                "major": ["Test Active Major"],
-                "school": ["Test School"],
-            },
+            "student": {"major": ["Test Active Major"], "school": ["Test School"], },
             "user_permissions": [],
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
@@ -301,6 +285,7 @@ class UserSearchSerializerTestCase(TestCase):
         }
         self.assertEqual(self.serializer_preferred_name.data, sample_response)
 
+
 # student serializer info / test using nested serializer editing
 class StudentSerializerTestCaseOLD(TestCase):
     def setUp(self):
@@ -341,6 +326,7 @@ class StudentSerializerTestCaseOLD(TestCase):
             "username": "student2",
         }
         self.assertEqual(self.serializer_preferred_name.data, sample_response)
+
 
 class PhoneNumberSerializerTestCase(TestCase):
     def setUp(self):

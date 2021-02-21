@@ -1,7 +1,8 @@
+import requests
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
+
 from accounts.models import Major
-import requests
 
 
 def contains_filters(listed_filters, desired_filters=set(), excluded_filters=set()):
@@ -36,11 +37,14 @@ class Command(BaseCommand):
 
         listed_majors = set()
         # iterate through all list tags with "item" in the class (all programs)
-        for program in soup.find_all("li", class_=lambda value: value and value.startswith("item ")):
+        for program in soup.find_all(
+            "li", class_=lambda value: value and value.startswith("item ")
+        ):
             curr_filter_list = program.attrs["class"]
             # check if entry meets relevant desired and excluded filter criteria
-            if not contains_filters(curr_filter_list, desired_filters=desired_filters,
-                                    excluded_filters=excluded_filters):
+            if not contains_filters(
+                curr_filter_list, desired_filters=desired_filters, excluded_filters=excluded_filters
+            ):
                 continue
 
             # grab the major name

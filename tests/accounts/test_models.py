@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from accounts.models import Email, PhoneNumberModel, Student, Major, School
+from accounts.models import Email, Major, PhoneNumberModel, School, Student
 
 
 class MajorModelTestCase(TestCase):

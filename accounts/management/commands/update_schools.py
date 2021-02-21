@@ -6,7 +6,6 @@ from accounts.models import School
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **kwargs):
         # scrapes majors from the official penn catalog of all programs
         # source = requests.get("https://catalog.upenn.edu/programs/").text

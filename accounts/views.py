@@ -13,18 +13,21 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from requests import Response
-from rest_framework import generics, viewsets, mixins, status
+from rest_framework import generics, mixins, status, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
-from accounts.models import User, Major, Student, School
+from accounts.models import Major, School, Student, User
 from accounts.serializers import (
     EmailSerializer,
+    MajorSerializer,
     PhoneNumberSerializer,
+    SchoolSerializer,
+    StudentSerializer,
     UserSearchSerializer,
-    UserSerializer, MajorSerializer, StudentSerializer, SchoolSerializer
+    UserSerializer,
 )
 
 
@@ -122,7 +125,7 @@ class UserSearchView(PennView, generics.ListAPIView):
             q3 = Q(first_name__istartswith=first) & Q(last_name__istartswith=last)
             qs = (
                 User.objects.filter(q1 | q2 | q3)
-                    .annotate(
+                .annotate(
                     search_type_ordering=Case(
                         When(q1, then=Value(2)),
                         When(q2, then=Value(1)),
@@ -131,7 +134,7 @@ class UserSearchView(PennView, generics.ListAPIView):
                         output_field=IntegerField(),
                     )
                 )
-                    .order_by("-search_type_ordering")
+                .order_by("-search_type_ordering")
             )
         else:
             # Returns the following results in sorted order:
@@ -148,7 +151,7 @@ class UserSearchView(PennView, generics.ListAPIView):
             q5 = Q(username__iexact=query)
             qs = (
                 User.objects.filter(q1 | q2 | q3 | q4 | q5)
-                    .annotate(
+                .annotate(
                     search_type_ordering=Case(
                         When(q1, then=Value(5)),
                         When(q2, then=Value(4)),
@@ -159,7 +162,7 @@ class UserSearchView(PennView, generics.ListAPIView):
                         output_field=IntegerField(),
                     )
                 )
-                    .order_by("-search_type_ordering")
+                .order_by("-search_type_ordering")
             )
         return qs
 
@@ -305,28 +308,35 @@ class LabsProtectedViewSet(LabsView):
         return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
 
 
-class MajorView(generics.ListAPIView):
+class MajorViewSet(viewsets.ReadOnlyModelViewSet):
     """
     list:
-    Retrieve a list of all of the active majors/programs (ex: Accounting, BS).
+    Retrieve a list of all of the active majors/programs
+
+    retrieve:
+    Retrieve a specific major by id
     """
 
     serializer_class = MajorSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name', 'degree_type']
-    # queryset = Major.objects.filter(is_active=True)
-    # permission_classes = []
+    search_fields = ["name", "degree_type"]
 
     def get_queryset(self):
         return Major.objects.filter(is_active=True)
 
-class SchoolView(generics.ListAPIView):
+
+class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
     """
     list:
-    Retrieve a list of all of the schools (ex: The Wharton School).
+    Retrieve a list of all of the schools
+
+    retrieve:
+    Retrieve a specific school by id
     """
 
     serializer_class = SchoolSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name']
-    queryset = School.objects.all()
+    search_fields = ["name"]
+
+    def get_queryset(self):
+        return School.objects.all()

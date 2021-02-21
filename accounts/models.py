@@ -2,6 +2,7 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -14,7 +15,7 @@ class School(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}"
 
 
 class Major(models.Model):
@@ -33,13 +34,15 @@ class Major(models.Model):
         (DEGREE_BACHELOR, "Bachelor's"),
         (DEGREE_MASTER, "Master's"),
         (DEGREE_PHD, "PhD"),
-        (DEGREE_PROFESSIONAL, "Professional")
+        (DEGREE_PROFESSIONAL, "Professional"),
     ]
     # fixed choices for degree type
-    degree_type = models.CharField(max_length=20, choices=DEGREE_CHOICES, default=DEGREE_PROFESSIONAL)
+    degree_type = models.CharField(
+        max_length=20, choices=DEGREE_CHOICES, default=DEGREE_PROFESSIONAL
+    )
 
     def __str__(self):
-        return self.name + " " + self.degree_type
+        return f"{self.name}"
 
 
 class User(AbstractUser):
@@ -51,9 +54,9 @@ class User(AbstractUser):
 
     def get_preferred_name(self):
         if self.preferred_name != "":
-            return self.preferred_name
+            return f"{self.preferred_name}"
         else:
-            return self.first_name
+            return f"{self.first_name}"
 
 
 class Student(models.Model):
@@ -61,13 +64,15 @@ class Student(models.Model):
     Represents a Student at the University of Pennsylvania.
     """
 
-    user = models.OneToOneField(get_user_model(), related_name="student", on_delete=models.DO_NOTHING)
+    user = models.OneToOneField(
+        get_user_model(), related_name="student", on_delete=models.DO_NOTHING
+    )
     major = models.ManyToManyField(Major)
     school = models.ManyToManyField(School)
-    graduation_year = models.IntegerField(null=True)
+    graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)])
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username}"
 
 
 class Email(models.Model):

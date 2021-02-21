@@ -10,12 +10,15 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 
-from accounts.models import Email, PhoneNumberModel, User, Major, School, Student
+from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
 from accounts.serializers import (
     EmailSerializer,
+    MajorSerializer,
     PhoneNumberSerializer,
+    SchoolSerializer,
+    StudentSerializer,
     UserSearchSerializer,
-    UserSerializer, MajorSerializer, StudentSerializer,
+    UserSerializer,
 )
 
 
@@ -235,45 +238,28 @@ class UserViewTestCase(TestCase):
         response = self.client.get(reverse("accounts:me"))
         self.assertEqual(json.loads(response.content), self.serializer.data)
         self.assertEqual(response.status_code, 200)
-        print(json.dumps(json.loads(response.content), indent=4))
+        """print(json.dumps(json.loads(response.content), indent=4))"""
 
     def test_update_major(self):
         self.client.force_authenticate(user=self.user)
-        update_data = {
-            "student": {
-                "school": [
-                    {
-                        "name": "Test School"
-                    }
-                ]
-            }
-        }
+        update_data = {"student": {"school": [{"name": "Test School"}]}}
 
-        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
 
-        print("-----------")
+        """print("-----------")
         print(json.dumps(json.loads(response.content), indent=4))
-        print(json.dumps(self.serializer.data, indent=4))
+        print(json.dumps(self.serializer.data, indent=4))"""
         self.assertEqual(response.status_code, 200)
 
     def test_update_school(self):
         self.client.force_authenticate(user=self.user)
-        update_data = {
-            "student": {
-                "school": [
-                    {
-                        "name": "Test School",
-                        "name": "Test School 2"
-                    }
-                ],
-            }
-        }
+        update_data = {"student": {"school": [{"name": "Test School", "name": "Test School 2"}],}}
 
-        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
 
-        print("-----------")
+        """print("-----------")
         print(json.dumps(json.loads(response.content), indent=4))
-        print(json.dumps(self.serializer.data, indent=4))
+        print(json.dumps(self.serializer.data, indent=4))"""
         self.assertEqual(response.status_code, 200)
 
     def test_update_student(self):
@@ -281,55 +267,74 @@ class UserViewTestCase(TestCase):
         update_data = {
             "student": {
                 "major": [
-                    {
-                        "name": "Test Active Major 2",
-                        "degree_type": "PHD"
-                    },
-                    {
-                        "name": "Test Active Major 1",
-                        "degree_type": "BACHELORS"
-                    }
+                    {"name": "Test Active Major 2", "degree_type": "PHD"},
+                    {"name": "Test Active Major", "degree_type": "BACHELORS"},
                 ],
-                "school": [
-                    {
-                        "name": "Test School 2"
-                    }
-                ],
-                "graduation_year": 2030
+                "school": [{"name": "Test School 2"}],
+                "graduation_year": 2030,
             }
         }
 
-        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_invalid_graduation_year(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {"student": {"graduation_year": 1600}}
+
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
 
         print("-----------")
         print(json.dumps(json.loads(response.content), indent=4))
         print(json.dumps(self.serializer.data, indent=4))
-        self.assertEqual(response.status_code, 200)
-        
+        self.assertEqual(response.status_code, 400)
+
+    # add same major
+
+    # add by name
+
+    # add by id
+
 
 class MajorViewTestCase(TestCase):
-
     def setUp(self):
         self.major_active_1 = Major.objects.create(name="Test Active Major", is_active=True)
-        self.major_inactive_1 = Major.objects.create(name="Test Inactive Major", is_active=False)
-
         self.major_active_2 = Major.objects.create(name="Test Active Major 2", is_active=True)
+
+        self.major_inactive_1 = Major.objects.create(name="Test Inactive Major", is_active=False)
         self.major_inactive_2 = Major.objects.create(name="Test Inactive Major 2", is_active=False)
 
         self.client = APIClient()
         self.serializer_active_1 = MajorSerializer(self.major_active_1)
         self.serializer_active_2 = MajorSerializer(self.major_active_2)
 
-        self.serializer_inactive_1 = MajorSerializer(self.major_inactive_1)
-        self.serializer_inactive_2 = MajorSerializer(self.major_inactive_2)
+    def test_get_queryset(self):
+        response = self.client.get(reverse("accounts:majors"))
+        self.assertEqual(
+            json.loads(response.content),
+            [self.serializer_active_1.data, self.serializer_active_2.data],
+        )
+
+
+class SchoolViewTestCase(TestCase):
+    def setUp(self):
+        self.school_1 = School.objects.create(name="Test School")
+        self.school_2 = School.objects.create(name="Test School 2")
+
+        self.client = APIClient()
+        self.serializer_1 = SchoolSerializer(self.school_1)
+        self.serializer_2 = SchoolSerializer(self.school_2)
 
     def test_get_queryset(self):
-        response = self.client.get(reverse("accounts:majors-list"))
-        self.assertEqual(json.loads(response.content), [self.serializer_active_1.data, self.serializer_active_2.data])
+        response = self.client.get(reverse("accounts:schools"))
+        print(json.loads(response.content))
+        self.assertEqual(
+            json.loads(response.content), [self.serializer_1.data, self.serializer_2.data]
+        )
 
 
 class StudentViewTestCase(TestCase):
-
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             pennid=1,
@@ -365,9 +370,7 @@ class StudentViewTestCase(TestCase):
 
     def test_update_graduation_year(self):
         self.client.force_authenticate(user=self.user)
-        update_data = {
-            "graduation_year": 2027
-        }
+        update_data = {"graduation_year": 2027}
         self.user.student.graduation_year = 2027
 
         response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
@@ -377,9 +380,7 @@ class StudentViewTestCase(TestCase):
 
     def test_update_with_existing_major(self):
         self.client.force_authenticate(user=self.user)
-        update_data = {
-            "major": [{"name": "Test Active Major", "degree_type": "BACHELORS"},]
-        }
+        update_data = {"major": [{"name": "Test Active Major", "degree_type": "BACHELORS"},]}
 
         response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
 
@@ -390,9 +391,7 @@ class StudentViewTestCase(TestCase):
 
     def test_update_with_existing_school(self):
         self.client.force_authenticate(user=self.user)
-        update_data = {
-            "school": [{"name": "Test School 2"},]
-        }
+        update_data = {"school": [{"name": "Test School 2"},]}
 
         response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
 

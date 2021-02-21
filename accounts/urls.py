@@ -7,28 +7,28 @@ from accounts.views import (
     LabsProtectedViewSet,
     LoginView,
     LogoutView,
+    MajorViewSet,
     PhoneNumberViewSet,
     ProtectedViewSet,
+    SchoolViewSet,
     UserSearchView,
     UserView,
     UUIDIntrospectTokenView,
-    MajorView,
-    SchoolView,
 )
 
 
 app_name = "accounts"
 
 router = routers.SimpleRouter()
-router.register("me/phonenumber/", PhoneNumberViewSet, basename="me-phonenumber")
-router.register("me/email/", EmailViewSet, basename="me-email")
+router.register("me/phonenumber", PhoneNumberViewSet, basename="me-phonenumber")
+router.register("me/email", EmailViewSet, basename="me-email")
+router.register("majors", MajorViewSet, basename="majors")
+router.register("schools", SchoolViewSet, basename="schools")
 
 urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("me/", UserView.as_view(), name="me"),
-    path("majors/", MajorView.as_view(), name="majors"),
-    path("schools/", SchoolView.as_view(), name="schools"),
     path("search/", UserSearchView.as_view(), name="search"),
     path("authorize/", AuthorizationView.as_view(), name="authorize"),
     path("token/", TokenView.as_view(), name="token"),

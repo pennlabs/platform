@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from accounts.admin import StudentAdmin, MajorAdmin
-from accounts.models import Student, User, Major
+from accounts.admin import MajorAdmin, SchoolAdmin, StudentAdmin
+from accounts.models import Major, School, Student, User
 
 
 class MajorAdminTestCase(TestCase):
@@ -15,13 +15,23 @@ class MajorAdminTestCase(TestCase):
         self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
         self.major_inactive = Major.objects.create(name="Test Inactive Major", is_active=False)
 
-        self.ma = MajorAdmin(Major, AdminSite())
+        self.major_admin = MajorAdmin(Major, AdminSite())
 
     def test_major_active(self):
-        self.assertEqual(self.ma.name(self.major_active), self.major_active.name)
+        self.assertEqual(self.major_admin.name(self.major_active), self.major_active.name)
 
     def test_major_inactive(self):
-        self.assertEqual(self.ma.name(self.major_inactive), self.major_inactive.name)
+        self.assertEqual(self.major_admin.name(self.major_inactive), self.major_inactive.name)
+
+
+class SchoolAdminTestCase(TestCase):
+    def setUp(self):
+        self.school1 = School.objects.create(name="Test School")
+
+        self.school_admin = SchoolAdmin(School, AdminSite())
+
+    def test_school(self):
+        self.assertEqual(self.school_admin.name(self.school1), self.school1.name)
 
 
 class StudentAdminTestCase(TestCase):
@@ -30,16 +40,16 @@ class StudentAdminTestCase(TestCase):
             pennid=1, username="user", first_name="First", last_name="Last"
         )
         self.student = Student.objects.create(user=self.user)
-        self.sa = StudentAdmin(Student, AdminSite())
+        self.student_admin = StudentAdmin(Student, AdminSite())
 
     def test_username(self):
-        self.assertEqual(self.sa.username(self.student), self.user.username)
+        self.assertEqual(self.student_admin.username(self.student), self.user.username)
 
     def test_first_name(self):
-        self.assertEqual(self.sa.first_name(self.student), self.user.first_name)
+        self.assertEqual(self.student_admin.first_name(self.student), self.user.first_name)
 
     def test_last_name(self):
-        self.assertEqual(self.sa.last_name(self.student), self.user.last_name)
+        self.assertEqual(self.student_admin.last_name(self.student), self.user.last_name)
 
 
 class LabsAdminTestCase(TestCase):

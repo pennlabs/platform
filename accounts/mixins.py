@@ -67,6 +67,7 @@ class ManyToManySaveMixin(object):
                 if items is None:
                     ignore_fields.add(field_name)
                     continue
+
                 for item in items:
                     # adds item to list
                     m2m_lists[field_name].append(self._lookup_item(model, field_name, item, mode))
@@ -81,7 +82,6 @@ class ManyToManySaveMixin(object):
                 else:
                     # handles if it's accidentally added (e.g. Integer field, character field, etc.)
                     ignore_fields.add(field_name)
-
 
         obj = super(ManyToManySaveMixin, self).save()
 

@@ -5,7 +5,6 @@ from accounts.models import Major
 
 
 class UpdateMajorsTestCase(TestCase):
-
     def test_update(self):
         Major.objects.create(name="Test Active Major", is_active=True)
         Major.objects.create(name="Test Inactive Major", is_active=False)
@@ -26,5 +25,3 @@ class UpdateMajorsTestCase(TestCase):
         self.assertEqual(Major.objects.get(name="Test Active Major").is_active, False)
         self.assertEqual(Major.objects.get(name="Test Active Major 2").is_active, False)
         self.assertEqual(Major.objects.get(name="Test Inactive Major").is_active, False)
-
-
