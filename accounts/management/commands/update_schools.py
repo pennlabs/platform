@@ -1,7 +1,8 @@
+import requests
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
-from accounts.models import Major, School
-import requests
+
+from accounts.models import School
 
 
 class Command(BaseCommand):

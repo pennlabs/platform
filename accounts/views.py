@@ -186,7 +186,7 @@ class UserView(generics.RetrieveUpdateAPIView):
 
 
 class StudentView(generics.RetrieveUpdateAPIView):
-    '''
+    """
     retrieve:
     Return a single phone number with all information fields present.
     create:
@@ -195,7 +195,8 @@ class StudentView(generics.RetrieveUpdateAPIView):
     update:
     Update all fields.
     You must specify all of the fields or use a patch request.
-    '''
+    """
+
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticated]
 

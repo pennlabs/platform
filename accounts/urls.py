@@ -13,7 +13,6 @@ from accounts.views import (
     UserView,
     UUIDIntrospectTokenView,
     MajorView,
-    StudentView,
     SchoolView,
 )
 
@@ -28,7 +27,6 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("me/", UserView.as_view(), name="me"),
-    # path("me/student/", StudentView.as_view(), name="me-student"),
     path("majors/", MajorView.as_view(), name="majors"),
     path("schools/", SchoolView.as_view(), name="schools"),
     path("search/", UserSearchView.as_view(), name="search"),

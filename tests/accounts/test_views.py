@@ -305,7 +305,7 @@ class UserViewTestCase(TestCase):
         print(json.dumps(json.loads(response.content), indent=4))
         print(json.dumps(self.serializer.data, indent=4))
         self.assertEqual(response.status_code, 200)
-
+        
 
 class MajorViewTestCase(TestCase):
 
