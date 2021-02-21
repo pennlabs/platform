@@ -188,25 +188,6 @@ class UserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
-class StudentView(generics.RetrieveUpdateAPIView):
-    """
-    retrieve:
-    Return a single phone number with all information fields present.
-    create:
-    Add new unverified phone number.
-
-    update:
-    Update all fields.
-    You must specify all of the fields or use a patch request.
-    """
-
-    serializer_class = StudentSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user.student
-
-
 class PhoneNumberViewSet(viewsets.ModelViewSet):
     """
     retrieve:
