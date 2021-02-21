@@ -234,9 +234,49 @@ class UserViewTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("accounts:me"))
         self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
         print(json.dumps(json.loads(response.content), indent=4))
 
     def test_update_major(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "student": {
+                "school": [
+                    {
+                        "name": "Test School"
+                    }
+                ]
+            }
+        }
+
+        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+
+        print("-----------")
+        print(json.dumps(json.loads(response.content), indent=4))
+        print(json.dumps(self.serializer.data, indent=4))
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_school(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "student": {
+                "school": [
+                    {
+                        "name": "Test School",
+                        "name": "Test School 2"
+                    }
+                ],
+            }
+        }
+
+        response = self.client.patch(reverse("accounts:me-student"), update_data, format="json")
+
+        print("-----------")
+        print(json.dumps(json.loads(response.content), indent=4))
+        print(json.dumps(self.serializer.data, indent=4))
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_student(self):
         self.client.force_authenticate(user=self.user)
         update_data = {
             "student": {
@@ -246,16 +286,16 @@ class UserViewTestCase(TestCase):
                         "degree_type": "PHD"
                     },
                     {
-                        "name": "Test Active Major 3",
-                        "degree_type": "PROFESSIONAL"
+                        "name": "Test Active Major 1",
+                        "degree_type": "BACHELORS"
                     }
                 ],
                 "school": [
                     {
-                        "name": "Test School"
+                        "name": "Test School 2"
                     }
                 ],
-                "graduation_year": 2026
+                "graduation_year": 2030
             }
         }
 

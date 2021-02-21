@@ -1,9 +1,7 @@
-import { Option } from "../types";
+import { NamedObject, Option } from "../types";
 import { doApiRequest } from "../utils/fetch";
 
-interface NamedObject {
-    name: string;
-}
+
 
 const generateLoadOption = (route: string) => {
     const loadOptionFunc = async (inputValue: string): Promise<Option[]> => {
@@ -18,7 +16,7 @@ const generateLoadOption = (route: string) => {
 
         return objects.map((obj) => ({
             label: obj.name,
-            value: obj.name,
+            value: obj.id,
         }));
     };
     return loadOptionFunc;
