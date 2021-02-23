@@ -14,7 +14,7 @@
     },
     "rules": {
         "prettier/prettier": "error",
-        "import/extensions": "never",
+        "import/extensions": 0,
         "quotes": [
             "error",
             "double",
