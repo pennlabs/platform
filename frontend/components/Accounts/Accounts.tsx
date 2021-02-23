@@ -12,6 +12,7 @@ import {
 import SelectField from "./SelectField";
 import VerificationModal from "./Verification/VerificationModal";
 import { logException } from "../../utils/sentry";
+import DeleteModal from "./DeleteModal";
 
 interface ContactMethodState {
     type: ContactType;
@@ -59,6 +60,12 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
         }
     };
 
+    // Delete contact method state + functions
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [deleteState, setDeleteState] = useState<
+        ContactMethodState | undefined
+    >(undefined);
+
     return (
         <div>
             {verificationState && (
@@ -69,6 +76,16 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     show={showVerificationModal}
                     mutate={mutate}
                     closeFunc={() => setShowVerificationModal(false)}
+                />
+            )}
+            {deleteState && (
+                <DeleteModal
+                    type={deleteState.type}
+                    id={deleteState.id}
+                    contact={deleteState.contact}
+                    show={showDeleteModal}
+                    mutate={mutate}
+                    closeFunc={() => setShowDeleteModal(false)}
                 />
             )}
             <Heading>Hello, {user.first_name}</Heading>
