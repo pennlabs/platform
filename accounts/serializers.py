@@ -32,61 +32,6 @@ class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
         save_related_fields = ["major", "school"]
 
 
-class UserSerializer(serializers.ModelSerializer):
-    # SerializerMethodFields are read_only
-    first_name = serializers.CharField(source="get_preferred_name", required=False)
-    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
-    user_permissions = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="codename"
-    )
-    product_permission = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="codename", source="user_permissions"
-    )  # TODO: remove this once all products update to new version of DLA
-    student = StudentSerializer()
-
-    class Meta:
-        model = User
-        fields = (
-            "pennid",
-            "first_name",
-            "last_name",
-            "username",
-            "email",
-            "groups",
-            "product_permission",
-            "user_permissions",
-            "student",
-        )
-
-        read_only_fields = (
-            "pennid",
-            "last_name",
-            "username",
-            "email",
-            "groups",
-            "product_permission",
-            "user_permissions",
-        )
-
-    # Users are pulled from Penn DB, so come with no preferred
-    # name. Thus, this logic only needs to happen on update.
-    def update(self, instance, validated_data):
-        if "get_preferred_name" in validated_data:
-            instance.preferred_name = validated_data["get_preferred_name"]
-            if instance.preferred_name == instance.first_name:
-                instance.preferred_name = ""
-
-            instance.save()
-        if "student" in validated_data:
-            # Copied from DRF UpdateModelMixin
-            # https://github.com/encode/django-rest-framework/blob/master/rest_framework/mixins.py
-            data = validated_data.pop("student")
-            serializer = StudentSerializer(instance.student, data=data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-        return instance
-
-
 class UserSearchSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
 
@@ -177,4 +122,63 @@ class EmailSerializer(serializers.ModelSerializer):
             instance.primary = True
 
         instance.save()
+        return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    # SerializerMethodFields are read_only
+    first_name = serializers.CharField(source="get_preferred_name", required=False)
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    user_permissions = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="codename"
+    )
+    product_permission = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="codename", source="user_permissions"
+    )  # TODO: remove this once all products update to new version of DLA
+    student = StudentSerializer()
+    emails = EmailSerializer(many=True)
+    phone_numbers = PhoneNumberSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "pennid",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "groups",
+            "product_permission",
+            "user_permissions",
+            "student",
+            "phone_numbers",
+            "emails",
+        )
+
+        read_only_fields = (
+            "pennid",
+            "last_name",
+            "username",
+            "email",
+            "groups",
+            "product_permission",
+            "user_permissions",
+        )
+
+    # Users are pulled from Penn DB, so come with no preferred
+    # name. Thus, this logic only needs to happen on update.
+    def update(self, instance, validated_data):
+        if "get_preferred_name" in validated_data:
+            instance.preferred_name = validated_data["get_preferred_name"]
+            if instance.preferred_name == instance.first_name:
+                instance.preferred_name = ""
+
+            instance.save()
+        if "student" in validated_data:
+            # Copied from DRF UpdateModelMixin
+            # https://github.com/encode/django-rest-framework/blob/master/rest_framework/mixins.py
+            data = validated_data.pop("student")
+            serializer = StudentSerializer(instance.student, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
         return instance
