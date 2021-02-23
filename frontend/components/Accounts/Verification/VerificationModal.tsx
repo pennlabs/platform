@@ -1,7 +1,7 @@
 import { mutateResourceFunction } from "@pennlabs/rest-hooks/dist/types";
 import React from "react";
 import { Modal } from "react-bulma-components";
-import { ContactType, User } from "../../types";
+import { ContactType, User } from "../../../types";
 import VerificationForm from "./VerificationForm";
 
 interface VerificationModalProps {

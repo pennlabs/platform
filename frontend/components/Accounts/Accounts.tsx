@@ -5,9 +5,13 @@ import parsePhoneNumber from "libphonenumber-js";
 import { useResource } from "@pennlabs/rest-hooks";
 import { ContactType, User } from "../../types";
 import { doApiRequest } from "../../utils/fetch";
-import { generateLoadOption } from "../../data-fetching/accounts";
+import {
+    createContact,
+    generateLoadOption,
+} from "../../data-fetching/accounts";
 import SelectField from "./SelectField";
-import VerificationModal from "../Verification/VerificationModal";
+import VerificationModal from "./Verification/VerificationModal";
+import { logException } from "../../utils/sentry";
 
 interface VerificationState {
     type: ContactType;
@@ -16,12 +20,14 @@ interface VerificationState {
 }
 
 const Accounts = ({ user: initialUser }: { user: User }) => {
-    // State
+    // User State
     const { data: userPartial, mutate } = useResource<User>("/accounts/me/", {
         initialData: initialUser,
     });
     // TODO: this feels weird
     const user = userPartial!;
+
+    // Verification State + Functions
     const [showVerificationModal, setShowVerificationModal] = useState<boolean>(
         false
     );
@@ -37,6 +43,22 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
             setShowVerificationModal(true);
         }
     };
+
+    // Contact Method manipulation
+    const addContactMethod = async (props: {
+        type: ContactType;
+        value: string;
+    }) => {
+        const { type, value } = props;
+        try {
+            await createContact(type, value);
+            mutate();
+        } catch (e) {
+            logException(e);
+            // TODO: toast
+        }
+    };
+
     return (
         <div>
             {verificationState && (

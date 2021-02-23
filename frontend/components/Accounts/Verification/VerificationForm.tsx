@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import ReactCodeInput from "react-code-input";
 import { mutateResourceFunction } from "@pennlabs/rest-hooks/dist/types";
-import { verifyContact } from "../../data-fetching/accounts";
-import { ContactType, User } from "../../types";
-import { logException } from "../../utils/sentry";
+import { verifyContact } from "../../../data-fetching/accounts";
+import { ContactType, User } from "../../../types";
+import { logException } from "../../../utils/sentry";
 
 // TODO: combine some of these types
 interface VerificationFormProps {
