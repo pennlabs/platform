@@ -3,6 +3,7 @@ import { NextPageContext } from "next";
 import { User } from "../types";
 import { doApiRequest } from "../utils/fetch";
 import Accounts from "../components/Accounts/Accounts";
+import "react-bulma-components/dist/react-bulma-components.min.css";
 
 interface AccountPageProps {
     user: User;

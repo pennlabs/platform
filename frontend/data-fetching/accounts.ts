@@ -1,9 +1,7 @@
-import { NamedObject, Option } from "../types";
+import { ContactType, NamedObject, Option } from "../types";
 import { doApiRequest } from "../utils/fetch";
 
-
-
-const generateLoadOption = (route: string) => {
+export const generateLoadOption = (route: string) => {
     const loadOptionFunc = async (inputValue: string): Promise<Option[]> => {
         if (inputValue.length === 0) {
             return [];
@@ -22,4 +20,19 @@ const generateLoadOption = (route: string) => {
     return loadOptionFunc;
 };
 
-export default generateLoadOption;
+export const verifyContact = async (
+    type: ContactType,
+    id: number,
+    code: string
+) => {
+    const payload = { verification_code: code };
+    const res = await doApiRequest(`/accounts/me/${type}/${id}/`, {
+        method: "PATCH",
+        body: payload,
+    });
+
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.detail);
+    }
+};

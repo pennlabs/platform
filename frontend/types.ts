@@ -40,6 +40,10 @@ export interface User {
     phone_numbers: PhoneNumber[];
 }
 
+export enum ContactType {
+    Email = "email",
+    PhoneNumber = "phonenumber",
+}
 /**
  * Used for Select
  */
