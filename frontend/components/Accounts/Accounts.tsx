@@ -13,7 +13,7 @@ import SelectField from "./SelectField";
 import VerificationModal from "./Verification/VerificationModal";
 import { logException } from "../../utils/sentry";
 
-interface VerificationState {
+interface ContactMethodState {
     type: ContactType;
     id: number;
     contact: string;
@@ -32,12 +32,12 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
         false
     );
     const [verificationState, setVerificationState] = useState<
-        VerificationState | undefined
+        ContactMethodState | undefined
     >(undefined);
     const openVerificationModal = ({
         verified,
         ...props
-    }: VerificationState & { verified: boolean }) => {
+    }: ContactMethodState & { verified: boolean }) => {
         if (!verified) {
             setVerificationState(props);
             setShowVerificationModal(true);
