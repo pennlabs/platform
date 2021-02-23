@@ -70,29 +70,6 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     <label htmlFor="first_name">Display Name</label>
                     <Field name="first_name" className="form-input" />
                     <br />
-                    {user.groups.includes("student") && (
-                        <div>
-                            <b>Student:</b>
-                            <br />
-                            <label htmlFor="student.graduation_year">
-                                Graduation Year
-                            </label>
-                            <Field
-                                name="student.graduation_year"
-                                className="form-input"
-                            />
-                            <Field
-                                name="student.major"
-                                component={SelectField}
-                                loadOptions={generateLoadOption("majors")}
-                            />
-                            <Field
-                                name="student.school"
-                                component={SelectField}
-                                loadOptions={generateLoadOption("schools")}
-                            />
-                        </div>
-                    )}
                     <b>Phone Numbers:</b>
                     <br />
                     {user.phone_numbers.length !== 0 &&
@@ -146,6 +123,29 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                         ))}{" "}
                     + Add another email
                     <br />
+                    {user.groups.includes("student") && (
+                        <div>
+                            <b>Student:</b>
+                            <br />
+                            <label htmlFor="student.graduation_year">
+                                Graduation Year
+                            </label>
+                            <Field
+                                name="student.graduation_year"
+                                className="form-input"
+                            />
+                            <Field
+                                name="student.major"
+                                component={SelectField}
+                                loadOptions={generateLoadOption("majors")}
+                            />
+                            <Field
+                                name="student.school"
+                                component={SelectField}
+                                loadOptions={generateLoadOption("schools")}
+                            />
+                        </div>
+                    )}
                     <button type="submit">Submit</button>
                 </Form>
             </Formik>
