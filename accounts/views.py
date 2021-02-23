@@ -13,9 +13,9 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from rest_framework import generics, viewsets
-from rest_framework.views import Response
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import Response
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
