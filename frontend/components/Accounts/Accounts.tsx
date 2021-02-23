@@ -28,10 +28,11 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
     const [verificationState, setVerificationState] = useState<
         VerificationState | undefined
     >(undefined);
-    const openVerificationModal = (
-        props: VerificationState & { verified: boolean }
-    ) => {
-        if (!props.verified) {
+    const openVerificationModal = ({
+        verified,
+        ...props
+    }: VerificationState & { verified: boolean }) => {
+        if (!verified) {
             setVerificationState(props);
             setShowVerificationModal(true);
         }
@@ -52,6 +53,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
             <Formik
                 initialValues={user}
                 onSubmit={(values, actions) => {
+                    // TODO: use mutate instead of explicit doApiRequest?
                     doApiRequest("/accounts/me/", {
                         method: "PATCH",
                         body: values,
