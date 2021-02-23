@@ -5,7 +5,7 @@ from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +13,7 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from rest_framework import generics, viewsets
+from rest_framework.views import Response
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from sentry_sdk import capture_message
@@ -74,7 +75,7 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
             token = get_access_token_model().objects.get(token=token_value)
         except ObjectDoesNotExist:
             return HttpResponse(
-                content=json.dumps({"active": False}), status=401, content_type="application/json",
+                content=json.dumps({"active": False}), status=401, content_type="application/json"
             )
         else:
             if token.is_valid():
@@ -88,7 +89,7 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
                 if token.user:
                     data["user"] = UserSerializer(token.user).data
                 return HttpResponse(
-                    content=json.dumps(data), status=200, content_type="application/json",
+                    content=json.dumps(data), status=200, content_type="application/json"
                 )
             else:
                 return HttpResponse(
@@ -222,7 +223,7 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
         if is_primary and next_number is not None:
             next_number.primary = True
             next_number.save()
-        return JsonResponse({"message": "Phone number successfully deleted", "status": 200})
+        return Response({"detail": "Phone number successfully deleted"}, status=200)
 
 
 class EmailViewSet(viewsets.ModelViewSet):
@@ -256,9 +257,7 @@ class EmailViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         if self.get_queryset().filter(verified=True).count() < 2:
-            return JsonResponse(
-                {"message": "You can't delete the only verified email", "status": 405}
-            )
+            return Response({"detail": "You can't delete the only verified email"}, status=405)
 
         is_primary = self.get_object().primary
         self.get_object().delete()
@@ -266,7 +265,7 @@ class EmailViewSet(viewsets.ModelViewSet):
         if is_primary and next_email is not None:
             next_email.primary = True
             next_email.save()
-        return JsonResponse({"message": "Email successfully deleted", "status": 200})
+        return Response({"detail": "Email successfully deleted"}, status=200)
 
 
 class ProtectedViewSet(PennView):
