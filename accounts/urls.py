@@ -2,6 +2,7 @@ from django.urls import path
 from oauth2_provider.views import AuthorizationView, TokenView
 
 from accounts.views import (
+    DevLoginView,
     LabsProtectedViewSet,
     LoginView,
     LogoutView,
@@ -23,4 +24,5 @@ urlpatterns = [
     path("introspect/", UUIDIntrospectTokenView.as_view(), name="introspect"),
     path("protected/", ProtectedViewSet.as_view(), name="protected"),
     path("labsprotected/", LabsProtectedViewSet.as_view(), name="labsprotected"),
+    path("devlogin/", DevLoginView.as_view(), name="dev-login")
 ]

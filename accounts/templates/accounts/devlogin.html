@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Platform Dev Login</title>
+</head>
+<body>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="userChoice">Choose a user:</label>
+    <select id="userChoice" name="userChoice">
+        {% for user in USERS %}
+        <option value="{{user.pennid}}">{{user.first_name}} {{user.last_name}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+
+</body>
+</html>

@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
@@ -45,6 +45,47 @@ class LoginView(View):
             return redirect(request.GET.get("next", "/"))
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
+
+class DevLoginView(View):
+
+    @staticmethod
+    def populate_users():
+        NAMES = ["George Washington",
+                 "John Adams",
+                 "Thomas Jefferson",
+                 "James Madison",
+                 "James Monroe",
+                 "John Quincy Adams",
+                 "Andrew Jackson",
+                 "Martin Van Buren",
+                 "William Harrison",
+                 "John Tyler"
+                 ]
+        users = []
+        for i, name in enumerate(NAMES):
+            first, last = name.split(" ", 1)
+            pennkey = first.lower() + last[0].lower()
+            affiliation = "student;member"
+            users.append({
+                "pennid": i,
+                "pennkey": pennkey,
+                "first_name": first,
+                "last_name": last,
+                "affiliation": affiliation,
+            })
+        return users
+
+    def get(self, request):
+        users = DevLoginView.populate_users()
+        return render(request, 'accounts/devlogin.html', {'USERS': users})
+
+    def post(self, request):
+        choice = int(request.POST.get("userChoice", ""))
+        users = DevLoginView.populate_users()
+        user = users[choice]
+        print(user)
+        return HttpResponseServerError()
+
 
 
 class LogoutView(View):
