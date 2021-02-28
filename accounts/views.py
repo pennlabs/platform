@@ -289,7 +289,7 @@ class LabsProtectedViewSet(LabsView):
 class MajorViewSet(viewsets.ReadOnlyModelViewSet):
     """
     list:
-    Retrieve a list of all of the active majors/programs 
+    Retrieve a list of all of the active majors/programs
     (supports search functionality on name and degree type)
 
     retrieve:
@@ -299,9 +299,7 @@ class MajorViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MajorSerializer
     filter_backends = [SearchFilter]
     search_fields = ["name", "degree_type"]
-
-    def get_queryset(self):
-        return Major.objects.filter(is_active=True)
+    queryset = Major.objects.filter(is_active=True)
 
 
 class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
@@ -309,7 +307,7 @@ class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
     list:
     Retrieve a list of all of the schools
     (supports search functionality on name)
-    
+
     retrieve:
     Retrieve a specific school by id
     """
@@ -317,6 +315,4 @@ class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SchoolSerializer
     filter_backends = [SearchFilter]
     search_fields = ["name"]
-
-    def get_queryset(self):
-        return School.objects.all()
+    queryset = School.objects.all()

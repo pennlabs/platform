@@ -12,10 +12,12 @@ class School(models.Model):
     Represents a school at the University of Pennsylvania.
     """
 
-    name = models.CharField(max_length=100)
+    # implicit username, email, first_name, and last_name fields
+    # from AbstractUser that contains the user's PennKey
+    name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class Major(models.Model):
@@ -42,7 +44,7 @@ class Major(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class User(AbstractUser):
@@ -54,9 +56,9 @@ class User(AbstractUser):
 
     def get_preferred_name(self):
         if self.preferred_name != "":
-            return f"{self.preferred_name}"
+            return self.preferred_name
         else:
-            return f"{self.first_name}"
+            return self.first_name
 
 
 class Student(models.Model):
@@ -72,7 +74,7 @@ class Student(models.Model):
     graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)])
 
     def __str__(self):
-        return f"{self.user.username}"
+        return self.user.username
 
 
 class Email(models.Model):

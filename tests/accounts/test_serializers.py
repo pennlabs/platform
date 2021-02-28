@@ -16,7 +16,6 @@ from accounts.serializers import (
     StudentSerializer,
     UserSearchSerializer,
     UserSerializer,
-    UserSerializer2,
 )
 
 
@@ -32,24 +31,25 @@ class SchoolSerializerTestCase(TestCase):
         self.serializer = SchoolSerializer(self.school)
 
     def test_active_major(self):
-        sample_response = {"name": "Test School"}
+        sample_response = {"id": 1, "name": "Test School"}
         self.assertEqual(self.serializer.data, sample_response)
 
 
 class MajorSerializerTestCase(TestCase):
     def setUp(self):
         self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
-        self.major_inactive = Major.objects.create(name="Test Inactive Major", is_active=False)
+        self.major_inactive = Major.objects.create(name="Test Inactive Major",
+                                                   degree_type="PHD", is_active=False)
 
         self.serializer_active = MajorSerializer(self.major_active)
         self.serializer_inactive = MajorSerializer(self.major_inactive)
 
     def test_active_major(self):
-        sample_response = {"name": "Test Active Major"}
+        sample_response = {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"}
         self.assertEqual(self.serializer_active.data, sample_response)
 
     def test_inactive_major(self):
-        sample_response = {"name": "Test Inactive Major"}
+        sample_response = {"id": 2, "name": "Test Inactive Major", "degree_type": "PHD"}
         self.assertEqual(self.serializer_inactive.data, sample_response)
 
 
@@ -65,7 +65,7 @@ class StudentSerializerTestCase(TestCase):
             email="test@test.com",
         )
         Major.objects.create(name="Test Active Major", is_active=True)
-        Major.objects.create(name="Test Active Major 2", is_active=True)
+        Major.objects.create(name="Test Active Major 2", degree_type="PHD", is_active=True)
 
         School.objects.create(name="Test School")
 
@@ -77,42 +77,46 @@ class StudentSerializerTestCase(TestCase):
 
     def test_two_majors(self):
         sample_response = {
-            "major": ["Test Active Major", "Test Active Major 2"],
-            "school": ["Test School"],
+            "major": [
+                {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
+                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"}
+            ],
+            "school": [{"id": 1, "name": "Test School"}],
         }
 
-        # print(json.dumps(self.serializer.data, indent=4))
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["major"], sample_response["major"])
+        self.assertEqual(self.serializer.data["school"], sample_response["school"])
 
     def test_remove_major(self):
-        sample_response = {"major": ["Test Active Major"], "school": ["Test School"]}
+        sample_response = {
+            "major": [
+                {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
+            ],
+            "school": [{"id": 1, "name": "Test School"}],
+        }
 
         major_to_remove = Major.objects.get(name="Test Active Major 2")
 
         self.user.student.major.remove(major_to_remove)
-        # print(json.dumps(self.serializer.data, indent=4))
 
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["major"], sample_response["major"])
+        self.assertEqual(self.serializer.data["school"], sample_response["school"])
 
     def test_remove_school(self):
-        sample_response = {"major": ["Test Active Major", "Test Active Major 2"], "school": []}
+        sample_response = {
+            "major": [
+                {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
+                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"}
+            ],
+            "school": [],
+        }
 
         school_to_remove = School.objects.get(name="Test School")
 
         self.user.student.school.remove(school_to_remove)
-        print(json.dumps(self.serializer.data, indent=4))
 
-        self.assertEqual(self.serializer.data, sample_response)
-
-    def test_remove_nonexistent_major(self):
-        sample_response = {
-            "major": ["Test Active Major", "Test Active Major Non Existent"],
-            "school": ["Test School"],
-        }
-
-        print(json.dumps(self.serializer.data, indent=4))
-
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["major"], sample_response["major"])
+        self.assertEqual(self.serializer.data["school"], sample_response["school"])
 
 
 class UserSerializerTestCase(TestCase):
@@ -180,69 +184,16 @@ class UserSerializerTestCase(TestCase):
         data = {
             "first_name": "First2",
         }
+        print(json.dumps(self.serializer.data, indent=4))
+        print(self.user_preferred_name)
         serializer = UserSerializer(self.user_preferred_name, data=data)
+        print(serializer.is_valid())
+        print(serializer.errors)
 
         self.assertTrue(serializer.is_valid())
         serializer.save()
         self.assertEqual(self.user_preferred_name.preferred_name, "")
         self.assertEqual(self.user_preferred_name.first_name, "First2")
-
-
-class UserSerializer2TestCase(TestCase):
-    def setUp(self):
-        self.date = pytz.timezone("America/New_York").localize(datetime.datetime(2019, 1, 1))
-
-        self.user = get_user_model().objects.create_user(
-            pennid=1,
-            username="student",
-            password="secret",
-            first_name="First",
-            last_name="Last",
-            email="test@test.com",
-        )
-        Major.objects.create(name="Test Active Major", is_active=True)
-        School.objects.create(name="Test School")
-        self.student = StudentSerializer(Student.objects.create(user=self.user))
-
-        # print(json.dumps(self.student.data, indent=4))
-
-        self.serializer = UserSerializer2(self.user)
-
-        self.user.student.major.add(Major.objects.get(name="Test Active Major"))
-        self.user.student.school.add(School.objects.get(name="Test School"))
-        self.user.student.graduation_year = 2024
-
-    def test_str_no_preferred_name(self):
-        sample_response = {
-            "pennid": 1,
-            "first_name": "First",
-            "last_name": "Last",
-            "username": "student",
-            "email": "test@test.com",
-            "groups": [],
-            "student": {"major": ["Test Active Major"], "school": ["Test School"]},
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-
-        print(json.dumps(self.serializer.data, indent=4))
-        self.assertEqual(self.serializer.data, sample_response)
-
-    def test_update_major(self):
-        sample_response = {
-            "pennid": 1,
-            "first_name": "First",
-            "last_name": "Last",
-            "username": "student",
-            "email": "test@test.com",
-            "groups": [],
-            "student": {"major": ["Test Active Major"], "school": ["Test School"], },
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-
-        print(json.dumps(self.serializer.data, indent=4))
-        self.assertEqual(self.serializer.data, sample_response)
 
 
 class UserSearchSerializerTestCase(TestCase):
