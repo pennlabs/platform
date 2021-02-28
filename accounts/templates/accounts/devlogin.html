@@ -3,19 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Platform Dev Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <style>
+        .maindiv {
+            height: 200px;
+            width: 400px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-top: -100px;
+            margin-left: -200px;
+        }
+    </style>
 </head>
 <body>
-
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label for="userChoice">Choose a user:</label>
-    <select id="userChoice" name="userChoice">
-        {% for user in USERS %}
-        <option value="{{user.pennid}}">{{user.first_name}} {{user.last_name}}</option>
-        {% endfor %}
-    </select>
-    <input type="submit">
-</form>
-
+    <div class="col-md-4; maindiv">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3 for="userChoice">Choose a user:</h3>
+            <div class="form-group">
+                <select class="form-control" id="userChoice" name="userChoice">
+                    {% for user in users %}
+                    <option value="{{user.pennid}}">{{user.first_name}} {{user.last_name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="float: right">Login</button>
+        </form>
+    </div>
 </body>
 </html>

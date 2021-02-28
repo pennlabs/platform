@@ -47,9 +47,13 @@ class LoginView(View):
         return HttpResponseServerError()
 
 class DevLoginView(View):
+    """
+    Log in a test user.
+    Does not use Shibboleth
+    """
 
     @staticmethod
-    def populate_users():
+    def populate_user_data():
         NAMES = ["George Washington",
                  "John Adams",
                  "Thomas Jefferson",
@@ -67,7 +71,7 @@ class DevLoginView(View):
             pennkey = first.lower() + last[0].lower()
             affiliation = "student;member"
             users.append({
-                "pennid": i,
+                "pennid": i + 1, # if leave as i, g. wash's pennid is 0, which makes not remote_user true
                 "pennkey": pennkey,
                 "first_name": first,
                 "last_name": last,
@@ -76,17 +80,40 @@ class DevLoginView(View):
         return users
 
     def get(self, request):
-        users = DevLoginView.populate_users()
-        return render(request, 'accounts/devlogin.html', {'USERS': users})
+        users = DevLoginView.populate_user_data()
+        return render(request, 'accounts/devlogin.html', {'users': users})
 
     def post(self, request):
         choice = int(request.POST.get("userChoice", ""))
-        users = DevLoginView.populate_users()
-        user = users[choice]
-        print(user)
+        users = DevLoginView.populate_user_data()
+        if choice - 1 < 0 or choice - 1 >= len(users):
+            choice = 1
+        user_data = users[choice - 1]
+        pennid = user_data["pennid"]
+        pennkey = user_data["pennkey"]
+        first_name = user_data["first_name"]
+        last_name = user_data["last_name"]
+        affiliation = user_data["affiliation"]
+        shibboleth_attributes = {
+            "username": pennkey,
+            "first_name": first_name,
+            "last_name": last_name,
+            "affiliation": affiliation,
+        }
+        user = auth.authenticate(remote_user=pennid, shibboleth_attributes=shibboleth_attributes)
+        if user:
+            auth.login(request, user)
+            return redirect(request.GET.get("next", "/"))
+        capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
 
-
+class DevLogoutView(View):
+    """
+    Log out a test user from Platform
+    """
+    def get(self, request):
+        auth.logout(request)
+        return redirect('accounts:login')
 
 class LogoutView(View):
     """

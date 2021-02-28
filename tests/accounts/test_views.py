@@ -1,7 +1,7 @@
 import calendar
 import datetime
 from urllib.parse import quote
-
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -12,48 +12,69 @@ from accounts.models import User
 from accounts.serializers import UserSearchSerializer, UserSerializer
 
 
-class LoginViewTestCase(TestCase):
+# class LoginViewTestCase(TestCase):
+#     def setUp(self):
+#         self.client = Client()
+#
+#     def test_invalid_shibboleth_response(self):
+#         response = self.client.get(reverse("accounts:login"))
+#         self.assertEqual(response.status_code, 500)
+#
+#     def test_valid_shibboleth(self):
+#         headers = {
+#             "HTTP_EMPLOYEENUMBER": "1",
+#             "HTTP_EPPN": "test",
+#             "HTTP_GIVENNAME": "test",
+#             "HTTP_SN": "user-hyphenated",
+#             "HTTP_MAIL": "test@student.edu",
+#         }
+#         params = reverse("accounts:authorize") + "?client_id=abc123&response_type=code&state=abc"
+#         response = self.client.get(reverse("accounts:login") + "?next=" + quote(params), **headers)
+#         base_url = "/accounts/authorize/"
+#         sample_response = base_url + "?client_id=abc123&response_type=code&state=abc"
+#         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+#         user = get_user_model().objects.get(username="test")
+#         self.assertEqual(user.first_name, "Test")
+#         self.assertEqual(user.last_name, "User-Hyphenated")
+#
+#
+# class LogoutViewTestCase(TestCase):
+#     def setUp(self):
+#         self.client = Client()
+#
+#     def test_logged_in_user(self):
+#         get_user_model().objects.create_user(pennid=1, username="user", password="secret")
+#         self.client.login(username="user", password="secret")
+#         response = self.client.get(reverse("accounts:logout"))
+#         self.assertNotIn("_auth_user_id", self.client.session)
+#         sample_response = "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+#         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+#
+#     def test_guest_user(self):
+#         response = self.client.get(reverse("accounts:logout"))
+#         sample_response = "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+#         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+
+class DevLoginViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_invalid_shibboleth_response(self):
-        response = self.client.get(reverse("accounts:login"))
-        self.assertEqual(response.status_code, 500)
+    def test_login_valid_choice(self):
+        self.client.post(reverse("accounts:login"), data={"userChoice": 1})
+        expected_user_pennid = 1
+        actual_user_pennid = User.objects.all()[0].pennid
+        self.assertTrue(expected_user_pennid, actual_user_pennid)
 
-    def test_valid_shibboleth(self):
-        headers = {
-            "HTTP_EMPLOYEENUMBER": "1",
-            "HTTP_EPPN": "test",
-            "HTTP_GIVENNAME": "test",
-            "HTTP_SN": "user-hyphenated",
-            "HTTP_MAIL": "test@student.edu",
-        }
-        params = reverse("accounts:authorize") + "?client_id=abc123&response_type=code&state=abc"
-        response = self.client.get(reverse("accounts:login") + "?next=" + quote(params), **headers)
-        base_url = "/accounts/authorize/"
-        sample_response = base_url + "?client_id=abc123&response_type=code&state=abc"
-        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
-        user = get_user_model().objects.get(username="test")
-        self.assertEqual(user.first_name, "Test")
-        self.assertEqual(user.last_name, "User-Hyphenated")
+    def test_login_invalid_choice(self):
+        self.client.post(reverse("accounts:login"), data={"userChoice": 24})
+        expected_user_pennid = 1
+        actual_user_pennid = User.objects.all()[0].pennid
+        self.assertTrue(expected_user_pennid, actual_user_pennid)
 
 
-class LogoutViewTestCase(TestCase):
-    def setUp(self):
-        self.client = Client()
-
-    def test_logged_in_user(self):
-        get_user_model().objects.create_user(pennid=1, username="user", password="secret")
-        self.client.login(username="user", password="secret")
-        response = self.client.get(reverse("accounts:logout"))
-        self.assertNotIn("_auth_user_id", self.client.session)
-        sample_response = "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
-        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
-
-    def test_guest_user(self):
-        response = self.client.get(reverse("accounts:logout"))
-        sample_response = "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
-        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+class DevLogoutViewTestCase(TestCase):
+    pass
 
 
 class UUIDIntrospectTokenViewTestCase(TestCase):
