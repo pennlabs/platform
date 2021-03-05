@@ -144,19 +144,21 @@ class UserSerializerTestCase(TestCase):
         self.serializer_preferred_name = UserSerializer(self.user_preferred_name)
 
     def test_str_no_preferred_name(self):
-        sample_response = {
-            "pennid": 1,
-            "first_name": "First",
-            "last_name": "Last",
-            "username": "student",
-            "email": "test@test.com",
-            "groups": [],
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["first_name"], "First")
+        self.assertEqual(self.serializer.data["last_name"], "Last")
 
     def test_str_preferred_name_provided(self):
+        print(json.dumps(self.serializer_preferred_name.data, indent=4))
+        self.assertEqual(self.serializer_preferred_name.data["first_name"], "Preferred")
+        self.assertEqual(self.serializer_preferred_name.data["last_name"], "Last2")
+
+        # check if field returns the right value
+
+    '''def test_str_preferred_name_provided(self):
+        data = {
+            "first_name": "Preferred",
+        }
+
         sample_response = {
             "pennid": 2,
             "first_name": "Preferred",
@@ -167,13 +169,23 @@ class UserSerializerTestCase(TestCase):
             "user_permissions": [],
             "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
         }
-        self.assertEqual(self.serializer_preferred_name.data, sample_response)
+        serializer = UserSerializer(self.user, data=data, partial=True)
+
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+
+        print(json.dumps(self.serializer.data, indent=4))
+        print(self.user)
+
+        self.assertEqual(self.user.first_name, "Preferred")
+        self.assertEqual(self.user.first_name, "Last2")
+        self.assertEqual(self.serializer_preferred_name.data, sample_response)'''
 
     def test_update_preferred_valid_name(self):
         data = {
             "first_name": "new_preferred",
         }
-        serializer = UserSerializer(self.user, data=data)
+        serializer = UserSerializer(self.user, data=data, partial=True)
 
         self.assertTrue(serializer.is_valid())
         serializer.save()
@@ -186,7 +198,7 @@ class UserSerializerTestCase(TestCase):
         }
         print(json.dumps(self.serializer.data, indent=4))
         print(self.user_preferred_name)
-        serializer = UserSerializer(self.user_preferred_name, data=data)
+        serializer = UserSerializer(self.user_preferred_name, data=data, partial=True)
         print(serializer.is_valid())
         print(serializer.errors)
 
