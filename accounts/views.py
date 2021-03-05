@@ -1,6 +1,7 @@
 import calendar
 import json
 
+from django.conf import settings
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
@@ -107,13 +108,16 @@ class DevLoginView(View):
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
 
+
 class DevLogoutView(View):
     """
     Log out a test user from Platform
     """
+
     def get(self, request):
         auth.logout(request)
         return redirect('accounts:login')
+
 
 class LogoutView(View):
     """

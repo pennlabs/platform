@@ -12,19 +12,20 @@ from accounts.views import (
     UUIDIntrospectTokenView,
 )
 
-
 app_name = "accounts"
 
-if settings.IS_DEV_LOGIN:
-    login_view = DevLoginView
-    logout_view = DevLogoutView
-else:
-    login_view = LoginView
-    logout_view = LogoutView
+
+def get_login_view():
+    return DevLoginView if settings.IS_DEV_LOGIN else LoginView
+
+
+def get_logout_view():
+    return DevLogoutView if settings.IS_DEV_LOGIN else LogoutView
+
 
 urlpatterns = [
-    path("login/", login_view.as_view(), name="login"),
-    path("logout/", logout_view.as_view(), name="logout"),
+    path("login/", get_login_view().as_view(), name="login"),
+    path("logout/", get_logout_view().as_view(), name="logout"),
     path("search/", UserSearchView.as_view(), name="search"),
     path("authorize/", AuthorizationView.as_view(), name="authorize"),
     path("token/", TokenView.as_view(), name="token"),
