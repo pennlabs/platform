@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.urls import path
 from oauth2_provider.views import AuthorizationView, TokenView
-from django.conf import settings
+
 from accounts.views import (
     DevLoginView,
     DevLogoutView,
@@ -11,6 +12,7 @@ from accounts.views import (
     UserSearchView,
     UUIDIntrospectTokenView,
 )
+
 
 app_name = "accounts"
 

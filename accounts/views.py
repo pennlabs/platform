@@ -1,7 +1,6 @@
 import calendar
 import json
 
-from django.conf import settings
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
@@ -47,6 +46,7 @@ class LoginView(View):
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
 
+
 class DevLoginView(View):
     """
     Log in a test user.
@@ -55,34 +55,38 @@ class DevLoginView(View):
 
     @staticmethod
     def populate_user_data():
-        NAMES = ["George Washington",
-                 "John Adams",
-                 "Thomas Jefferson",
-                 "James Madison",
-                 "James Monroe",
-                 "John Quincy Adams",
-                 "Andrew Jackson",
-                 "Martin Van Buren",
-                 "William Harrison",
-                 "John Tyler"
-                 ]
+        NAMES = [
+            "George Washington",
+            "John Adams",
+            "Thomas Jefferson",
+            "James Madison",
+            "James Monroe",
+            "John Quincy Adams",
+            "Andrew Jackson",
+            "Martin Van Buren",
+            "William Harrison",
+            "John Tyler",
+        ]
         users = []
         for i, name in enumerate(NAMES):
             first, last = name.split(" ", 1)
             pennkey = first.lower() + last[0].lower()
             affiliation = "student;member"
-            users.append({
-                "pennid": i + 1, # if leave as i, g. wash's pennid is 0, which makes not remote_user true
-                "pennkey": pennkey,
-                "first_name": first,
-                "last_name": last,
-                "affiliation": affiliation,
-            })
+            users.append(
+                {
+                    # if leave as i, g. wash's pennid is 0, which makes not remote_user true
+                    "pennid": i + 1,
+                    "pennkey": pennkey,
+                    "first_name": first,
+                    "last_name": last,
+                    "affiliation": affiliation,
+                }
+            )
         return users
 
     def get(self, request):
         users = DevLoginView.populate_user_data()
-        return render(request, 'accounts/devlogin.html', {'users': users})
+        return render(request, "accounts/devlogin.html", {"users": users})
 
     def post(self, request):
         choice = int(request.POST.get("userChoice", ""))
@@ -116,7 +120,7 @@ class DevLogoutView(View):
 
     def get(self, request):
         auth.logout(request)
-        return redirect('accounts:login')
+        return redirect("accounts:login")
 
 
 class LogoutView(View):

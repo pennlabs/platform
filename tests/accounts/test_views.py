@@ -3,12 +3,14 @@ import datetime
 import sys
 from importlib import reload
 from urllib.parse import quote
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase, override_settings, utils
-from django.urls import reverse, clear_url_caches
+from django.test import Client, TestCase, override_settings
+from django.urls import clear_url_caches, reverse
 from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
+
 from accounts.models import User
 from accounts.serializers import UserSearchSerializer, UserSerializer
 
@@ -52,6 +54,7 @@ class LoginViewTestCase(TestCase):
         self.assertEqual(user.first_name, "Test")
         self.assertEqual(user.last_name, "User-Hyphenated")
 
+
 @override_settings(IS_DEV_LOGIN=False)
 class LogoutViewTestCase(TestCase):
     def setUp(self):
@@ -70,6 +73,7 @@ class LogoutViewTestCase(TestCase):
         response = self.client.get(reverse("accounts:logout"))
         sample_response = "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
 
 @override_settings(IS_DEV_LOGIN=True)
 class DevLoginViewTestCase(TestCase):
@@ -91,6 +95,7 @@ class DevLoginViewTestCase(TestCase):
         expected_user_pennid = 1
         actual_user_pennid = User.objects.all()[0].pennid
         self.assertTrue(expected_user_pennid, actual_user_pennid)
+
 
 @override_settings(IS_DEV_LOGIN=True)
 class DevLogoutViewTestCase(TestCase):
