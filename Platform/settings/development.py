@@ -10,3 +10,6 @@ INTERNAL_IPS = ["127.0.0.1"]
 
 # Disable admin login through shibboleth
 SHIB_ADMIN = False
+
+# Use the console for email in development
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

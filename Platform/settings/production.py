@@ -36,3 +36,11 @@ CORS_ORIGIN_WHITELIST = (
     "https://studentlife.pennlabs.org",
     "https://api.pennlabs.org",
 )
+
+
+# Email client settings
+EMAIL_HOST = os.getenv("SMTP_HOST")
+EMAIL_PORT = int(os.getenv("SMTP_PORT", 587))
+EMAIL_HOST_USER = os.getenv("SMTP_USERNAME")
+EMAIL_HOST_PASSWORD = os.getenv("SMTP_PASSWORD")
+EMAIL_USE_TLS = True

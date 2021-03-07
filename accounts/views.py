@@ -12,12 +12,22 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
-from rest_framework import generics
+from rest_framework import generics, viewsets
+from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import Response
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
-from accounts.models import User
-from accounts.serializers import UserSearchSerializer, UserSerializer
+from accounts.models import Major, School, User
+from accounts.serializers import (
+    EmailSerializer,
+    MajorSerializer,
+    PhoneNumberSerializer,
+    SchoolSerializer,
+    UserSearchSerializer,
+    UserSerializer,
+)
 
 
 class LoginView(View):
@@ -229,6 +239,108 @@ class UserSearchView(PennView, generics.ListAPIView):
         return qs
 
 
+class UserView(generics.RetrieveUpdateAPIView):
+    """
+    get:
+    Return information about the logged in user.
+
+    update:
+    Update information about the logged in user.
+    You must specify all of the fields or use a patch request.
+
+    patch:
+    Update information about the logged in user.
+    Only updates fields that are passed to the server.
+    """
+
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+
+class PhoneNumberViewSet(viewsets.ModelViewSet):
+    """
+    retrieve:
+    Return a single phone number with all information fields present.
+
+    list:
+    Return a list of phone numbers associated with current user.
+
+    create:
+    Add new unverified phone number.
+
+    update:
+    Update all fields.
+    You must specify all of the fields or use a patch request.
+
+    partial_update:
+    Update certain fields.
+    Only specify the fields that you want to change.
+
+    destroy:
+    Delete a phone number.
+    """
+
+    serializer_class = PhoneNumberSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.phone_numbers.all()
+
+    def destroy(self, request, *args, **kwargs):
+        is_primary = self.get_object().primary
+        self.get_object().delete()
+        next_number = self.get_queryset().filter(verified=True).first()
+        if is_primary and next_number is not None:
+            next_number.primary = True
+            next_number.save()
+        return Response({"detail": "Phone number successfully deleted"}, status=200)
+
+
+class EmailViewSet(viewsets.ModelViewSet):
+    """
+    retrieve:
+    Return a single email with all information fields present.
+
+    list:
+    Return a list of emails associated with current user.
+
+    create:
+    Add new unverified email.
+
+    update:
+    Update all fields.
+    You must specify all of the fields or use a patch request.
+
+    partial_update:
+    Update certain fields.
+    Only specify the fields that you want to change.
+
+    destroy:
+    Delete an email.
+    """
+
+    serializer_class = EmailSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.emails.all()
+
+    def destroy(self, request, *args, **kwargs):
+        if self.get_queryset().filter(verified=True).count() < 2:
+            return Response({"detail": "You can't delete the only verified email"}, status=405)
+
+        is_primary = self.get_object().primary
+        self.get_object().delete()
+        next_email = self.get_queryset().filter(verified=True).first()
+        if is_primary and next_email is not None:
+            next_email.primary = True
+            next_email.save()
+        return Response({"detail": "Email successfully deleted"}, status=200)
+
+
 class ProtectedViewSet(PennView):
     """
     An example api endpoint to test user authentication.
@@ -245,3 +357,35 @@ class LabsProtectedViewSet(LabsView):
 
     def get(self, request, format=None):
         return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
+
+
+class MajorViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    list:
+    Retrieve a list of all of the active majors/programs
+    (supports search functionality on name and degree type)
+
+    retrieve:
+    Retrieve a specific major by id
+    """
+
+    serializer_class = MajorSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["name", "degree_type"]
+    queryset = Major.objects.filter(is_active=True)
+
+
+class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    list:
+    Retrieve a list of all of the schools
+    (supports search functionality on name)
+
+    retrieve:
+    Retrieve a specific school by id
+    """
+
+    serializer_class = SchoolSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["name"]
+    queryset = School.objects.all()

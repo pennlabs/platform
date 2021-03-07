@@ -1,0 +1,19 @@
+{% extends 'emails/base.html' %}
+
+{% block content %}
+
+<h1 class="title">You've been added to {{ course }} OHQ</h1>
+
+<p>You have been added to {{ course }} as a {{ role }}.</p>
+
+<p>Click below to view this course's office hours queues!</p>
+
+<div class="link-container">
+    <a href="{{ product_link }}">
+        <h1>
+            <span class="line">Get</span>
+            <span class="line">started</span>
+        </h1>
+    </a>
+</div>
+{% endblock %}

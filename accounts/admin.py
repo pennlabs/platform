@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from accounts.models import Student, User
+from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -24,7 +24,7 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(admin.ModelAdmin):
-    readonly_fields = ("username", "pennid", "last_login", "date_joined")
+    readonly_fields = ("username", "first_name", "last_name", "pennid", "last_login", "date_joined")
     search_fields = ("username", "first_name", "last_name")
     list_display = ("username", "first_name", "last_name", "is_staff")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
@@ -32,18 +32,39 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ("username",)
     fieldsets = (
         (None, {"fields": ("username", "pennid")}),
-        (("Personal info"), {"fields": ("first_name", "last_name", "email")}),
+        (("Personal info"), {"fields": ("preferred_name", "email")},),
         (
             ("Permissions"),
-            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")},
+            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions",)},
         ),
         (("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
 
+class MajorAdmin(admin.ModelAdmin):
+    readonly_fields = ("id",)
+    list_filter = ("is_active", "degree_type")
+    list_display = ("name",)
+
+    def name(self, obj):
+        return obj.name
+
+
+class SchoolAdmin(admin.ModelAdmin):
+    readonly_fields = ("id",)
+    list_display = ("name",)
+
+    def name(self, obj):
+        return obj.name
+
+
 admin.site.register(Permission)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(User, UserAdmin)
+admin.site.register(PhoneNumberModel)
+admin.site.register(Email)
+admin.site.register(Major, MajorAdmin)
+admin.site.register(School, SchoolAdmin)
 
 
 class LabsAdminSite(admin.AdminSite):

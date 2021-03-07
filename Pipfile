@@ -30,6 +30,11 @@ uwsgi = "*"
 uritemplate = "*"
 shortener = "*"
 django-runtime-options = "*"
+django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
+django-email-tools = "*"
+twilio = "*"
+phonenumbers = "*"
+lxml = "*"
 
 [requires]
 python_version = "3"
