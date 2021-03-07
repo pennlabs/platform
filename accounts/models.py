@@ -80,25 +80,25 @@ class Student(models.Model):
 
 class Email(models.Model):
     user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.CASCADE)
-    email = models.EmailField()
+    value = models.EmailField()
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
     verification_timestamp = models.DateTimeField(blank=True, null=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user} - {self.email}"
+        return f"{self.user} - {self.value}"
 
 
 class PhoneNumberModel(models.Model):
     user = models.ForeignKey(
         get_user_model(), related_name="phone_numbers", on_delete=models.CASCADE
     )
-    phone_number = PhoneNumberField(unique=True, blank=True, default=None)
+    value = PhoneNumberField(unique=True, blank=True, default=None)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
     verification_timestamp = models.DateTimeField(blank=True, null=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user} - {self.phone_number}"
+        return f"{self.user} - {self.value}"

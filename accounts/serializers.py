@@ -56,7 +56,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
         instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
         instance.verification_timestamp = timezone.now()
         instance.save()
-        sendSMSVerification(instance.phone_number, instance.verification_code)
+        sendSMSVerification(instance.value, instance.verification_code)
         return instance
 
     def update(self, instance, validated_data):
@@ -96,7 +96,7 @@ class EmailSerializer(serializers.ModelSerializer):
         instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
         instance.verification_timestamp = timezone.now()
         instance.save()
-        sendEmailVerification(instance.email, instance.verification_code)
+        sendEmailVerification(instance.value, instance.verification_code)
         return instance
 
     def update(self, instance, validated_data):
