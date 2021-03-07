@@ -3,17 +3,16 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from accounts.models import Major
-from accounts.update_majors import update_majors
+from accounts.update_majors import update_all_majors
 
 
 @patch("accounts.update_majors.requests.get")
 class UpdateMajorsTestCase(TestCase):
-
     def testTotalMajorCount(self, mock_source_file):
         with open(r"PennCoursePrograms.html", "r") as f:
             mock_source_file.return_value.text = f.read()
 
-        update_majors()
+        update_all_majors()
 
         self.assertEquals(Major.objects.all().count(), 469)
 
@@ -21,7 +20,7 @@ class UpdateMajorsTestCase(TestCase):
         with open(r"PennCoursePrograms.html", "r") as f:
             mock_source_file.return_value.text = f.read()
 
-        update_majors()
+        update_all_majors()
 
         self.assertEquals(Major.objects.filter(degree_type="BACHELORS").count(), 215)
 
@@ -29,7 +28,7 @@ class UpdateMajorsTestCase(TestCase):
         with open(r"PennCoursePrograms.html", "r") as f:
             mock_source_file.return_value.text = f.read()
 
-        update_majors()
+        update_all_majors()
 
         self.assertEquals(Major.objects.filter(degree_type="MASTERS").count(), 123)
 
@@ -37,6 +36,6 @@ class UpdateMajorsTestCase(TestCase):
         with open(r"PennCoursePrograms.html", "r") as f:
             mock_source_file.return_value.text = f.read()
 
-        update_majors()
+        update_all_majors()
 
         self.assertEquals(Major.objects.filter(degree_type="PROFESSIONAL").count(), 47)

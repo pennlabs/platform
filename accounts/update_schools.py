@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
+
 from accounts.models import School
 
 
-def update_schools():
+def update_all_schools():
     # scrapes schools from the official penn catalog of all programs
     source = requests.get("https://catalog.upenn.edu/programs/").text
 

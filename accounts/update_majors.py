@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+
 from accounts.models import Major
 
 
@@ -17,7 +18,7 @@ def contains_filters(listed_filters, desired_filters=set(), excluded_filters=set
     return False
 
 
-def update_majors():
+def update_all_majors():
     # scrapes majors from the official penn catalog of all programs
     source = requests.get("https://catalog.upenn.edu/programs/").text
 
@@ -33,13 +34,11 @@ def update_majors():
 
     listed_majors = set()
     # iterate through all list tags with "item" in the class (all programs)
-    for program in soup.find_all(
-            "li", class_=lambda value: value and value.startswith("item ")
-    ):
+    for program in soup.find_all("li", class_=lambda value: value and value.startswith("item ")):
         curr_filter_list = program.attrs["class"]
         # check if entry meets relevant desired and excluded filter criteria
         if not contains_filters(
-                curr_filter_list, desired_filters=desired_filters, excluded_filters=excluded_filters
+            curr_filter_list, desired_filters=desired_filters, excluded_filters=excluded_filters
         ):
             continue
 

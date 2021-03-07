@@ -37,8 +37,9 @@ class SchoolSerializerTestCase(TestCase):
 class MajorSerializerTestCase(TestCase):
     def setUp(self):
         self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
-        self.major_inactive = Major.objects.create(name="Test Inactive Major",
-                                                   degree_type="PHD", is_active=False)
+        self.major_inactive = Major.objects.create(
+            name="Test Inactive Major", degree_type="PHD", is_active=False
+        )
 
         self.serializer_active = MajorSerializer(self.major_active)
         self.serializer_inactive = MajorSerializer(self.major_inactive)
@@ -78,7 +79,7 @@ class StudentSerializerTestCase(TestCase):
         sample_response = {
             "major": [
                 {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"}
+                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"},
             ],
             "school": [{"id": 1, "name": "Test School"}],
         }
@@ -88,9 +89,7 @@ class StudentSerializerTestCase(TestCase):
 
     def test_remove_major(self):
         sample_response = {
-            "major": [
-                {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-            ],
+            "major": [{"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"}],
             "school": [{"id": 1, "name": "Test School"}],
         }
 
@@ -105,7 +104,7 @@ class StudentSerializerTestCase(TestCase):
         sample_response = {
             "major": [
                 {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"}
+                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"},
             ],
             "school": [],
         }
