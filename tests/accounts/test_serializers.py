@@ -1,5 +1,4 @@
 import datetime
-import json
 
 import pytz
 from django.contrib.auth import get_user_model

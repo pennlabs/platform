@@ -11,14 +11,12 @@ class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
         fields = ("id", "name")
-        # extra_kwargs = {"id": {"read_only": False}, "name": {"read_only": True}}
 
 
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
         fields = ("id", "name", "degree_type")
-        # extra_kwargs = {"id": {"read_only": False}, "name": {"read_only": True}}
 
 
 class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):

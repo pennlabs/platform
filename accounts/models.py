@@ -12,8 +12,6 @@ class School(models.Model):
     Represents a school at the University of Pennsylvania.
     """
 
-    # implicit username, email, first_name, and last_name fields
-    # from AbstractUser that contains the user's PennKey
     name = models.CharField(max_length=255)
 
     def __str__(self):
@@ -48,6 +46,9 @@ class Major(models.Model):
 
 
 class User(AbstractUser):
+
+    # implicit username, email, first_name, and last_name fields
+    # from AbstractUser that contains the user's PennKey
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
