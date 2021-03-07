@@ -106,11 +106,8 @@ class DevLoginView(View):
             "affiliation": affiliation,
         }
         user = auth.authenticate(remote_user=pennid, shibboleth_attributes=shibboleth_attributes)
-        if user:
-            auth.login(request, user)
-            return redirect(request.GET.get("next", "/"))
-        capture_message("Invalid user returned from shibboleth")
-        return HttpResponseServerError()
+        auth.login(request, user)
+        return redirect(request.GET.get("next", "/"))
 
 
 class DevLogoutView(View):

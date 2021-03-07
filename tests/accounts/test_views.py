@@ -81,6 +81,10 @@ class DevLoginViewTestCase(TestCase):
         self.client = Client()
         reload_urlconf()
 
+    def test_get_login_page(self):
+        response = self.client.get(reverse("accounts:login"))
+        self.assertEqual(response.status_code, 200)
+
     def test_login_valid_choice(self):
         response = self.client.post(reverse("accounts:login"), data={"userChoice": 1})
         sample_response = reverse("application:homepage")
