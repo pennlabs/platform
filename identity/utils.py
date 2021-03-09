@@ -6,7 +6,7 @@ from jwcrypto import jwk, jwt
 
 SIGNING_ALG = "RS256"
 EXPIRY_TIME = 15 * 60  # 15 minutes
-id_privkey = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
+ID_PRIVATE_KEY = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
 
 
 def mint_access_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:

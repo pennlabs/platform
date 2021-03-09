@@ -4,7 +4,7 @@ from http import HTTPStatus
 from django.http import JsonResponse
 from django.utils.text import slugify
 from django.views.generic import View
-from identity.utils import SIGNING_ALG, id_privkey, mint_access_jwt, mint_refresh_jwt
+from identity.utils import SIGNING_ALG, ID_PRIVATE_KEY, mint_access_jwt, mint_refresh_jwt
 from jwcrypto import jwt
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
@@ -42,8 +42,8 @@ class AttestView(OAuthLibMixin, View):
         urn = f"urn:pennlabs.org:{local_name}"
         return JsonResponse(
             data={
-                "access": mint_access_jwt(id_privkey, urn).serialize(),
-                "refresh": mint_refresh_jwt(id_privkey, urn).serialize(),
+                "access": mint_access_jwt(ID_PRIVATE_KEY, urn).serialize(),
+                "refresh": mint_refresh_jwt(ID_PRIVATE_KEY, urn).serialize(),
             }
         )
 
@@ -58,8 +58,8 @@ class JwksInfoView(View):
 
     # building out JWKS view at init time so we don't have to recalculate it for each request
     def __init__(self, **kwargs):
-        data = {"keys": [{"alg": SIGNING_ALG, "use": "sig", "kid": id_privkey.thumbprint()}]}
-        data["keys"][0].update(json.loads(id_privkey.export_public()))
+        data = {"keys": [{"alg": SIGNING_ALG, "use": "sig", "kid": ID_PRIVATE_KEY.thumbprint()}]}
+        data["keys"][0].update(json.loads(ID_PRIVATE_KEY.export_public()))
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         self.jwks_response = response
@@ -90,7 +90,7 @@ class RefreshJWTView(View):
         try:
             # this line will decode and validate the JWT, raising an exception for
             # anything that cannot be decoded or validated
-            refresh_jwt = jwt.JWT(key=id_privkey, jwt=split_header[1])
+            refresh_jwt = jwt.JWT(key=ID_PRIVATE_KEY, jwt=split_header[1])
             claims = json.loads(refresh_jwt.claims)
             if "use" not in claims or claims["use"] != "refresh":
                 return JsonResponse(
@@ -98,7 +98,7 @@ class RefreshJWTView(View):
                     status=HTTPStatus.BAD_REQUEST,
                 )
             urn = claims["sub"]
-            new_access_jwt = mint_access_jwt(id_privkey, urn)
+            new_access_jwt = mint_access_jwt(ID_PRIVATE_KEY, urn)
             return JsonResponse(data={"access": new_access_jwt.serialize()})
         except Exception as e:
             return JsonResponse(
