@@ -2,6 +2,8 @@ import json
 from http import HTTPStatus
 
 from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.text import slugify
 from django.views.generic import View
 from identity.utils import ID_PRIVATE_KEY, SIGNING_ALG, mint_access_jwt, mint_refresh_jwt
@@ -10,6 +12,7 @@ from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class AttestView(OAuthLibMixin, View):
     """
     Implements an endpoint to attest with client id + client secret
@@ -73,6 +76,7 @@ class JwksInfoView(View):
         return self.jwks_response
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class RefreshJWTView(View):
     """
     View used for refreshing access JWTs
