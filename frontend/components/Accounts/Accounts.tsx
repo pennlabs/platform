@@ -3,7 +3,10 @@ import { Field, Form, Formik } from "formik";
 import { Heading, Panel } from "react-bulma-components";
 import parsePhoneNumber from "libphonenumber-js";
 import { useResource } from "@pennlabs/rest-hooks";
-import { Flex, Nav, MainContainer, CenterContainer, Logo, Title, FormGroupGrid, FormGroupItem } from "./ui";
+import {
+  Flex, Nav, MainContainer, CenterContainer, Logo, Title
+  , FormGroupGrid, FormGroupItem, Text, Break, FormGroupHeader, FormInput
+} from "./ui";
 import { ContactType, User } from "../../types";
 import { doApiRequest } from "../../utils/fetch";
 import {
@@ -74,7 +77,6 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
           <Logo src="/beaker.png" />
           <Title>Platform</Title>
         </Flex>
-
       </Nav>
       <MainContainer>
         <CenterContainer>
@@ -114,23 +116,76 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                 actions.setSubmitting(false);
               }}
             >
-              <FormGroupGrid>
-                <FormGroupItem col={1} row={1}>
-                  Name
-                </FormGroupItem>
-                <FormGroupItem col={2} row={1}>
-                  {`${user.first_name} ${user.last_name}`}
-                </FormGroupItem>
-                <FormGroupItem col={1} row={2}>
-                  Username
-                </FormGroupItem>
-                <FormGroupItem col={2} row={2}>
-                  {user.username}
-                </FormGroupItem>
-                <FormGroupItem col={1} row={3}>
-                  Display Name
-                </FormGroupItem>
-              </FormGroupGrid>
+              <>
+                <FormGroupGrid>
+                  <FormGroupItem col={1} row={1}>
+                    <Text weight="400">
+                      Name
+                  </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={2} row={1}>
+                    <Text weight="300">
+                      {`${user.first_name} ${user.last_name}`}
+                    </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={1} row={2}>
+                    <Text weight="400">
+                      Username
+                  </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={2} row={2}>
+                    <Text weight="300">
+                      {user.username}
+                    </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={1} row={3}>
+                    <Text weight="400">
+                      Display Name
+                    </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={2} row={3}>
+                    <FormInput />
+                  </FormGroupItem>
+                </FormGroupGrid>
+                <Break />
+                <FormGroupHeader>
+                  Contact
+                </FormGroupHeader>
+                <FormGroupGrid>
+                  <FormGroupItem col={1} row={1}>
+                    <Text weight="400">
+                      Email
+                  </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={1} row={2}>
+                    <Text weight="400">
+                      Phone Number
+                  </Text>
+                  </FormGroupItem>
+                </FormGroupGrid>
+                <Break />
+                <FormGroupHeader>
+                  Academics
+                </FormGroupHeader>
+                <FormGroupGrid>
+                  <FormGroupItem col={1} row={1}>
+                    <Text weight="400">
+                      School(s)
+                  </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={1} row={2}>
+                    <Text weight="400">
+                      Major(s)
+                  </Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={1} row={3}>
+                    <Text weight="400">
+                      Grad Year
+                  </Text>
+                  </FormGroupItem>
+                </FormGroupGrid>
+
+              </>
               {/* <Form> */}
               {/*     <br /> */}
               {/*       Name: {user.first_name} {user.last_name} */}

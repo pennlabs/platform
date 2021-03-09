@@ -41,6 +41,20 @@ export const Logo = styled.img`
   margin-right: 0.2rem;
 `
 
+export const Break = styled.hr`
+  border: 1px solid #D3D3D3;
+`
+
+export const Text = styled.span<{ weight: string }>`
+  font-weight: ${(props) => props.weight};
+  font-size: 0.9rem;
+`
+
+export const FormGroupHeader = styled.h3`
+  font-style: normal;
+  font-weight: 600;
+`
+
 export const FormGroupGrid = styled.div`
   display: grid;
   grid-template-columns: 4fr 8fr;
@@ -55,4 +69,13 @@ interface FormGroupItemProps {
 export const FormGroupItem = styled.div<FormGroupItemProps>`
   grid-column: ${(props) => props.col};
   grid-row: ${(props) => props.row};
+`
+
+export const FormInput = styled.input`
+  height: 1.5rem;
+  width: 90%;
+  outline: none;
+  border: solid 1px #d6d6d6;
+  border-radius: 0.2rem 0.2rem 0.2rem 0.2rem;
+  padding-left: 0.3rem;
 `
