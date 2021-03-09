@@ -78,7 +78,7 @@ class RefreshJWTView(View):
     View used for refreshing access JWTs
     """
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         auth_header = request.META.get("HTTP_AUTHORIZATION")
         if auth_header is None:
             return JsonResponse(

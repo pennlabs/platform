@@ -107,7 +107,7 @@ class RefreshTestCase(TestCase):
         auth_headers = {
             "HTTP_AUTHORIZATION": f"Bearer {token.serialize()}",
         }
-        response = self.client.get(reverse("identity:refresh"), **auth_headers)
+        response = self.client.post(reverse("identity:refresh"), **auth_headers)
         content = response.json()
         self.assertIsInstance(content, dict)
         found_access = jwt.JWT(key=self.key, jwt=content["access"])
@@ -127,7 +127,7 @@ class RefreshTestCase(TestCase):
         auth_headers = {
             "HTTP_AUTHORIZATION": f"Bearer {token.serialize()}",
         }
-        response = self.client.get(reverse("identity:refresh"), **auth_headers)
+        response = self.client.post(reverse("identity:refresh"), **auth_headers)
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
@@ -140,14 +140,14 @@ class RefreshTestCase(TestCase):
         auth_headers = {
             "HTTP_AUTHORIZATION": f"Bearer {token.serialize()}",
         }
-        response = self.client.get(reverse("identity:refresh"), **auth_headers)
+        response = self.client.post(reverse("identity:refresh"), **auth_headers)
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
         self.assertNotIn("access", content)
 
     def test_unauthenticated(self):
-        response = self.client.get(reverse("identity:refresh"))
+        response = self.client.post(reverse("identity:refresh"))
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertEqual(HTTPStatus.UNAUTHORIZED, response.status_code)
@@ -157,7 +157,7 @@ class RefreshTestCase(TestCase):
         auth_headers = {
             "HTTP_AUTHORIZATION": "Bearer",
         }
-        response = self.client.get(reverse("identity:refresh"), **auth_headers)
+        response = self.client.post(reverse("identity:refresh"), **auth_headers)
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertEqual(HTTPStatus.UNAUTHORIZED, response.status_code)
@@ -167,7 +167,7 @@ class RefreshTestCase(TestCase):
         auth_headers = {
             "HTTP_AUTHORIZATION": "Bearer abc123",
         }
-        response = self.client.get(reverse("identity:refresh"), **auth_headers)
+        response = self.client.post(reverse("identity:refresh"), **auth_headers)
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
