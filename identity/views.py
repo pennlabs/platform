@@ -26,13 +26,16 @@ class AttestView(OAuthLibMixin, View):
     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
     oauthlib_backend_class = oauth2_settings.OAUTH2_BACKEND_CLASS
 
-    def __init__(self, **kwargs):
-        self.validator = self.get_validator_class()()
-        super().__init__(**kwargs)
-
     def post(self, request, *args, **kwargs):
         request.client = None
-        authenticated = self.validator.authenticate_client(request, *args, **kwargs)
+
+        # Taken from https://github.com/jazzband/django-oauth-toolkit/blob/41aa49e6d7fad0a392b1557d1ef6d40ccc444f7e/oauth2_provider/oauth2_backends.py#L178 # noqa
+        # Normally would use self.authenticate_client(), however since that constructs
+        # a new request object, we don't gain access to the underlying client.
+        self.request.headers = self.get_oauthlib_core().extract_headers(self.request)
+        authenticated = self.get_server().request_validator.authenticate_client(
+            request, *args, **kwargs
+        )
         if not authenticated:
             return JsonResponse(data={"error": "unauthenticated"}, status=HTTPStatus.UNAUTHORIZED)
 

@@ -33,7 +33,7 @@ class AttestTestCase(TestCase):
         app = self.application
         auth_encoded = base64.b64encode(f"{app.client_id}:{app.client_secret}".encode("utf-8"))
         auth_headers = {
-            "HTTP_HTTP_AUTHORIZATION": f"Basic {auth_encoded.decode('utf-8')}",
+            "HTTP_AUTHORIZATION": f"Basic {auth_encoded.decode('utf-8')}",
         }
         response = self.client.post(reverse("identity:attest"), **auth_headers)
         content = response.json()
@@ -56,7 +56,7 @@ class AttestTestCase(TestCase):
 
     def test_bad_secret(self):
         auth_headers = {
-            "HTTP_HTTP_AUTHORIZATION": "Basic worniuvoasnlksdfjlksjdflk",
+            "HTTP_AUTHORIZATION": "Basic worniuvoasnlksdfjlksjdflk",
         }
         response = self.client.post(reverse("identity:attest"), **auth_headers)
         content = response.json()
