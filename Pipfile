@@ -14,6 +14,7 @@ flake8-quotes = "*"
 django-debug-toolbar = "*"
 django-extensions = "*"
 flake8-absolute-import = "*"
+tblib = "*"
 
 [packages]
 dj-database-url = "*"
@@ -32,4 +33,4 @@ django-runtime-options = "*"
 jwcrypto = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3"
