@@ -3,8 +3,8 @@ from http import HTTPStatus
 
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.utils.text import slugify
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from identity.utils import ID_PRIVATE_KEY, SIGNING_ALG, mint_access_jwt, mint_refresh_jwt
 from jwcrypto import jwt
