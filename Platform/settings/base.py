@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "org.apps.OrgConfig",
     "accounts.apps.AccountsConfig",
     "services.apps.ServicesConfig",
+    "identity.apps.IdentityConfig",
     "application",
 ]
 
