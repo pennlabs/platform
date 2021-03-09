@@ -4,7 +4,7 @@ from http import HTTPStatus
 from django.http import JsonResponse
 from django.utils.text import slugify
 from django.views.generic import View
-from identity.utils import SIGNING_ALG, ID_PRIVATE_KEY, mint_access_jwt, mint_refresh_jwt
+from identity.utils import ID_PRIVATE_KEY, SIGNING_ALG, mint_access_jwt, mint_refresh_jwt
 from jwcrypto import jwt
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
