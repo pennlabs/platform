@@ -19,10 +19,6 @@ class AttestView(OAuthLibMixin, View):
 
     This endpoint returns a refresh JWT with an unlimited lifetime and an access JWT with
     a short lifetime.
-
-    This client ID/secret code is based on DOT's code. We're not sure how the validation happens on
-    their end, so we're manually implementing our validation to be safe:
-    https://github.com/jazzband/django-oauth-toolkit/blob/342a63488fee02c86b1b3e5f399ce00a4f6765d5/oauth2_provider/views/base.py#L265  # noqa
     """
 
     server_class = oauth2_settings.OAUTH2_SERVER_CLASS
