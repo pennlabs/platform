@@ -44,7 +44,7 @@ class UserSearchSerializer(serializers.ModelSerializer):
 class PhoneNumberSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneNumberModel
-        fields = ["id", "phone_number", "primary", "verified", "verification_code"]
+        fields = ["id", "value", "primary", "verified", "verification_code"]
         read_only_fields = ["verified"]
         extra_kwargs = {"verification_code": {"write_only": True}}
 
@@ -85,7 +85,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Email
-        fields = ["id", "email", "primary", "verified", "verification_code"]
+        fields = ["id", "value", "primary", "verified", "verification_code"]
         extra_kwargs = {"verification_code": {"write_only": True}}
 
     def create(self, validated_data):

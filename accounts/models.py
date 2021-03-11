@@ -72,7 +72,7 @@ class Student(models.Model):
     )
     major = models.ManyToManyField(Major)
     school = models.ManyToManyField(School)
-    graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)])
+    graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)], null=True)
 
     def __str__(self):
         return self.user.username
