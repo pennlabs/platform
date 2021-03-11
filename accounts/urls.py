@@ -28,17 +28,13 @@ router.register("me/email", EmailViewSet, basename="me-email")
 router.register("majors", MajorViewSet, basename="majors")
 router.register("schools", SchoolViewSet, basename="schools")
 
-def get_login_view():
-    return DevLoginView if settings.IS_DEV_LOGIN else LoginView
-
-
-def get_logout_view():
-    return DevLogoutView if settings.IS_DEV_LOGIN else LogoutView
+FinalLoginView = DevLoginView if settings.IS_DEV_LOGIN else LoginView
+FinalLogoutView = DevLogoutView if settings.IS_DEV_LOGIN else LogoutView
 
 
 urlpatterns = [
-    path("login/", get_login_view().as_view(), name="login"),
-    path("logout/", get_logout_view().as_view(), name="logout"),
+    path("login/", FinalLoginView.as_view(), name="login"),
+    path("logout/", FinalLogoutView.as_view(), name="logout"),
     path("me/", UserView.as_view(), name="me"),
     path("search/", UserSearchView.as_view(), name="search"),
     path("authorize/", AuthorizationView.as_view(), name="authorize"),

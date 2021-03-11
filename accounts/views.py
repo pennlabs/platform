@@ -2,7 +2,9 @@ import calendar
 import json
 
 from django.contrib import auth
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management import call_command
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse
@@ -19,7 +21,7 @@ from rest_framework.views import Response
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
-from accounts.models import Major, School, User
+from accounts.models import Major, School, Student, User
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
@@ -63,59 +65,46 @@ class DevLoginView(View):
     Does not use Shibboleth
     """
 
-    @staticmethod
-    def populate_user_data():
-        NAMES = [
-            "George Washington",
-            "John Adams",
-            "Thomas Jefferson",
-            "James Madison",
-            "James Monroe",
-            "John Quincy Adams",
-            "Andrew Jackson",
-            "Martin Van Buren",
-            "William Harrison",
-            "John Tyler",
-        ]
-        users = []
-        for i, name in enumerate(NAMES):
-            first, last = name.split(" ", 1)
-            pennkey = first.lower() + last[0].lower()
-            affiliation = "student;member"
-            users.append(
-                {
-                    # if leave as i, g. wash's pennid is 0, which makes not remote_user true
-                    "pennid": i + 1,
-                    "pennkey": pennkey,
-                    "first_name": first,
-                    "last_name": last,
-                    "affiliation": affiliation,
-                }
-            )
-        return users
-
     def get(self, request):
-        users = DevLoginView.populate_user_data()
-        return render(request, "accounts/devlogin.html", {"users": users})
+        call_command("populate_users")
+        user_objects = get_user_model().objects.all()
+        user_data = []
+        for user in user_objects:
+            try:
+                student = Student.objects.get(user=user)
+                user_majors = student.major.all()
+                user_major_list = []
+                for major in user_majors:
+                    user_major_list.append(major.name + " " + major.degree_type)
+                user_schools = student.school.all()
+                user_school_list = []
+                for school in user_schools:
+                    user_school_list.append(school.name)
+                user_data.append(
+                    {"user": user, "majors": user_major_list, "schools": user_school_list}
+                )
+            except:
+                user_data.append({"user": user, "majors": ["N/A"], "schools": ["N/A"]})
+        return render(request, "accounts/devlogin.html", {"user_data": user_data})
 
     def post(self, request):
         choice = int(request.POST.get("userChoice", ""))
-        users = DevLoginView.populate_user_data()
-        if choice - 1 < 0 or choice - 1 >= len(users):
-            choice = 1
-        user_data = users[choice - 1]
-        pennid = user_data["pennid"]
-        pennkey = user_data["pennkey"]
-        first_name = user_data["first_name"]
-        last_name = user_data["last_name"]
-        affiliation = user_data["affiliation"]
+        try:
+            user = get_user_model().objects.get(pennid=choice)
+        except:
+            user = get_user_model().objects.get(pennid=1)
+        affiliations = ""
+        for group in user.groups.all():
+            affiliations += group.name + ";"
         shibboleth_attributes = {
-            "username": pennkey,
-            "first_name": first_name,
-            "last_name": last_name,
-            "affiliation": affiliation,
+            "username": user.username,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "affiliation": affiliations,
         }
-        user = auth.authenticate(remote_user=pennid, shibboleth_attributes=shibboleth_attributes)
+        user = auth.authenticate(
+            remote_user=user.pennid, shibboleth_attributes=shibboleth_attributes
+        )
         auth.login(request, user)
         return redirect(request.GET.get("next", "/"))
 

@@ -7,31 +7,104 @@
           integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
     <style>
-        .maindiv {
-            height: 200px;
-            width: 400px;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            margin-top: -100px;
-            margin-left: -200px;
+        .center-div {
+            top:10%;
+            margin: 0 auto;
         }
+
+
     </style>
 </head>
 <body>
-    <div class="col-md-4; maindiv">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <h3 for="userChoice">Choose a user:</h3>
-            <div class="form-group">
-                <select class="form-control" id="userChoice" name="userChoice">
-                    {% for user in users %}
-                    <option value="{{user.pennid}}">{{user.first_name}} {{user.last_name}}</option>
+    <div class=center-div">
+        <div class="col-md-4; center-div" style="margin-top: 5%; width: 30%">
+        <h1>Platform Dev Login</h1>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h5 for="userChoice">Choose a user:</h5>
+                <div class="form-group">
+                    <select class="form-control" id="userChoice" name="userChoice">
+                        {% for user in user_data %}
+                        <option value="{{user.user.pennid}}">{{user.user.first_name}} {{user.user.last_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="float: right">Login</button>
+            </form>
+            <br>
+        </div>
+        <div class="center-div" style="width: 80%; margin-top: 2%">
+            <hr>
+            <br><h3 style="text-align: center">User Details</h3>
+            <div>
+                <table class="table table-striped center-div">
+                <thead style="border:black">
+                    <tr>
+                        <th>Name</th>
+                        <th>Preferred Name</th>
+                        <th>Groups</th>
+                        <th>Email(s)</th>
+                        <th>Email Verified</th>
+                        <th>Phone #(s)</th>
+                        <th>Phone Verified</th>
+                        <th>Major(s)</th>
+                        <th>School(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in user_data %}
+                        <tr>
+                            <td>{{user.user.first_name}} {{user.user.last_name}}</td>
+                            <td>
+                                {% if user.user.first_name == user.user.preferred_name %}
+                                    Same
+                                {% else %}
+                                    {{ user.user.preferred_name }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% for group in user.user.groups.all %}
+                                    {{ group.name }},
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for email in user.user.emails.all %}
+                                    {{ email.email }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for email in user.user.emails.all %}
+                                    {{ email.verified }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for phone in user.user.phone_numbers.all %}
+                                    {{ phone.phone_number }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for phone in user.user.phone_numbers.all %}
+                                    {{ phone.verified }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for degree in user.majors %}
+                                    {{ degree }},
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for school in user.schools %}
+                                    {{ school }}
+                                {% endfor %}
+                            </td>
+                        </tr>
                     {% endfor %}
-                </select>
+                </tbody>
+            </table>
             </div>
-            <button type="submit" class="btn btn-primary" style="float: right">Login</button>
-        </form>
+
+        </div>
     </div>
+
 </body>
 </html>

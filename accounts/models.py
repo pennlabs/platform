@@ -49,7 +49,7 @@ class Major(models.Model):
 
 class User(AbstractUser):
     pennid = models.IntegerField(primary_key=True)
-    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     preferred_name = models.CharField(max_length=225, blank=True)
 
     VERIFICATION_EXPIRATION_MINUTES = 10
