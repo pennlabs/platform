@@ -7,28 +7,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0003_auto_20210207_1231'),
+        ("accounts", "0003_auto_20210207_1231"),
     ]
 
     operations = [
+        migrations.RenameField(model_name="email", old_name="email", new_name="value",),
         migrations.RenameField(
-            model_name='email',
-            old_name='email',
-            new_name='value',
-        ),
-        migrations.RenameField(
-            model_name='phonenumbermodel',
-            old_name='phone_number',
-            new_name='value',
+            model_name="phonenumbermodel", old_name="phone_number", new_name="value",
         ),
         migrations.AlterField(
-            model_name='school',
-            name='name',
-            field=models.CharField(max_length=255),
+            model_name="school", name="name", field=models.CharField(max_length=255),
         ),
         migrations.AlterField(
-            model_name='student',
-            name='graduation_year',
-            field=models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1740)]),
+            model_name="student",
+            name="graduation_year",
+            field=models.PositiveIntegerField(
+                validators=[django.core.validators.MinValueValidator(1740)]
+            ),
         ),
     ]

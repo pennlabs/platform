@@ -46,8 +46,8 @@ class MajorAdmin(admin.ModelAdmin):
     list_filter = ("is_active", "degree_type")
     list_display = ("name",)
 
-    '''def name(self, obj):
-        return obj.name'''
+    def name(self, obj):
+        return obj.name
 
 
 class SchoolAdmin(admin.ModelAdmin):
