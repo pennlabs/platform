@@ -1,11 +1,23 @@
 import React, { useState } from "react";
 import { Field, Form, Formik } from "formik";
+import AsyncSelect from "react-select/async";
 import { Heading, Panel } from "react-bulma-components";
 import parsePhoneNumber from "libphonenumber-js";
 import { useResource } from "@pennlabs/rest-hooks";
 import {
-  Flex, Nav, MainContainer, CenterContainer, Logo, Title
-  , FormGroupGrid, FormGroupItem, Text, Break, FormGroupHeader, FormInput
+  selectStyles,
+  Flex,
+  Nav,
+  MainContainer,
+  CenterContainer,
+  Logo,
+  Title,
+  FormGroupGrid,
+  FormGroupItem,
+  Text,
+  Break,
+  FormGroupHeader,
+  FormInput,
 } from "./ui";
 import { ContactType, User } from "../../types";
 import { doApiRequest } from "../../utils/fetch";
@@ -80,7 +92,6 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
       </Nav>
       <MainContainer>
         <CenterContainer>
-
           <div>
             {verificationState && (
               <VerificationModal
@@ -89,7 +100,9 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                 contact={verificationState.contact}
                 show={showVerificationModal}
                 mutate={mutate}
-                closeFunc={() => setShowVerificationModal(false)}
+                closeFunc={() =>
+                  setShowVerificationModal(false)
+                }
               />
             )}
             {deleteState && (
@@ -119,9 +132,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
               <>
                 <FormGroupGrid>
                   <FormGroupItem col={1} row={1}>
-                    <Text weight="400">
-                      Name
-                  </Text>
+                    <Text weight="400">Name</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={1}>
                     <Text weight="300">
@@ -129,9 +140,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     </Text>
                   </FormGroupItem>
                   <FormGroupItem col={1} row={2}>
-                    <Text weight="400">
-                      Username
-                  </Text>
+                    <Text weight="400">Username</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={2}>
                     <Text weight="300">
@@ -139,52 +148,48 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     </Text>
                   </FormGroupItem>
                   <FormGroupItem col={1} row={3}>
-                    <Text weight="400">
-                      Display Name
-                    </Text>
+                    <Text weight="400">Display Name</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={3}>
                     <FormInput />
                   </FormGroupItem>
                 </FormGroupGrid>
                 <Break />
-                <FormGroupHeader>
-                  Contact
-                </FormGroupHeader>
+                <FormGroupHeader>Contact</FormGroupHeader>
                 <FormGroupGrid>
                   <FormGroupItem col={1} row={1}>
-                    <Text weight="400">
-                      Email
-                  </Text>
+                    <Text weight="400">Email</Text>
                   </FormGroupItem>
                   <FormGroupItem col={1} row={2}>
-                    <Text weight="400">
-                      Phone Number
-                  </Text>
+                    <Text weight="400">Phone Number</Text>
                   </FormGroupItem>
                 </FormGroupGrid>
                 <Break />
-                <FormGroupHeader>
-                  Academics
-                </FormGroupHeader>
+                <FormGroupHeader>Academics</FormGroupHeader>
                 <FormGroupGrid>
                   <FormGroupItem col={1} row={1}>
-                    <Text weight="400">
-                      School(s)
-                  </Text>
+                    <Text weight="400">School(s)</Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={2} row={1}>
+                    <AsyncSelect
+                      styles={selectStyles}
+                    />
                   </FormGroupItem>
                   <FormGroupItem col={1} row={2}>
-                    <Text weight="400">
-                      Major(s)
-                  </Text>
+                    <Text weight="400">Major(s)</Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={2} row={2}>
+                    <AsyncSelect
+                      styles={selectStyles}
+                    />
                   </FormGroupItem>
                   <FormGroupItem col={1} row={3}>
-                    <Text weight="400">
-                      Grad Year
-                  </Text>
+                    <Text weight="400">Grad Year</Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={2} row={3}>
+                    <FormInput />
                   </FormGroupItem>
                 </FormGroupGrid>
-
               </>
               {/* <Form> */}
               {/*     <br /> */}

@@ -47,7 +47,7 @@ export const Break = styled.hr`
 
 export const Text = styled.span<{ weight: string }>`
   font-weight: ${(props) => props.weight};
-  font-size: 0.9rem;
+  font-size: 1rem;
 `
 
 export const FormGroupHeader = styled.h3`
@@ -58,7 +58,7 @@ export const FormGroupHeader = styled.h3`
 export const FormGroupGrid = styled.div`
   display: grid;
   grid-template-columns: 4fr 8fr;
-  grid-auto-rows: 2rem;
+  grid-auto-rows: 3rem;
 `
 
 interface FormGroupItemProps {
@@ -69,13 +69,21 @@ interface FormGroupItemProps {
 export const FormGroupItem = styled.div<FormGroupItemProps>`
   grid-column: ${(props) => props.col};
   grid-row: ${(props) => props.row};
+  display: flex;
+  align-items: center;
 `
 
 export const FormInput = styled.input`
-  height: 1.5rem;
-  width: 90%;
+  height: 2rem;
+  width: 100%;
   outline: none;
   border: solid 1px #d6d6d6;
   border-radius: 0.2rem 0.2rem 0.2rem 0.2rem;
   padding-left: 0.3rem;
 `
+
+export const selectStyles = {
+  container: (base) => ({
+    ...base, width: "100%"
+  })
+};
