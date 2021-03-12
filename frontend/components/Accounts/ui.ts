@@ -1,12 +1,15 @@
 import styled from "styled-components";
 
-export const Flex = styled.div<{ margin: string }>`
+export const Flex = styled.div<{ margin?: string, childMargin?: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   margin: ${(props) => props.margin};
-`
 
+  & > * {
+    margin: ${(props) => props.childMargin};
+  }
+`;
 
 export const Nav = styled.div`
   background: #FEFEFE;
@@ -30,15 +33,9 @@ export const CenterContainer = styled.div`
   height: 85%;
 `;
 
-export const Title = styled.h4`
-  margin: 0.2rem;
-`
-
 export const Logo = styled.img`
   width: 1.2rem;
   height: 1.2rem;
-  margin-left: 0.2rem;
-  margin-right: 0.2rem;
 `
 
 export const Break = styled.hr`
@@ -74,13 +71,47 @@ export const FormGroupItem = styled.div<FormGroupItemProps>`
 `
 
 export const FormInput = styled.input`
-  height: 2rem;
+  height: 2.3rem;
   width: 100%;
   outline: none;
   border: solid 1px #d6d6d6;
   border-radius: 0.2rem 0.2rem 0.2rem 0.2rem;
   padding-left: 0.3rem;
-`
+`;
+
+export const Indicator = styled.img`
+  width: 1rem;
+  padding-top: 0.1rem;
+`;
+
+export const Tag = styled.div`
+  height: 1rem;
+  margin-top: 0.35rem;
+  background-color: #E7E7E7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.1rem;
+
+  & > * {
+    margin: 0.2rem;
+    font-size: 0.5rem;
+    font-weight: 600;
+    color: #767676;
+  }
+`;
+
+export const AddButton = styled.button`
+  background: none!important;
+  padding: 0!important;
+  border: none;
+  cursor: pointer;
+  color: #209CEE;
+  font-size: 1rem;
+  font-weight: 500;
+`;
+
+
 
 export const selectStyles = {
   container: (base) => ({

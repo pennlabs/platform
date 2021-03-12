@@ -11,7 +11,6 @@ import {
   MainContainer,
   CenterContainer,
   Logo,
-  Title,
   FormGroupGrid,
   FormGroupItem,
   Text,
@@ -29,6 +28,7 @@ import SelectField from "./SelectField";
 import VerificationModal from "./Verification/VerificationModal";
 import { logException } from "../../utils/sentry";
 import DeleteModal from "./DeleteModal";
+import { AddInput, ExistingInput } from "./Forms/MultipleInput";
 
 interface ContactMethodState {
   type: ContactType;
@@ -85,9 +85,9 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
   return (
     <>
       <Nav>
-        <Flex margin="1rem">
+        <Flex margin="1rem" childMargin="0.2rem">
           <Logo src="/beaker.png" />
-          <Title>Platform</Title>
+          <h4>Platform</h4>
         </Flex>
       </Nav>
       <MainContainer>
@@ -129,7 +129,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                 actions.setSubmitting(false);
               }}
             >
-              <>
+              <Form>
                 <FormGroupGrid>
                   <FormGroupItem col={1} row={1}>
                     <Text weight="400">Name</Text>
@@ -160,8 +160,14 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   <FormGroupItem col={1} row={1}>
                     <Text weight="400">Email</Text>
                   </FormGroupItem>
+                  <FormGroupItem col={2} row={1}>
+                    <ExistingInput text="abc@gmail.com" />
+                  </FormGroupItem>
                   <FormGroupItem col={1} row={2}>
                     <Text weight="400">Phone Number</Text>
+                  </FormGroupItem>
+                  <FormGroupItem col={2} row={2}>
+                    <AddInput text="Add a phone number" />
                   </FormGroupItem>
                 </FormGroupGrid>
                 <Break />
@@ -190,94 +196,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     <FormInput />
                   </FormGroupItem>
                 </FormGroupGrid>
-              </>
-              {/* <Form> */}
-              {/*     <br /> */}
-              {/*       Name: {user.first_name} {user.last_name} */}
-              {/*   <br /> */}
-              {/*       PennKey: {user.username} */}
-              {/*   <br /> */}
-              {/*   <label htmlFor="first_name">Display Name</label> */}
-              {/*   <Field name="first_name" className="form-input" /> */}
-              {/*   <br /> */}
-              {/*   <b>Phone Numbers:</b> */}
-              {/*   <br /> */}
-              {/*   {user.phone_numbers.length !== 0 && */}
-              {/*     user.phone_numbers.map((number) => { */}
-              {/*       const prettyPhoneNumber = parsePhoneNumber( */}
-              {/*         number.phone_number */}
-              {/*       )!.formatInternational(); // Safe because this was already validated when added */}
-              {/*       return ( */}
-              {/*         <Panel> */}
-              {/*               <Panel.Block */}
-              {/*             disabled={true} */}
-              {/*             onClick={() => */}
-              {/*               openVerificationModal({ */}
-              {/*                 type: ContactType.PhoneNumber, */}
-              {/*                 id: number.id, */}
-              {/*                 contact: prettyPhoneNumber, */}
-              {/*                 verified: number.verified, */}
-              {/*               }) */}
-              {/*             } */}
-              {/*             renderAs="a" */}
-              {/*           > */}
-              {/*             {prettyPhoneNumber} -{" "} */}
-              {/*             {!number.verified && "Not "} Verified */}
-              {/*                       </Panel.Block> */}
-              {/*         </Panel> */}
-              {/*       ); */}
-              {/*     })} */}
-              {/*       + Add another phone number */}
-              {/*       <br /> */}
-              {/*   <b>Emails:</b> */}
-              {/*   <br /> */}
-              {/*   {user.emails.length !== 0 && */}
-              {/*     user.emails.map((email) => ( */}
-              {/*       <Panel> */}
-              {/*         <Panel.Block */}
-              {/*           disabled={true} */}
-              {/*           onClick={() => */}
-              {/*             openVerificationModal({ */}
-              {/*               type: ContactType.Email, */}
-              {/*               id: email.id, */}
-              {/*               contact: email.email, */}
-              {/*               verified: email.verified, */}
-              {/*             }) */}
-              {/*           } */}
-              {/*           renderAs="a" */}
-              {/*         > */}
-              {/*           {email.email} - {!email.verified && "Not "}{" "} */}
-              {/*                       Verified */}
-              {/*                   </Panel.Block> */}
-              {/*       </Panel> */}
-              {/*     ))}{" "} */}
-              {/*       + Add another email */}
-              {/*       <br /> */}
-              {/*   {user.groups.includes("student") && ( */}
-              {/*     <div> */}
-              {/*       <b>Student:</b> */}
-              {/*       <br /> */}
-              {/*       <label htmlFor="student.graduation_year"> */}
-              {/*         Graduation Year */}
-              {/*               </label> */}
-              {/*       <Field */}
-              {/*         name="student.graduation_year" */}
-              {/*         className="form-input" */}
-              {/*       /> */}
-              {/*       <Field */}
-              {/*         name="student.major" */}
-              {/*         component={SelectField} */}
-              {/*         loadOptions={generateLoadOption("majors")} */}
-              {/*       /> */}
-              {/*       <Field */}
-              {/*         name="student.school" */}
-              {/*         component={SelectField} */}
-              {/*         loadOptions={generateLoadOption("schools")} */}
-              {/*       /> */}
-              {/*     </div> */}
-              {/*   )} */}
-              {/*   <button type="submit">Submit</button> */}
-              {/* </Form> */}
+              </Form >
             </Formik>
           </div>
         </CenterContainer>
