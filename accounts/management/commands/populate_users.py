@@ -176,11 +176,12 @@ class Command(BaseCommand):
                 user_obj.preferred_name = user["preferred_name"]
             user_obj.save()
             user_obj = get_user_model().objects.all().get(username=username)
-            member_group = Group.objects.all().get(name="member")
+            member_group = Group.objects.get(name="member")
             user_obj.groups.add(member_group)
             for group in user["group"]:
                 group_obj = Group.objects.get(name=group)
                 user_obj.groups.add(group_obj)
+            print(user_obj.groups.all())
 
             if "student" in user:
                 student_details = user["student"]
@@ -209,7 +210,6 @@ class Command(BaseCommand):
                         major1.save()
                         student.major.add(major1)
                     if student_details["degree"] == "Submat":
-                        self.stdout.write("hi")
                         major2 = Major(name="Physics")
                         major2.degree_type = major2.DEGREE_MASTER
                         major2.save()

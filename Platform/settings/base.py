@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "o7ql0!vuk0%rgrh9p2bihq#pege$qqlm@zo#8
 DEBUG = True
 
 # Dev Login/Logout View toggle.
-IS_DEV_LOGIN = os.environ.get("DEV_LOGIN", "True") in ["true", "True", "1"]
+IS_DEV_LOGIN = os.environ.get("DEV_LOGIN", "False") in ["true", "True", "1"]
 
 ALLOWED_HOSTS = ["*"]
 

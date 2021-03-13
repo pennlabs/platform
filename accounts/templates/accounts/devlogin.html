@@ -69,22 +69,22 @@
                             </td>
                             <td>
                                 {% for email in user.user.emails.all %}
-                                    {{ email.email }}
+                                    {{ email.email }},
                                 {% endfor %}
                             </td>
                             <td>
                                 {% for email in user.user.emails.all %}
-                                    {{ email.verified }}
+                                    {{ email.verified }},
                                 {% endfor %}
                             </td>
                             <td>
                                 {% for phone in user.user.phone_numbers.all %}
-                                    {{ phone.phone_number }}
+                                    {{ phone.phone_number }},
                                 {% endfor %}
                             </td>
                             <td>
                                 {% for phone in user.user.phone_numbers.all %}
-                                    {{ phone.verified }}
+                                    {{ phone.verified }},
                                 {% endfor %}
                             </td>
                             <td>
@@ -94,7 +94,7 @@
                             </td>
                             <td>
                                 {% for school in user.schools %}
-                                    {{ school }}
+                                    {{ school }},
                                 {% endfor %}
                             </td>
                         </tr>

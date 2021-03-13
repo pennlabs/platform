@@ -7,6 +7,7 @@ from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.test import Client, TestCase, override_settings
 from django.urls import clear_url_caches, reverse
 from django.utils import timezone
@@ -42,6 +43,7 @@ class LoginViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         reload_urlconf()
+
 
     def test_invalid_shibboleth_response(self):
         response = self.client.get(reverse("accounts:login"))
@@ -90,6 +92,7 @@ class DevLoginViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         reload_urlconf()
+        call_command("populate_users")
 
     def test_get_login_page(self):
         response = self.client.get(reverse("accounts:login"))
