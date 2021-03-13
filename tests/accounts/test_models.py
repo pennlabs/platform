@@ -71,7 +71,7 @@ class PhoneNumberModelTestCase(TestCase):
 
         self.phone_number = "+15550000000"
         self.number = PhoneNumberModel.objects.create(
-            user=self.user, phone_number=self.phone_number, primary=True, verified=False
+            user=self.user, value=self.phone_number, primary=True, verified=False
         )
 
     def test_str(self):
@@ -86,7 +86,7 @@ class EmailTestCase(TestCase):
 
         self.email_address = "example@example.com"
         self.email = Email.objects.create(
-            user=self.user, email=self.email_address, primary=True, verified=False
+            user=self.user, value=self.email_address, primary=True, verified=False
         )
 
     def test_str(self):

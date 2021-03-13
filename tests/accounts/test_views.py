@@ -373,10 +373,6 @@ class UserViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    # add by name
-
-    # add by id
-
 
 class MajorViewTestCase(TestCase):
     def setUp(self):
@@ -421,20 +417,20 @@ class PhoneNumberViewTestCase(TestCase):
         )
 
         self.number1 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12150001111", primary=False, verified=False,
+            user=self.user, value="+12150001111", primary=False, verified=False,
         )
         self.number2 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12058869999", primary=True, verified=True,
+            user=self.user, value="+12058869999", primary=True, verified=True,
         )
         self.number3 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+16170031234", primary=False, verified=True,
+            user=self.user, value="+16170031234", primary=False, verified=True,
         )
 
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2",
         )
         self.number4 = PhoneNumberModel.objects.create(
-            user=self.user2, phone_number="+12158989000", primary=True, verified=True,
+            user=self.user2, value="+12158989000", primary=True, verified=True,
         )
 
         self.client = APIClient()
@@ -462,7 +458,7 @@ class PhoneNumberViewTestCase(TestCase):
         self.assertFalse(self.number3.primary)
         self.assertEqual(json.loads(response.content), self.expected_response)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(self.user.phone_numbers.filter(phone_number="+12150001111").exists())
+        self.assertFalse(self.user.phone_numbers.filter(value="+12150001111").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
@@ -475,7 +471,7 @@ class PhoneNumberViewTestCase(TestCase):
         self.assertFalse(self.number1.primary)
         self.assertEqual(json.loads(response.content), self.expected_response)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(self.user.phone_numbers.filter(phone_number="+12058869999").exists())
+        self.assertFalse(self.user.phone_numbers.filter(value="+12058869999").exists())
 
     def test_destroy_only_number(self):
         self.client.force_authenticate(user=self.user2)
@@ -493,22 +489,22 @@ class EmailViewTestCase(TestCase):
             pennid=1, username="test1", first_name="first1", last_name="last1"
         )
         self.email1 = Email.objects.create(
-            user=self.user, email="example@test.com", primary=True, verified=True,
+            user=self.user, value="example@test.com", primary=True, verified=True,
         )
         self.email2 = Email.objects.create(
-            user=self.user, email="example2@test.com", primary=False, verified=False,
+            user=self.user, value="example2@test.com", primary=False, verified=False,
         )
         self.email3 = Email.objects.create(
-            user=self.user, email="example3@test.com", primary=False, verified=True,
+            user=self.user, value="example3@test.com", primary=False, verified=True,
         )
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2"
         )
         self.email4 = Email.objects.create(
-            user=self.user2, email="example4@test.com", primary=True, verified=True
+            user=self.user2, value="example4@test.com", primary=True, verified=True
         )
         self.email5 = Email.objects.create(
-            user=self.user2, email="example5@test.com", primary=False, verified=False
+            user=self.user2, value="example5@test.com", primary=False, verified=False
         )
         self.client = APIClient()
         self.serializer1 = EmailSerializer(self.email1)
@@ -534,7 +530,7 @@ class EmailViewTestCase(TestCase):
         self.assertFalse(self.email3.primary)
         self.assertEqual(json.loads(response.content), self.success_response)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(self.user.emails.filter(email="example2@test.com").exists())
+        self.assertFalse(self.user.emails.filter(value="example2@test.com").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
@@ -545,7 +541,7 @@ class EmailViewTestCase(TestCase):
         self.assertTrue(self.email3.primary)
         self.assertEqual(json.loads(response.content), self.success_response)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(self.user.emails.filter(email="example@test.com").exists())
+        self.assertFalse(self.user.emails.filter(value="example@test.com").exists())
 
     def test_destroy_only_verified_email(self):
         self.client.force_authenticate(user=self.user2)
@@ -556,4 +552,4 @@ class EmailViewTestCase(TestCase):
         self.assertFalse(self.email5.primary)
         self.assertEqual(json.loads(response.content), self.failure_response)
         self.assertEqual(response.status_code, 405)
-        self.assertTrue(self.user2.emails.filter(email="example4@test.com").exists())
+        self.assertTrue(self.user2.emails.filter(value="example4@test.com").exists())

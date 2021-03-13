@@ -18,7 +18,7 @@ def contains_filters(listed_filters, desired_filters=set(), excluded_filters=set
     return False
 
 
-def update_majors():
+def update_all_majors():
     # scrapes majors from the official penn catalog of all programs
     source = requests.get("https://catalog.upenn.edu/programs/").text
 

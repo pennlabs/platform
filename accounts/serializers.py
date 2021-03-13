@@ -11,14 +11,12 @@ class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
         fields = ("id", "name")
-        # extra_kwargs = {"id": {"read_only": False}, "name": {"read_only": True}}
 
 
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
         fields = ("id", "name", "degree_type")
-        # extra_kwargs = {"id": {"read_only": False}, "name": {"read_only": True}}
 
 
 class StudentSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
@@ -46,7 +44,7 @@ class UserSearchSerializer(serializers.ModelSerializer):
 class PhoneNumberSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneNumberModel
-        fields = ["id", "phone_number", "primary", "verified", "verification_code"]
+        fields = ["id", "value", "primary", "verified", "verification_code"]
         read_only_fields = ["verified"]
         extra_kwargs = {"verification_code": {"write_only": True}}
 
@@ -58,7 +56,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
         instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
         instance.verification_timestamp = timezone.now()
         instance.save()
-        sendSMSVerification(instance.phone_number, instance.verification_code)
+        sendSMSVerification(instance.value, instance.verification_code)
         return instance
 
     def update(self, instance, validated_data):
@@ -87,7 +85,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Email
-        fields = ["id", "email", "primary", "verified", "verification_code"]
+        fields = ["id", "value", "primary", "verified", "verification_code"]
         extra_kwargs = {"verification_code": {"write_only": True}}
 
     def create(self, validated_data):
@@ -98,7 +96,7 @@ class EmailSerializer(serializers.ModelSerializer):
         instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
         instance.verification_timestamp = timezone.now()
         instance.save()
-        sendEmailVerification(instance.email, instance.verification_code)
+        sendEmailVerification(instance.value, instance.verification_code)
         return instance
 
     def update(self, instance, validated_data):

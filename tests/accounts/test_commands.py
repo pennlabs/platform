@@ -2,13 +2,12 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 
-from accounts.models import Major, Student
+from accounts.models import Major, School, Student
 
 
 class UpdateMajorsTestCase(TestCase):
-    def test_update(self):
-        Major.objects.create(name="Test Active Major", is_active=True)
-        Major.objects.create(name="Test Inactive Major", is_active=False)
+    def test_update_academics(self):
+        call_command("update_academics")
 
         # populate database with majors scraped from penn's website
         call_command("update_academics")
@@ -39,3 +38,5 @@ class PopulateUsersTestCase(TestCase):
         self.assertTrue(len(get_user_model().objects.all()) > 0)
         self.assertTrue(len(Major.objects.all()) > 0)
         self.assertTrue(len(Student.objects.all()) > 0)
+        self.assertTrue(Major.objects.all().count() != 0)
+        self.assertTrue(School.objects.all().count() != 0)

@@ -1,5 +1,4 @@
 import datetime
-import json
 
 import pytz
 from django.contrib.auth import get_user_model
@@ -38,8 +37,9 @@ class SchoolSerializerTestCase(TestCase):
 class MajorSerializerTestCase(TestCase):
     def setUp(self):
         self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
-        self.major_inactive = Major.objects.create(name="Test Inactive Major",
-                                                   degree_type="PHD", is_active=False)
+        self.major_inactive = Major.objects.create(
+            name="Test Inactive Major", degree_type="PHD", is_active=False
+        )
 
         self.serializer_active = MajorSerializer(self.major_active)
         self.serializer_inactive = MajorSerializer(self.major_inactive)
@@ -79,7 +79,7 @@ class StudentSerializerTestCase(TestCase):
         sample_response = {
             "major": [
                 {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"}
+                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"},
             ],
             "school": [{"id": 1, "name": "Test School"}],
         }
@@ -89,9 +89,7 @@ class StudentSerializerTestCase(TestCase):
 
     def test_remove_major(self):
         sample_response = {
-            "major": [
-                {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-            ],
+            "major": [{"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"}],
             "school": [{"id": 1, "name": "Test School"}],
         }
 
@@ -106,7 +104,7 @@ class StudentSerializerTestCase(TestCase):
         sample_response = {
             "major": [
                 {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"}
+                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"},
             ],
             "school": [],
         }
@@ -269,7 +267,7 @@ class PhoneNumberSerializerTestCase(TestCase):
 
         self.number1 = PhoneNumberModel.objects.create(
             user=self.user,
-            phone_number="+12150001111",
+            value="+12150001111",
             primary=False,
             verified=False,
             verification_code="123456",
@@ -277,17 +275,17 @@ class PhoneNumberSerializerTestCase(TestCase):
         )
 
         self.number2 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12058869999", primary=True,
+            user=self.user, value="+12058869999", primary=True,
         )
 
         self.number3 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+16170031234", primary=False,
+            user=self.user, value="+16170031234", primary=False,
         )
 
     def test_create(self):
         # If this is your phone number I'm sorry
         data = {
-            "phone_number": "+12154729463",
+            "value": "+12154729463",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -303,7 +301,7 @@ class PhoneNumberSerializerTestCase(TestCase):
 
     def test_create_same_phone(self):
         data = {
-            "phone_number": "+12150001111",
+            "value": "+12150001111",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -358,7 +356,7 @@ class PhoneNumberSerializerTestCase(TestCase):
 
     def test_verification_timeout(self):
         data = {
-            "phone_number": "+12154729463",
+            "value": "+12154729463",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -395,13 +393,13 @@ class EmailSerializerTestCase(TestCase):
         )
         self.email1 = Email.objects.create(
             user=self.user,
-            email="example@test.com",
+            value="example@test.com",
             primary=True,
             verification_timestamp=timezone.now(),
         )
         self.email2 = Email.objects.create(
             user=self.user,
-            email="example2@test.com",
+            value="example2@test.com",
             primary=False,
             verification_code="123456",
             verification_timestamp=timezone.now(),
@@ -409,7 +407,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_create(self):
         data = {
-            "email": "test@example.com",
+            "value": "test@example.com",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -424,7 +422,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_update_verified(self):
         data = {
-            "email": "example2@test.com",
+            "value": "example2@test.com",
             "verification_code": "123456",
         }
         serializer = EmailSerializer(
@@ -437,7 +435,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_update_unverified(self):
         data = {
-            "email": "example2@test.com",
+            "value": "example2@test.com",
             "verification_code": "000123",
         }
         serializer = EmailSerializer(
@@ -453,7 +451,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_update_primary(self):
         data = {
-            "email": "example2@test.com",
+            "value": "example2@test.com",
             "primary": True,
         }
         serializer = EmailSerializer(
@@ -471,7 +469,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_verification_timeout(self):
         data = {
-            "email": "test@example.com",
+            "value": "test@example.com",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -485,7 +483,7 @@ class EmailSerializerTestCase(TestCase):
         )
         email.verification_code = "000000"
         data = {
-            "email": "test@example.com",
+            "value": "test@example.com",
             "verification_code": "000000",
         }
         serializer = EmailSerializer(email, data=data, context={"request": FakeRequest(self.user)})
