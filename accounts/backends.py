@@ -44,7 +44,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             if email is None:
                 email = f"{shibboleth_attributes['username']}@upenn.edu"
             user.set_unusable_password()
-            user.value = email
+            user.email = email
             user.save()
             user = self.configure_user(request, user)
 
