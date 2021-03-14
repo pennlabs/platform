@@ -1,8 +1,8 @@
 import calendar
 import datetime
+import json
 import sys
 from importlib import reload
-import json
 from urllib.parse import quote
 
 from django.conf import settings
@@ -43,7 +43,6 @@ class LoginViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         reload_urlconf()
-
 
     def test_invalid_shibboleth_response(self):
         response = self.client.get(reverse("accounts:login"))

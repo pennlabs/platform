@@ -6,7 +6,7 @@ from accounts.models import Email, Major, PhoneNumberModel, School, Student
 
 class MajorModelTestCase(TestCase):
     def setUp(self):
-        self.user =get_user_model().objects.create_user(
+        self.user = get_user_model().objects.create_user(
             pennid=1, username="student", first_name="first", last_name="last", password="secret"
         )
 

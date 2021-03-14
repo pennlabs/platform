@@ -18,7 +18,6 @@ class UpdateMajorsTestCase(TestCase):
 
 
 class PopulateUsersTestCase(TestCase):
-
     @override_settings(IS_DEV_LOGIN=False)
     def test_no_effect_in_production(self):
         call_command("populate_users")
