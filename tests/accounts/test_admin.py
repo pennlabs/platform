@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from accounts.admin import MajorAdmin, SchoolAdmin, StudentAdmin
-from accounts.models import Major, School, Student, User
+from accounts.admin import StudentAdmin
+from accounts.models import Student, User
 
 
 class StudentAdminTestCase(TestCase):
