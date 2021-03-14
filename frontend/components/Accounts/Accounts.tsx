@@ -6,6 +6,8 @@ import parsePhoneNumber from "libphonenumber-js";
 import { useResource } from "@pennlabs/rest-hooks";
 import {
   selectStyles,
+  RootContainer,
+  Button,
   Flex,
   Nav,
   MainContainer,
@@ -83,7 +85,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
   >(undefined);
 
   return (
-    <>
+    <RootContainer>
       <Nav>
         <Flex margin="1rem" childMargin="0.2rem">
           <Logo src="/beaker.png" />
@@ -129,7 +131,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                 actions.setSubmitting(false);
               }}
             >
-              <Form>
+              <Form style={{ paddingBottom: "3rem" }}>
                 <FormGroupGrid>
                   <FormGroupItem col={1} row={1}>
                     <Text weight="400">Name</Text>
@@ -196,12 +198,15 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     <FormInput />
                   </FormGroupItem>
                 </FormGroupGrid>
+                <Button margin="1.5rem 0 0 0">
+                  Save
+                </Button>
               </Form >
             </Formik>
           </div>
         </CenterContainer>
       </MainContainer>
-    </>
+    </RootContainer >
   );
 };
 export default Accounts;
