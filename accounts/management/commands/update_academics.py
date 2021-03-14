@@ -1,4 +1,5 @@
 from django.core.management import BaseCommand
+
 from accounts.update_majors import update_all_majors
 from accounts.update_schools import update_all_schools
 

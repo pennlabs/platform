@@ -13,18 +13,9 @@ class UpdateMajorsTestCase(TestCase):
         call_command("update_academics")
 
         # check states of pre-added test majors
-        self.assertEqual(Major.objects.get(name="Test Active Major").is_active, False)
-        self.assertEqual(Major.objects.get(name="Test Inactive Major").is_active, False)
+        self.assertTrue(Major.objects.all().count() != 0)
+        self.assertTrue(School.objects.all().count() != 0)
 
-        Major.objects.create(name="Test Active Major 2", is_active=True)
-
-        # test duplicate run database with majors scraped from penn's website
-        call_command("update_academics")
-
-        # check states of pre-added test majors
-        self.assertEqual(Major.objects.get(name="Test Active Major").is_active, False)
-        self.assertEqual(Major.objects.get(name="Test Active Major 2").is_active, False)
-        self.assertEqual(Major.objects.get(name="Test Inactive Major").is_active, False)
 
 class PopulateUsersTestCase(TestCase):
 

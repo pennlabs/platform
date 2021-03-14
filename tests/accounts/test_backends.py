@@ -31,7 +31,7 @@ class BackendTestCase(TestCase):
         auth.authenticate(remote_user=1, shibboleth_attributes=self.shibboleth_attributes)
         self.assertEqual(len(get_user_model().objects.all()), 1)
         self.assertEqual(get_user_model().objects.all()[0].pennid, 1)
-        self.assertEqual(get_user_model().objects.all()[0].value, "user@upenn.edu")
+        self.assertEqual(get_user_model().objects.all()[0].email, "user@upenn.edu")
 
     def test_create_user_with_attributes(self):
         attributes = {

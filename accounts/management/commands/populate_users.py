@@ -149,6 +149,7 @@ class Command(BaseCommand):
 
         # Main Command
         Student.objects.all().delete()
+        Group.objects.all().delete()
         get_user_model().objects.all().delete()
         for x in ["alum", "employee", "faculty", "member", "staff", "student"]:
             Group.objects.get_or_create(name=x)
@@ -181,7 +182,6 @@ class Command(BaseCommand):
             for group in user["group"]:
                 group_obj = Group.objects.get(name=group)
                 user_obj.groups.add(group_obj)
-            print(user_obj.groups.all())
 
             if "student" in user:
                 student_details = user["student"]
@@ -227,7 +227,7 @@ class Command(BaseCommand):
                 email_details = user["email"]
                 email = Email(
                     user=User.objects.all().get(username=username),
-                    email=email_address,
+                    value=email_address,
                     primary=True,
                     verified=email_details["verified"],
                 )
@@ -235,7 +235,7 @@ class Command(BaseCommand):
                 if "multiple" in email_details:
                     email2 = Email(
                         user=User.objects.all().get(username=username),
-                        email=f"{user['last_name'].strip().lower()}@{school}upenn.edu",
+                        value=f"{user['last_name'].strip().lower()}@{school}upenn.edu",
                         primary=False,
                     )
                     email2.save()
@@ -245,7 +245,7 @@ class Command(BaseCommand):
                     number += str(random.randint(0, 9))
                 phone = PhoneNumberModel(
                     user=User.objects.all().get(username=username),
-                    phone_number=number,
+                    value=number,
                     primary=True,
                     verified=user["phone"]["verified"],
                 )
