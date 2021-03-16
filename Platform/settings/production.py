@@ -23,16 +23,6 @@ SENTRY_URL = os.environ.get("SENTRY_URL", "")
 sentry_sdk.init(dsn=SENTRY_URL, integrations=[DjangoIntegration()])
 
 # CORS settings
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = (
-    "https://pennbasics.com",
-    "https://penncfa.com",
-    "https://pennclubs.com",
-    "https://penncoursealert.com",
-    "https://penncourseplan.com",
-    "https://penncoursereview.com",
-    "https://pennlabs.org",
-    "https://studentlife.pennlabs.org",
-    "https://api.pennlabs.org",
-)
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = ["GET"]
+CORS_URLS_REGEX = r"^/options/$"
