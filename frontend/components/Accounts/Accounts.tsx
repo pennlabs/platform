@@ -30,7 +30,7 @@ import SelectField from "./SelectField";
 import VerificationModal from "./Verification/VerificationModal";
 import { logException } from "../../utils/sentry";
 import DeleteModal from "./DeleteModal";
-import { AddInput, ExistingInput } from "./Forms/MultipleInput";
+import { AddInput, ExistingInput, EditInput } from "./Forms/MultipleInput";
 
 interface ContactMethodState {
   type: ContactType;
@@ -159,11 +159,14 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                 <Break />
                 <FormGroupHeader>Contact</FormGroupHeader>
                 <FormGroupGrid>
-                  <FormGroupItem col={1} row={1}>
-                    <Text weight="400">Email</Text>
+                  <FormGroupItem col={1} row={1} alignItems="start">
+                    <Text weight="400" marginTop="0.5rem">Email</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={1}>
-                    <ExistingInput text="abc@gmail.com" />
+                    <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
+                      <ExistingInput text="abc@gmail.com" />
+                      <EditInput />
+                    </Flex>
                   </FormGroupItem>
                   <FormGroupItem col={1} row={2}>
                     <Text weight="400">Phone Number</Text>

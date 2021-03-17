@@ -1,10 +1,21 @@
 import styled from "styled-components";
 
-export const Flex = styled.div<{ margin?: string, childMargin?: string }>`
+interface FlexProps {
+  margin?: string;
+  childMargin?: string;
+  flexDirection?: string;
+  alignItems?: string;
+  justifyContent?: string;
+  width?: string;
+};
+
+export const Flex = styled.div<FlexProps>`
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: ${(props) => props.flexDirection ? props.flexDirection : "row"};
+  align-items: ${(props) => props.alignItems ? props.alignItems : "center"};
+  justify-content: ${(props) => props.justifyContent ? props.justifyContent : "center"};
   margin: ${(props) => props.margin};
+  width: ${(props) => props.width};
 
   & > * {
     margin: ${(props) => props.childMargin};
@@ -52,9 +63,10 @@ export const Break = styled.hr`
   border: 1px solid #D3D3D3;
 `
 
-export const Text = styled.span<{ weight: string }>`
+export const Text = styled.span<{ weight: string, marginTop?: string }>`
   font-weight: ${(props) => props.weight};
   font-size: 1rem;
+  margin-top: ${(props) => props.marginTop};
 `
 
 export const FormGroupHeader = styled.h3`
@@ -65,24 +77,25 @@ export const FormGroupHeader = styled.h3`
 export const FormGroupGrid = styled.div`
   display: grid;
   grid-template-columns: 4fr 8fr;
-  grid-auto-rows: 3rem;
+  grid-auto-rows: minmax(3rem, auto);
 `
 
 interface FormGroupItemProps {
   col: number;
   row: number;
+  alignItems?: string;
 }
 
 export const FormGroupItem = styled.div<FormGroupItemProps>`
   grid-column: ${(props) => props.col};
   grid-row: ${(props) => props.row};
   display: flex;
-  align-items: center;
+  align-items: ${(props) => props.alignItems ? props.alignItems : "center"};
 `
 
-export const FormInput = styled.input`
-  height: 2.3rem;
-  width: 100%;
+export const FormInput = styled.input<{ height?: string }>`
+  height: ${(props) => props.height ? props.height : "2.3rem"};
+  width: ${(props) => props.width ? props.width : "100%"};
   outline: none;
   border: solid 1px #d6d6d6;
   border-radius: 0.2rem 0.2rem 0.2rem 0.2rem;
