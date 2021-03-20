@@ -7,6 +7,7 @@ interface FlexProps {
   alignItems?: string;
   justifyContent?: string;
   width?: string;
+  position?: string;
 };
 
 export const Flex = styled.div<FlexProps>`
@@ -16,6 +17,7 @@ export const Flex = styled.div<FlexProps>`
   justify-content: ${(props) => props.justifyContent ? props.justifyContent : "center"};
   margin: ${(props) => props.margin};
   width: ${(props) => props.width};
+  position: ${(props) => props.position};
 
   & > * {
     margin: ${(props) => props.childMargin};
@@ -63,10 +65,17 @@ export const Break = styled.hr`
   border: 1px solid #D3D3D3;
 `
 
-export const Text = styled.span<{ weight: string, marginTop?: string }>`
+interface TextProps {
+  weight: string;
+  size?: string;
+  marginTop?: string;
+}
+
+export const Text = styled.span<TextProps>`
   font-weight: ${(props) => props.weight};
-  font-size: 1rem;
+  font-size: ${(props) => props.size ? props.size : "1rem"};
   margin-top: ${(props) => props.marginTop};
+  white-space: nowrap;
 `
 
 export const FormGroupHeader = styled.h3`
