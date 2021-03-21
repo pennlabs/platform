@@ -4,14 +4,14 @@ from django.contrib.auth.models import Permission
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from accounts.models import Email, PhoneNumberModel, Student, User
+from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
 
 
 class StudentAdmin(admin.ModelAdmin):
     readonly_fields = ("user",)
     search_fields = ("user__username", "user__first_name", "user__last_name")
     list_display = ("username", "first_name", "last_name")
-    # list_filter = ("school", "major")
+    list_filter = ("school", "major")
 
     def username(self, obj):
         return obj.user.username
@@ -41,11 +41,24 @@ class UserAdmin(admin.ModelAdmin):
     )
 
 
+class MajorAdmin(admin.ModelAdmin):
+    readonly_fields = ("id",)
+    list_filter = ("is_active", "degree_type")
+    list_display = ("name",)
+
+
+class SchoolAdmin(admin.ModelAdmin):
+    readonly_fields = ("id",)
+    list_display = ("name",)
+
+
 admin.site.register(Permission)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(PhoneNumberModel)
 admin.site.register(Email)
+admin.site.register(Major, MajorAdmin)
+admin.site.register(School, SchoolAdmin)
 
 
 class LabsAdminSite(admin.AdminSite):

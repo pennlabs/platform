@@ -10,10 +10,13 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 
-from accounts.models import Email, PhoneNumberModel, User
+from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
 from accounts.serializers import (
     EmailSerializer,
+    MajorSerializer,
     PhoneNumberSerializer,
+    SchoolSerializer,
+    StudentSerializer,
     UserSearchSerializer,
     UserSerializer,
 )
@@ -112,7 +115,6 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         )
 
     def test_view_post_valid_token(self):
-
         auth_headers = {"HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token}
         response = self.client.post(
             reverse("accounts:introspect"), {"token": self.valid_token.token}, **auth_headers
@@ -205,9 +207,29 @@ class UserSearchTestCase(TestCase):
 
 class UserViewTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create(
-            pennid=1, username="test1", first_name="first1", last_name="last1"
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
         )
+
+        Major.objects.create(name="Test Active Major", is_active=True, degree_type="BACHELORS")
+        Major.objects.create(name="Test Active Major 2", degree_type="PHD", is_active=True)
+        Major.objects.create(name="Test Active Major 3", degree_type="PROFESSIONAL", is_active=True)
+
+        School.objects.create(name="Test School")
+        School.objects.create(name="Test School 2")
+
+        Student.objects.create(user=self.user)
+        self.user.student.major.add(Major.objects.get(name="Test Active Major"))
+        self.user.student.major.add(Major.objects.get(name="Test Active Major 2"))
+        self.user.student.school.add(School.objects.get(name="Test School"))
+        self.user.student.graduation_year = 2024
+        self.serializer = StudentSerializer(self.user.student)
+
         self.client = APIClient()
         self.serializer = UserSerializer(self.user)
 
@@ -215,6 +237,105 @@ class UserViewTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(reverse("accounts:me"))
         self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_major(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {"student": {"school": [{"name": "Test School"}]}}
+
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
+
+        self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_school(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {"student": {"school": [{"name": "Test School"}, {"name": "Test School 2"}]}}
+
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
+
+        self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_all_student_fields(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "student": {
+                "major": [
+                    {"name": "Test Active Major 2", "degree_type": "PHD"},
+                    {"name": "Test Active Major", "degree_type": "BACHELORS"},
+                ],
+                "school": [{"name": "Test School 2"}],
+                "graduation_year": 2030,
+            }
+        }
+
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
+
+        self.assertEqual(json.loads(response.content), self.serializer.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_invalid_graduation_year(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {"student": {"graduation_year": 1600}}
+
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+
+    # add same major
+    def test_update_same_major_twice(self):
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "student": {
+                "major": [
+                    {"name": "Test Active Major 2", "degree_type": "PHD"},
+                    {"name": "Test Active Major 2", "degree_type": "PHD"},
+                ],
+                "school": [{"name": "Test School 2"}],
+                "graduation_year": 2030,
+            }
+        }
+
+        response = self.client.patch(reverse("accounts:me"), update_data, format="json")
+
+        self.assertEqual(response.status_code, 200)
+
+
+class MajorViewTestCase(TestCase):
+    def setUp(self):
+        self.major_active_1 = Major.objects.create(name="Test Active Major", is_active=True)
+        self.major_active_2 = Major.objects.create(name="Test Active Major 2", is_active=True)
+
+        self.major_inactive_1 = Major.objects.create(name="Test Inactive Major", is_active=False)
+        self.major_inactive_2 = Major.objects.create(name="Test Inactive Major 2", is_active=False)
+
+        self.client = APIClient()
+        self.serializer_active_1 = MajorSerializer(self.major_active_1)
+        self.serializer_active_2 = MajorSerializer(self.major_active_2)
+
+    def test_get_queryset(self):
+        response = self.client.get(reverse("accounts:majors-list"))
+        self.assertEqual(
+            json.loads(response.content),
+            [self.serializer_active_1.data, self.serializer_active_2.data],
+        )
+
+
+class SchoolViewTestCase(TestCase):
+    def setUp(self):
+        self.school_1 = School.objects.create(name="Test School")
+        self.school_2 = School.objects.create(name="Test School 2")
+
+        self.client = APIClient()
+        self.serializer_1 = SchoolSerializer(self.school_1)
+        self.serializer_2 = SchoolSerializer(self.school_2)
+
+    def test_get_queryset(self):
+        response = self.client.get(reverse("accounts:schools-list"))
+        self.assertEqual(
+            json.loads(response.content), [self.serializer_1.data, self.serializer_2.data]
+        )
 
 
 class PhoneNumberViewTestCase(TestCase):
@@ -224,27 +345,27 @@ class PhoneNumberViewTestCase(TestCase):
         )
 
         self.number1 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12150001111", primary=False, verified=False,
+            user=self.user, value="+12150001111", primary=False, verified=False,
         )
         self.number2 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12058869999", primary=True, verified=True,
+            user=self.user, value="+12058869999", primary=True, verified=True,
         )
         self.number3 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+16170031234", primary=False, verified=True,
+            user=self.user, value="+16170031234", primary=False, verified=True,
         )
 
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2",
         )
         self.number4 = PhoneNumberModel.objects.create(
-            user=self.user2, phone_number="+12158989000", primary=True, verified=True,
+            user=self.user2, value="+12158989000", primary=True, verified=True,
         )
 
         self.client = APIClient()
         self.serializer1 = PhoneNumberSerializer(self.number1)
         self.serializer2 = PhoneNumberSerializer(self.number2)
         self.serializer3 = PhoneNumberSerializer(self.number3)
-        self.expected_response = {"message": "Phone number successfully deleted", "status": 200}
+        self.expected_response = {"detail": "Phone number successfully deleted"}
 
     def test_get_queryset(self):
         self.client.force_authenticate(user=self.user)
@@ -264,7 +385,8 @@ class PhoneNumberViewTestCase(TestCase):
         self.assertTrue(self.number2.primary)
         self.assertFalse(self.number3.primary)
         self.assertEqual(json.loads(response.content), self.expected_response)
-        self.assertFalse(self.user.phone_numbers.filter(phone_number="+12150001111").exists())
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(self.user.phone_numbers.filter(value="+12150001111").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
@@ -276,7 +398,8 @@ class PhoneNumberViewTestCase(TestCase):
         self.assertTrue(self.number3.primary)
         self.assertFalse(self.number1.primary)
         self.assertEqual(json.loads(response.content), self.expected_response)
-        self.assertFalse(self.user.phone_numbers.filter(phone_number="+12058869999").exists())
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(self.user.phone_numbers.filter(value="+12058869999").exists())
 
     def test_destroy_only_number(self):
         self.client.force_authenticate(user=self.user2)
@@ -284,6 +407,7 @@ class PhoneNumberViewTestCase(TestCase):
             reverse("accounts:me-phonenumber-detail", args=[self.number4.id])
         )
         self.assertEqual(json.loads(response.content), self.expected_response)
+        self.assertEqual(response.status_code, 200)
         self.assertEquals(len(self.user2.phone_numbers.all()), 0)
 
 
@@ -293,32 +417,29 @@ class EmailViewTestCase(TestCase):
             pennid=1, username="test1", first_name="first1", last_name="last1"
         )
         self.email1 = Email.objects.create(
-            user=self.user, email="example@test.com", primary=True, verified=True,
+            user=self.user, value="example@test.com", primary=True, verified=True,
         )
         self.email2 = Email.objects.create(
-            user=self.user, email="example2@test.com", primary=False, verified=False,
+            user=self.user, value="example2@test.com", primary=False, verified=False,
         )
         self.email3 = Email.objects.create(
-            user=self.user, email="example3@test.com", primary=False, verified=True,
+            user=self.user, value="example3@test.com", primary=False, verified=True,
         )
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2"
         )
         self.email4 = Email.objects.create(
-            user=self.user2, email="example4@test.com", primary=True, verified=True
+            user=self.user2, value="example4@test.com", primary=True, verified=True
         )
         self.email5 = Email.objects.create(
-            user=self.user2, email="example5@test.com", primary=False, verified=False
+            user=self.user2, value="example5@test.com", primary=False, verified=False
         )
         self.client = APIClient()
         self.serializer1 = EmailSerializer(self.email1)
         self.serializer2 = EmailSerializer(self.email2)
         self.serializer3 = EmailSerializer(self.email3)
-        self.success_response = {"message": "Email successfully deleted", "status": 200}
-        self.failure_response = {
-            "message": "You can't delete the only verified email",
-            "status": 405,
-        }
+        self.success_response = {"detail": "Email successfully deleted"}
+        self.failure_response = {"detail": "You can't delete the only verified email"}
 
     def test_get_queryset(self):
         self.client.force_authenticate(user=self.user)
@@ -336,7 +457,8 @@ class EmailViewTestCase(TestCase):
         self.assertTrue(self.email1.primary)
         self.assertFalse(self.email3.primary)
         self.assertEqual(json.loads(response.content), self.success_response)
-        self.assertFalse(self.user.emails.filter(email="example2@test.com").exists())
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(self.user.emails.filter(value="example2@test.com").exists())
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
@@ -346,7 +468,8 @@ class EmailViewTestCase(TestCase):
         self.assertFalse(self.email2.primary)
         self.assertTrue(self.email3.primary)
         self.assertEqual(json.loads(response.content), self.success_response)
-        self.assertFalse(self.user.emails.filter(email="example@test.com").exists())
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(self.user.emails.filter(value="example@test.com").exists())
 
     def test_destroy_only_verified_email(self):
         self.client.force_authenticate(user=self.user2)
@@ -356,4 +479,5 @@ class EmailViewTestCase(TestCase):
         self.assertTrue(self.email4.primary)
         self.assertFalse(self.email5.primary)
         self.assertEqual(json.loads(response.content), self.failure_response)
-        self.assertTrue(self.user2.emails.filter(email="example4@test.com").exists())
+        self.assertEqual(response.status_code, 405)
+        self.assertTrue(self.user2.emails.filter(value="example4@test.com").exists())

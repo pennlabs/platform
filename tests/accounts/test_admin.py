@@ -16,16 +16,16 @@ class StudentAdminTestCase(TestCase):
             pennid=1, username="user", first_name="First", last_name="Last"
         )
         self.student = Student.objects.create(user=self.user)
-        self.sa = StudentAdmin(Student, AdminSite())
+        self.student_admin = StudentAdmin(Student, AdminSite())
 
     def test_username(self):
-        self.assertEqual(self.sa.username(self.student), self.user.username)
+        self.assertEqual(self.student_admin.username(self.student), self.user.username)
 
     def test_first_name(self):
-        self.assertEqual(self.sa.first_name(self.student), self.user.first_name)
+        self.assertEqual(self.student_admin.first_name(self.student), self.user.first_name)
 
     def test_last_name(self):
-        self.assertEqual(self.sa.last_name(self.student), self.user.last_name)
+        self.assertEqual(self.student_admin.last_name(self.student), self.user.last_name)
 
 
 class LabsAdminTestCase(TestCase):
