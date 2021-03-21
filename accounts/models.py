@@ -70,8 +70,8 @@ class Student(models.Model):
     user = models.OneToOneField(
         get_user_model(), related_name="student", on_delete=models.DO_NOTHING
     )
-    major = models.ManyToManyField(Major)
-    school = models.ManyToManyField(School)
+    major = models.ManyToManyField(Major, null=True, blank=True)
+    school = models.ManyToManyField(School, null=True, blank=True)
     graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)], null=True)
 
     def __str__(self):

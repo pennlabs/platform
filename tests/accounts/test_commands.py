@@ -9,10 +9,6 @@ class UpdateMajorsTestCase(TestCase):
     def test_update_academics(self):
         call_command("update_academics")
 
-        # populate database with majors scraped from penn's website
-        call_command("update_academics")
-
-        # check states of pre-added test majors
         self.assertTrue(Major.objects.all().count() != 0)
         self.assertTrue(School.objects.all().count() != 0)
 
@@ -28,5 +24,3 @@ class PopulateUsersTestCase(TestCase):
         self.assertTrue(len(get_user_model().objects.all()) > 0)
         self.assertTrue(len(Major.objects.all()) > 0)
         self.assertTrue(len(Student.objects.all()) > 0)
-        self.assertTrue(Major.objects.all().count() != 0)
-        self.assertTrue(School.objects.all().count() != 0)
