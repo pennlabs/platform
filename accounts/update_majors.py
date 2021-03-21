@@ -38,7 +38,7 @@ def update_all_majors():
         curr_filter_list = program.attrs["class"]
         # check if entry meets relevant desired and excluded filter criteria
         if not contains_filters(
-                curr_filter_list, desired_filters=desired_filters, excluded_filters=excluded_filters
+            curr_filter_list, desired_filters=desired_filters, excluded_filters=excluded_filters
         ):
             continue
 
