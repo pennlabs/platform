@@ -19,3 +19,8 @@ class PopulateUsersTestCase(TestCase):
         self.assertTrue(len(get_user_model().objects.all()) > 0)
         self.assertTrue(len(Major.objects.all()) > 0)
         self.assertTrue(len(Student.objects.all()) > 0)
+
+    def test_populate_twice(self):
+        call_command("populate_users")
+        call_command("populate_users")
+        self.assertEqual(len(get_user_model().objects.all()), 10)
