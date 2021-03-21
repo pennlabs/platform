@@ -15,5 +15,4 @@ def update_all_schools():
     for curr_school in school_list.find_all("div"):
         school_name = curr_school.text
         # create new school entry if it does not already exist
-        if School.objects.filter(name=school_name).count() == 0:
-            School.objects.create(name=school_name)
+        School.objects.update_or_create(name=school_name)
