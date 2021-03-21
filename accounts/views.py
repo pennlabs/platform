@@ -66,11 +66,9 @@ class DevLoginView(View):
     """
 
     def get(self, request):
-        call_command("populate_users")
         user_objects = get_user_model().objects.all()
         user_data = []
         for user in user_objects:
-
             try:
                 student = Student.objects.get(user=user)
                 user_majors = student.major.all()
@@ -92,7 +90,7 @@ class DevLoginView(View):
         choice = int(request.POST.get("userChoice", ""))
         try:
             user = get_user_model().objects.get(pennid=choice)
-        except Student.DoesNotExist:
+        except User.DoesNotExist:
             user = get_user_model().objects.get(pennid=1)
         affiliations = ""
         for group in user.groups.all():

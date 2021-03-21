@@ -133,10 +133,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        # prevent use in production
-        if not settings.IS_DEV_LOGIN:
-            self.stdout.write("Command not allowed in production")
-            return
         # check if already filled
         all_users = get_user_model().objects.all()
         if (
