@@ -4,6 +4,7 @@ from django.test import TestCase
 
 from accounts.models import Major, School, Student
 
+
 class UpdateMajorsTestCase(TestCase):
     def test_update_academics(self):
         call_command("update_academics")
@@ -13,7 +14,6 @@ class UpdateMajorsTestCase(TestCase):
 
 
 class PopulateUsersTestCase(TestCase):
-
     def test_populate_users(self):
         call_command("populate_users")
         self.assertTrue(len(get_user_model().objects.all()) > 0)
