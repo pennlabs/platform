@@ -13,5 +13,3 @@ SHIB_ADMIN = False
 
 # Use the console for email in development
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-IS_DEV_LOGIN = True
