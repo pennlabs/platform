@@ -9,5 +9,4 @@ class Command(BaseCommand):
         update_all_majors()
         update_all_schools()
 
-        self.stdout.write("Updated active schools and major in database.")
         self.stdout.write("Updated active schools and majors in database.")

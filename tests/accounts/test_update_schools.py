@@ -9,7 +9,7 @@ from accounts.update_schools import update_all_schools
 @patch("accounts.update_schools.requests.get")
 class UpdateMajorsTestCase(TestCase):
     def testTotalSchoolCount(self, mock_source_file):
-        with open(r"PennCoursePrograms.html", "r") as f:
+        with open(r"./tests/accounts/PennCoursePrograms.html", "r") as f:
             mock_source_file.return_value.text = f.read()
 
         update_all_schools()

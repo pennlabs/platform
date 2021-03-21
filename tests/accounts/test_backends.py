@@ -22,18 +22,26 @@ class BackendTestCase(TestCase):
         user = auth.authenticate(remote_user=-1, shibboleth_attributes=self.shibboleth_attributes)
         self.assertIsNone(user)
 
-    def test_empty_shibboleth_attributes(self):
+    @patch("accounts.backends.ShibbolethRemoteUserBackend.get_email")
+    def test_empty_shibboleth_attributes(self, mock_get_email):
+        mock_get_email.return_value = None
         user = auth.authenticate(remote_user=1, shibboleth_attributes=self.shibboleth_attributes)
         self.assertEqual(user.pennid, 1)
         self.assertEqual(user.first_name, "")
+        self.assertEqual(user.email, f"{self.shibboleth_attributes['username']}@upenn.edu")
 
-    def test_create_user(self):
+    @patch("accounts.backends.ShibbolethRemoteUserBackend.get_email")
+    def test_create_user(self, mock_get_email):
+        mock_get_email.return_value = None
         auth.authenticate(remote_user=1, shibboleth_attributes=self.shibboleth_attributes)
         self.assertEqual(len(get_user_model().objects.all()), 1)
-        self.assertEqual(get_user_model().objects.all()[0].pennid, 1)
-        self.assertEqual(get_user_model().objects.all()[0].email, "user@upenn.edu")
+        user = get_user_model().objects.all()[0]
+        self.assertEqual(user.pennid, 1)
+        self.assertEqual(user.email, "user@upenn.edu")
 
-    def test_create_user_with_attributes(self):
+    @patch("accounts.backends.ShibbolethRemoteUserBackend.get_email")
+    def test_create_user_with_attributes(self, mock_get_email):
+        mock_get_email.return_value = None
         attributes = {
             "username": "user",
             "first_name": "test",
@@ -49,7 +57,9 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(user.groups.all()), 2)
         self.assertEqual(len(Group.objects.all()), 2)
 
-    def test_update_user_with_attributes(self):
+    @patch("accounts.backends.ShibbolethRemoteUserBackend.get_email")
+    def test_update_user_with_attributes(self, mock_get_email):
+        mock_get_email.return_value = None
         attributes = {
             "username": "user",
             "first_name": "test",
@@ -62,14 +72,18 @@ class BackendTestCase(TestCase):
         user = auth.authenticate(remote_user=1, shibboleth_attributes=attributes)
         self.assertEqual(user.username, "changed_user")
 
-    def test_login_user(self):
+    @patch("accounts.backends.ShibbolethRemoteUserBackend.get_email")
+    def test_login_user(self, mock_get_email):
+        mock_get_email.return_value = None
         student = get_user_model().objects.create_user(
             pennid=1, username="student", password="secret"
         )
         user = auth.authenticate(remote_user=1, shibboleth_attributes=self.shibboleth_attributes)
         self.assertEqual(user, student)
 
-    def test_create_student_object(self):
+    @patch("accounts.backends.ShibbolethRemoteUserBackend.get_email")
+    def test_create_student_object(self, mock_get_email):
+        mock_get_email.return_value = None
         attributes = {
             "username": "user",
             "first_name": "test",

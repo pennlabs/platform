@@ -45,19 +45,18 @@ def update_all_majors():
         # grab the major name
         major_name = program.find("span", class_="title").text
 
-        # create new major entry if it does not already exist
-        if Major.objects.filter(name=major_name).count() == 0:
-            # identify degree type
-            if bachelor_filter in curr_filter_list:
-                curr_degree_type = Major.DEGREE_BACHELOR
-            elif master_filter in curr_filter_list:
-                curr_degree_type = Major.DEGREE_MASTER
-            elif phd_filter in curr_filter_list:
-                curr_degree_type = Major.DEGREE_PHD
-            else:
-                curr_degree_type = Major.DEGREE_PROFESSIONAL
+        # identify degree type
+        if bachelor_filter in curr_filter_list:
+            curr_degree_type = Major.DEGREE_BACHELOR
+        elif master_filter in curr_filter_list:
+            curr_degree_type = Major.DEGREE_MASTER
+        elif phd_filter in curr_filter_list:
+            curr_degree_type = Major.DEGREE_PHD
+        else:
+            curr_degree_type = Major.DEGREE_PROFESSIONAL
 
-            Major.objects.create(name=major_name, is_active=True, degree_type=curr_degree_type)
+        # create new major entry if it does not already exist
+        Major.objects.update_or_create(name=major_name, defaults={"degree_type": curr_degree_type})
 
         # keep track of found majors
         listed_majors.add(major_name)

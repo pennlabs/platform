@@ -30,7 +30,7 @@ class SchoolSerializerTestCase(TestCase):
         self.serializer = SchoolSerializer(self.school)
 
     def test_active_major(self):
-        sample_response = {"id": 1, "name": "Test School"}
+        sample_response = {"id": self.school.id, "name": self.school.name}
         self.assertEqual(self.serializer.data, sample_response)
 
 
@@ -45,11 +45,19 @@ class MajorSerializerTestCase(TestCase):
         self.serializer_inactive = MajorSerializer(self.major_inactive)
 
     def test_active_major(self):
-        sample_response = {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"}
+        sample_response = {
+            "id": self.major_active.id,
+            "name": self.major_active.name,
+            "degree_type": self.major_active.degree_type,
+        }
         self.assertEqual(self.serializer_active.data, sample_response)
 
     def test_inactive_major(self):
-        sample_response = {"id": 2, "name": "Test Inactive Major", "degree_type": "PHD"}
+        sample_response = {
+            "id": self.major_inactive.id,
+            "name": self.major_inactive.name,
+            "degree_type": self.major_inactive.degree_type,
+        }
         self.assertEqual(self.serializer_inactive.data, sample_response)
 
 
@@ -64,10 +72,12 @@ class StudentSerializerTestCase(TestCase):
             last_name="Last",
             email="test@test.com",
         )
-        Major.objects.create(name="Test Active Major", is_active=True)
-        Major.objects.create(name="Test Active Major 2", degree_type="PHD", is_active=True)
+        self.active_major_1 = Major.objects.create(name="Test Active Major", is_active=True)
+        self.active_major_2 = Major.objects.create(
+            name="Test Active Major 2", degree_type="PHD", is_active=True
+        )
 
-        School.objects.create(name="Test School")
+        self.school = School.objects.create(name="Test School")
 
         Student.objects.create(user=self.user)
         self.user.student.major.add(Major.objects.get(name="Test Active Major"))
@@ -78,10 +88,18 @@ class StudentSerializerTestCase(TestCase):
     def test_two_majors(self):
         sample_response = {
             "major": [
-                {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"},
+                {
+                    "id": self.active_major_1.id,
+                    "name": self.active_major_1.name,
+                    "degree_type": self.active_major_1.degree_type,
+                },
+                {
+                    "id": self.active_major_2.id,
+                    "name": self.active_major_2.name,
+                    "degree_type": self.active_major_2.degree_type,
+                },
             ],
-            "school": [{"id": 1, "name": "Test School"}],
+            "school": [{"id": self.school.id, "name": self.school.name}],
         }
 
         self.assertEqual(self.serializer.data["major"], sample_response["major"])
@@ -89,13 +107,17 @@ class StudentSerializerTestCase(TestCase):
 
     def test_remove_major(self):
         sample_response = {
-            "major": [{"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"}],
-            "school": [{"id": 1, "name": "Test School"}],
+            "major": [
+                {
+                    "id": self.active_major_1.id,
+                    "name": self.active_major_1.name,
+                    "degree_type": self.active_major_1.degree_type,
+                }
+            ],
+            "school": [{"id": self.school.id, "name": self.school.name}],
         }
 
-        major_to_remove = Major.objects.get(name="Test Active Major 2")
-
-        self.user.student.major.remove(major_to_remove)
+        self.user.student.major.remove(self.active_major_2)
 
         self.assertEqual(self.serializer.data["major"], sample_response["major"])
         self.assertEqual(self.serializer.data["school"], sample_response["school"])
@@ -103,8 +125,16 @@ class StudentSerializerTestCase(TestCase):
     def test_remove_school(self):
         sample_response = {
             "major": [
-                {"id": 1, "name": "Test Active Major", "degree_type": "PROFESSIONAL"},
-                {"id": 2, "name": "Test Active Major 2", "degree_type": "PHD"},
+                {
+                    "id": self.active_major_1.id,
+                    "name": self.active_major_1.name,
+                    "degree_type": self.active_major_1.degree_type,
+                },
+                {
+                    "id": self.active_major_2.id,
+                    "name": self.active_major_2.name,
+                    "degree_type": self.active_major_2.degree_type,
+                },
             ],
             "school": [],
         }
