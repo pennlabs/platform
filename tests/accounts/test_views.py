@@ -3,10 +3,13 @@ import datetime
 from urllib.parse import quote
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
+from rest_framework_api_key.models import APIKey
 
 from accounts.models import User
 from accounts.serializers import UserSearchSerializer, UserSerializer
@@ -194,3 +197,81 @@ class UserSearchTestCase(TestCase):
         response = self.client.get(reverse("accounts:search") + "?q=tes", **self.auth_headers)
         self.assertIn(UserSearchSerializer(self.user1).data, response.json())
         self.assertIn(UserSearchSerializer(self.user2).data, response.json())
+
+
+class ProductAdminViewTestCase(TestCase):
+    def setUp(self):
+        _, self.key = APIKey.objects.create_key(name="my-remote-service")
+        self.authorization = f"Api-Key {self.key}"
+        self.user = User.objects.create(username="test", pennid=123)
+
+    def test_invalid_key(self):
+        authorization = "Api-Key abc"
+        response = self.client.post(
+            reverse("accounts:productadmin"), HTTP_AUTHORIZATION=authorization
+        )
+        self.assertEqual(403, response.status_code)
+
+    def test_invalid_body(self):
+        response = self.client.post(
+            reverse("accounts:productadmin"), HTTP_AUTHORIZATION=self.authorization
+        )
+        self.assertEqual(400, response.status_code)
+
+    def test_remove_product_admin(self):
+        content_type = ContentType.objects.get(app_label="accounts", model="user")
+        perm = Permission.objects.create(
+            content_type=content_type, codename="example_admin", name="Example Admin",
+        )
+        self.user.user_permissions.add(perm)
+        self.assertEqual(1, self.user.user_permissions.count())
+        response = self.client.post(
+            reverse("accounts:productadmin"),
+            {"user2": []},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=self.authorization,
+        )
+        self.assertEqual(200, response.status_code)
+        self.user.refresh_from_db()
+        self.assertEqual(0, self.user.user_permissions.count())
+
+    def test_remove_platform_admin(self):
+        self.user.is_staff = True
+        self.user.is_superuser = True
+        self.user.save()
+        response = self.client.post(
+            reverse("accounts:productadmin"),
+            {"user2": []},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=self.authorization,
+        )
+        self.assertEqual(200, response.status_code)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_staff)
+        self.assertFalse(self.user.is_superuser)
+
+    def test_add_product_admin(self):
+        response = self.client.post(
+            reverse("accounts:productadmin"),
+            {"test": ["example_admin"]},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=self.authorization,
+        )
+        self.assertEqual(200, response.status_code)
+        self.user.refresh_from_db()
+        self.assertEqual(1, self.user.user_permissions.count())
+        perm = self.user.user_permissions.first()
+        self.assertEqual("example_admin", perm.codename)
+        self.assertEqual("example Admin", perm.name)
+
+    def test_add_platform_admin(self):
+        response = self.client.post(
+            reverse("accounts:productadmin"),
+            {"test": ["platform_admin"]},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=self.authorization,
+        )
+        self.assertEqual(200, response.status_code)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_staff)
+        self.assertTrue(self.user.is_superuser)
