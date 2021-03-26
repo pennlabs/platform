@@ -1,14 +1,16 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 import { AddButton, Flex, Indicator, Tag, FormInput, Button, Text } from "../ui";
+import { useOnClickOutside } from "../../useOnClickOutside";
 
-const Dropdown = styled.div`
+const Dropdown = styled.div<{ isVisible: boolean }>`
   position: absolute;
-  left: 12rem;
+  left: 11.8rem;
   top: 1.5rem;
   border-radius: 0.2rem;
   box-shadow: 1px 1px 1px rgba(185, 185, 185, 0.32);
-  display: flex;
+  display: ${(props) => props.isVisible ? "flex" : "none"};
   flex-direction: column;
   z-index: 99;
   background-color: #FFFFFF;
@@ -24,14 +26,18 @@ const DropdownItem = styled.div`
 
   :hover {
     background-color: #EEEEEE;
+    cursor: pointer;
   }
 `;
 
+
 const MoreIndicator = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
   return (
     <>
-      <Indicator src="/more.svg" />
-      <Dropdown>
+      <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
+      <Dropdown ref={ref as any} isVisible={isVisible}>
         <DropdownItem>
           <Text weight="400" size="0.7rem" >
             Set primary
