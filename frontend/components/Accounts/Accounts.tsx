@@ -18,8 +18,8 @@ import {
   Text,
   Break,
   FormGroupHeader,
-  FormInput,
 } from "./ui";
+import { FormikInput } from "./Forms/Input";
 import { ContactType, User } from "../../types";
 import { doApiRequest } from "../../utils/fetch";
 import {
@@ -153,7 +153,10 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     <Text weight="400">Display Name</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={3}>
-                    <FormInput />
+                    <FormikInput
+                      name="displayName"
+                      type="text"
+                    />
                   </FormGroupItem>
                 </FormGroupGrid>
                 <Break />
@@ -198,7 +201,10 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     <Text weight="400">Grad Year</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={3}>
-                    <FormInput />
+                    <FormikInput
+                      name="gradYear"
+                      type="text"
+                    />
                   </FormGroupItem>
                 </FormGroupGrid>
                 <Button margin="1.5rem 0 0 0">

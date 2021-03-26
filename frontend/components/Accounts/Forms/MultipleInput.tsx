@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useField, FieldArray } from "formik";
 
 import { AddButton, Flex, Indicator, Tag, FormInput, Button, Text } from "../ui";
 import { useOnClickOutside } from "../../useOnClickOutside";
@@ -29,6 +30,34 @@ const DropdownItem = styled.div`
     cursor: pointer;
   }
 `;
+
+
+export const MultipleInputs = ({ name }) => {
+  return (
+    <FieldArray name={name}>
+      {({ form, push }) => {
+        return null;
+      }}
+    </FieldArray>
+  )
+}
+
+const FieldInput = ({ baseName, index, fieldName, initialState }) => {
+  const [field, meta] = useField({ name: `${baseName}[${index}]` });
+  const [isEdit, setIsEdit] = useState(initialState);
+
+  if (isEdit) {
+    return (
+      <EditInput {...field} value={field.value[fieldName]} />
+    )
+  } else {
+    return (
+      <ExistingInput {...field} value={field.value[fieldName]} />
+    )
+  }
+
+}
+
 
 
 const MoreIndicator = () => {
