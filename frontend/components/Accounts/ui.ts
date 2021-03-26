@@ -137,7 +137,7 @@ export const Tag = styled.div`
   }
 `;
 
-export const AddButton = styled.button`
+export const AddButton = styled.button<{ marginTop?: string }>`
   background: none!important;
   padding: 0!important;
   border: none;
@@ -145,6 +145,7 @@ export const AddButton = styled.button`
   color: #209CEE;
   font-size: 1rem;
   font-weight: 500;
+  margin-top: ${(props) => props.marginTop};
 `;
 
 export const Button = styled.button<{ margin?: string }>`

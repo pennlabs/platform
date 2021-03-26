@@ -175,7 +175,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   <FormGroupItem col={1} row={2} alignItems="start">
                     <Text weight="400" marginTop="0.5rem">Phone Number</Text>
                   </FormGroupItem>
-                  <FormGroupItem col={2} row={2}>
+                  <FormGroupItem col={2} row={2} alignItems="start">
                     <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
                       <FormikMultipleInputs baseName="phone_numbers" fieldName="phone_number" />
                     </Flex>

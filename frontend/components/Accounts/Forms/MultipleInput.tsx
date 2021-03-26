@@ -3,14 +3,14 @@ import styled from "styled-components";
 import { useField, FieldArray } from "formik";
 
 import {
-  AddButton,
-  Flex,
-  Indicator,
-  Tag,
-  FormInput,
-  Button,
-  Text,
-  Span
+    AddButton,
+    Flex,
+    Indicator,
+    Tag,
+    FormInput,
+    Button,
+    Text,
+    Span,
 } from "../ui";
 import { useOnClickOutside } from "../../useOnClickOutside";
 
@@ -40,110 +40,118 @@ const DropdownItem = styled.div`
 `;
 
 export const FormikMultipleInputs = ({ baseName, fieldName }) => {
-  const [showAdd, setShowAdd] = useState(true);
-  return (
-    <FieldArray name={baseName}>
-      {({ form, push }) => {
-        const addField = () => {
-          push({ [fieldName]: "" });
-        };
-
-        return (
-          <>
-            {form.values[baseName].map(({ id }, index) => (
-              <FieldInput
-                index={index}
-                key={id}
-                baseName={baseName}
-                fieldName={fieldName}
-                onConfirm={() => {
-                  setShowAdd(true);
-                }}
-              />
-            ))}
-            {showAdd && (
-              <AddInput
-                text="Add a phone number"
-                onClick={() => {
-                  addField();
-                  setShowAdd(false);
-                }}
-              />
-            )}
-          </>
-        );
-      }}
-    </FieldArray>
-  );
+    const [showAdd, setShowAdd] = useState(true);
+    return (
+        <FieldArray name={baseName}>
+            {({ form, push }) => {
+                const addField = () => {
+                    push({ [fieldName]: "" });
+                };
+                return (
+                    <>
+                        {form.values[baseName].map(({ id }, index) => (
+                            <FieldInput
+                                index={index}
+                                key={id}
+                                baseName={baseName}
+                                fieldName={fieldName}
+                                onConfirm={() => {
+                                    setShowAdd(true);
+                                }}
+                            />
+                        ))}
+                        {showAdd && (
+                            <AddInput
+                                margin={
+                                    form.values[baseName].length === 0
+                                        ? "0.6rem"
+                                        : undefined
+                                }
+                                text="Add a phone number"
+                                onClick={() => {
+                                    addField();
+                                    setShowAdd(false);
+                                }}
+                            />
+                        )}
+                    </>
+                );
+            }}
+        </FieldArray>
+    );
 };
 
 const FieldInput = ({ index, baseName, fieldName, onConfirm }) => {
-  const [field, meta] = useField({
-    name: `${baseName}[${index}][${fieldName}]`,
-  });
-  const [isEdit, setIsEdit] = useState(field.value.length === 0);
+    const [field, meta] = useField({
+        name: `${baseName}[${index}][${fieldName}]`,
+    });
+    const [isEdit, setIsEdit] = useState(field.value.length === 0);
 
-  if (isEdit) {
-    return (
-      <EditInput
-        {...field}
-        onConfirm={() => {
-          onConfirm();
-          setIsEdit(false);
-        }}
-      />
-    );
-  } else {
-    return <ExistingInput text={field.value} />;
-  }
+    if (isEdit) {
+        return (
+            <EditInput
+                {...field}
+                onConfirm={() => {
+                    onConfirm();
+                    setIsEdit(false);
+                }}
+            />
+        );
+    } else {
+        return <ExistingInput text={field.value} />;
+    }
 };
 
 const MoreIndicator = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
-  return (
-    <>
-      <Span position="relative">
-        <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
-        <Dropdown ref={ref as any} isVisible={isVisible}>
-          <DropdownItem>
-            <Text weight="400" size="0.7rem">
-              Set primary
-                    </Text>
-          </DropdownItem>
-          <DropdownItem>
-            <Text weight="400" size="0.7rem">
-              Remove
-                    </Text>
-          </DropdownItem>
-        </Dropdown>
-      </Span>
-    </>
-  );
+    const [isVisible, setIsVisible] = useState(false);
+    const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
+    return (
+        <>
+            <Span position="relative">
+                <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
+                <Dropdown ref={ref as any} isVisible={isVisible}>
+                    <DropdownItem>
+                        <Text weight="400" size="0.7rem">
+                            Set primary
+                        </Text>
+                    </DropdownItem>
+                    <DropdownItem>
+                        <Text weight="400" size="0.7rem">
+                            Remove
+                        </Text>
+                    </DropdownItem>
+                </Dropdown>
+            </Span>
+        </>
+    );
 };
 
 export const ExistingInput = ({ text }) => {
-  return (
-    <Flex childMargin="0.2rem">
-      <Indicator src="/greentick.png" />
-      <span>{text}</span>
-      <Tag>
-        <span>PRIMARY</span>
-      </Tag>
-      <MoreIndicator />
-    </Flex>
-  );
+    return (
+        <Flex childMargin="0.2rem">
+            <Indicator src="/greentick.png" />
+            <span>{text}</span>
+            <Tag>
+                <span>PRIMARY</span>
+            </Tag>
+            <MoreIndicator />
+        </Flex>
+    );
 };
 
-export const AddInput = ({ text, onClick }) => {
-  return <AddButton onClick={onClick}>{text}</AddButton>;
+export const AddInput = ({ text, onClick, margin }) => {
+    return (
+        <AddButton onClick={onClick} marginTop={margin}>
+            {text}
+        </AddButton>
+    );
 };
 
 export const EditInput = ({ onConfirm, ...field }) => {
-  return (
-    <Flex childMargin="0.2rem" width="100%">
-      <FormInput height="2rem" {...field} />
-      <Button onClick={onConfirm}>Confirm</Button>
-    </Flex>
-  );
+    return (
+        <Flex childMargin="0.2rem" width="100%">
+            <FormInput height="2rem" {...field} />
+            <Button onClick={onConfirm}>Confirm</Button>
+        </Flex>
+    );
 };
