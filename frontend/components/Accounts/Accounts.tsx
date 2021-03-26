@@ -20,6 +20,7 @@ import {
   FormGroupHeader,
 } from "./ui";
 import { FormikInput } from "./Forms/Input";
+import { FormikMultipleInputs } from "./Forms/MultipleInput";
 import { ContactType, User } from "../../types";
 import { doApiRequest } from "../../utils/fetch";
 import {
@@ -171,11 +172,13 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                       <EditInput />
                     </Flex>
                   </FormGroupItem>
-                  <FormGroupItem col={1} row={2}>
-                    <Text weight="400">Phone Number</Text>
+                  <FormGroupItem col={1} row={2} alignItems="start">
+                    <Text weight="400" marginTop="0.5rem">Phone Number</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={2}>
-                    <AddInput text="Add a phone number" />
+                    <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
+                      <FormikMultipleInputs baseName="phone_numbers" fieldName="phone_number" />
+                    </Flex>
                   </FormGroupItem>
                 </FormGroupGrid>
                 <Break />
