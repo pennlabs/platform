@@ -24,6 +24,10 @@ export const Flex = styled.div<FlexProps>`
   }
 `;
 
+export const Span = styled.div<{ position?: string }>`
+  position: ${(props) => props.position};
+`;
+
 
 export const RootContainer = styled.div`
   display: flex;
