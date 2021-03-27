@@ -221,7 +221,7 @@ class ProductAdminViewTestCase(TestCase):
     def test_remove_product_admin(self):
         content_type = ContentType.objects.get(app_label="accounts", model="user")
         perm = Permission.objects.create(
-            content_type=content_type, codename="example_admin", name="Example Admin",
+            content_type=content_type, codename="example_admin", name="Example Admin"
         )
         self.user.user_permissions.add(perm)
         self.assertEqual(1, self.user.user_permissions.count())
@@ -253,7 +253,7 @@ class ProductAdminViewTestCase(TestCase):
     def test_add_product_admin(self):
         response = self.client.post(
             reverse("accounts:productadmin"),
-            {"test": ["example_admin"]},
+            {"test": ["example_product_admin"]},
             content_type="application/json",
             HTTP_AUTHORIZATION=self.authorization,
         )
@@ -261,8 +261,8 @@ class ProductAdminViewTestCase(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(1, self.user.user_permissions.count())
         perm = self.user.user_permissions.first()
-        self.assertEqual("example_admin", perm.codename)
-        self.assertEqual("example Admin", perm.name)
+        self.assertEqual("example_product_admin", perm.codename)
+        self.assertEqual("Example Product Admin", perm.name)
 
     def test_add_platform_admin(self):
         response = self.client.post(
