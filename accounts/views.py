@@ -213,8 +213,8 @@ class ProductAdminView(APIView):
                         user.is_staff = True
                         user.save()
                         continue
-
-                    permission_name = f"{permission_slug[:-6]} Admin"
+                    product_name = permission_slug[:-6].replace("_", " ").title()
+                    permission_name = f"{product_name} Admin"
                     permission, _ = Permission.objects.get_or_create(
                         content_type=content_type,
                         codename=permission_slug,
