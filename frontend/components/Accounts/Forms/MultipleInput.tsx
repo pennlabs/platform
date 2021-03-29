@@ -45,7 +45,12 @@ export const FormikMultipleInputs = ({ baseName, fieldName, addText }) => {
     <FieldArray name={baseName}>
       {({ form, push, remove }) => {
         const addField = () => {
-          push({ [fieldName]: "" });
+          if (form.values[baseName].length === 0) {
+            push({ [fieldName]: "", primary: true });
+          } else {
+            push({ [fieldName]: "", primary: false });
+          }
+
         };
         const delField = (index) => {
           remove(index);
@@ -86,15 +91,18 @@ export const FormikMultipleInputs = ({ baseName, fieldName, addText }) => {
 };
 
 const FieldInput = ({ index, baseName, fieldName, onConfirm, delField }) => {
-  const [field, meta] = useField({
+  const [textField] = useField({
     name: `${baseName}[${index}][${fieldName}]`,
   });
-  const [isEdit, setIsEdit] = useState(field.value.length === 0);
+  const [fullField] = useField({
+    name: `${baseName}[${index}]`,
+  });
+  const [isEdit, setIsEdit] = useState(textField.value.length === 0);
 
   if (isEdit) {
     return (
       <EditInput
-        {...field}
+        {...textField}
         onConfirm={() => {
           onConfirm();
           setIsEdit(false);
@@ -102,7 +110,12 @@ const FieldInput = ({ index, baseName, fieldName, onConfirm, delField }) => {
       />
     );
   } else {
-    return <ExistingInput text={field.value} onDelete={() => delField(index)} />;
+    return <ExistingInput
+      text={textField.value}
+      onDelete={() => delField(index)}
+      isPrimary={fullField.value.primary}
+      isVerified={fullField.value.verified}
+    />;
   }
 };
 
@@ -130,14 +143,20 @@ const MoreIndicator = ({ onDelete }) => {
   );
 };
 
-export const ExistingInput = ({ text, onDelete }) => {
+export const ExistingInput = ({ text, onDelete, isPrimary, isVerified }) => {
   return (
     <Flex childMargin="0.2rem">
-      <Indicator src="/greentick.png" />
+      {
+        isVerified &&
+        <Indicator src="/greentick.png" />
+      }
       <span>{text}</span>
-      <Tag>
-        <span>PRIMARY</span>
-      </Tag>
+      {
+        isPrimary &&
+        <Tag>
+          <span>PRIMARY</span>
+        </Tag>
+      }
       <MoreIndicator onDelete={onDelete} />
     </Flex>
   );
