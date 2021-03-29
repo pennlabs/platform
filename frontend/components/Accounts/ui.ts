@@ -118,6 +118,7 @@ export const FormInput = styled.input<{ height?: string }>`
 export const Indicator = styled.img`
   width: 1rem;
   padding-top: 0.1rem;
+  cursor: pointer;
 `;
 
 export const Tag = styled.div`

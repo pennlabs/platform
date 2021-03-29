@@ -21,17 +21,16 @@ import {
 } from "./ui";
 import { FormikInput } from "./Forms/Input";
 import { FormikMultipleInputs } from "./Forms/MultipleInput";
+import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
 import { doApiRequest } from "../../utils/fetch";
 import {
   createContact,
   generateLoadOption,
 } from "../../data-fetching/accounts";
-import SelectField from "./SelectField";
 import VerificationModal from "./Verification/VerificationModal";
 import { logException } from "../../utils/sentry";
 import DeleteModal from "./DeleteModal";
-import { AddInput, ExistingInput, EditInput } from "./Forms/MultipleInput";
 
 interface ContactMethodState {
   type: ContactType;
@@ -166,10 +165,10 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   <FormGroupItem col={1} row={1} alignItems="start">
                     <Text weight="400" marginTop="0.5rem">Email</Text>
                   </FormGroupItem>
-                  <FormGroupItem col={2} row={1}>
+                  <FormGroupItem col={2} row={1} alignItems="start">
                     <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
-                      <ExistingInput text="abc@gmail.com" />
-                      <EditInput />
+                      <FormikMultipleInputs baseName="emails" fieldName="email"
+                        addText="Add another email address" />
                     </Flex>
                   </FormGroupItem>
                   <FormGroupItem col={1} row={2} alignItems="start">
@@ -177,7 +176,8 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   </FormGroupItem>
                   <FormGroupItem col={2} row={2} alignItems="start">
                     <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
-                      <FormikMultipleInputs baseName="phone_numbers" fieldName="phone_number" />
+                      <FormikMultipleInputs baseName="phone_numbers" fieldName="phone_number"
+                        addText="Add a phone number" />
                     </Flex>
                   </FormGroupItem>
                 </FormGroupGrid>
@@ -188,16 +188,18 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                     <Text weight="400">School(s)</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={1}>
-                    <AsyncSelect
-                      styles={selectStyles}
+                    <FormikSelectInput
+                      route="/accounts/schools/"
+                      fieldName="student.school"
                     />
                   </FormGroupItem>
                   <FormGroupItem col={1} row={2}>
                     <Text weight="400">Major(s)</Text>
                   </FormGroupItem>
                   <FormGroupItem col={2} row={2}>
-                    <AsyncSelect
-                      styles={selectStyles}
+                    <FormikSelectInput
+                      route="/accounts/majors/"
+                      fieldName="student.major"
                     />
                   </FormGroupItem>
                   <FormGroupItem col={1} row={3}>
