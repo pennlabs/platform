@@ -123,7 +123,7 @@ class EmailSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
     # SerializerMethodFields are read_only
     first_name = serializers.CharField(source="get_preferred_name", required=False)
     groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
@@ -162,6 +162,7 @@ class UserSerializer(serializers.ModelSerializer):
             "product_permission",
             "user_permissions",
         )
+        save_related_fields = ["emails", "phone_numbers"]
 
     # Users are pulled from Penn DB, so come with no preferred
     # name. Thus, this logic only needs to happen on update.
