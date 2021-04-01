@@ -121,11 +121,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
             <Formik
               initialValues={user}
               onSubmit={(values, actions) => {
-                // TODO: use mutate instead of explicit doApiRequest?
-                doApiRequest("/accounts/me/", {
-                  method: "PATCH",
-                  body: values,
-                }).catch((err) => console.log(err));
+                mutate(values)
                 // TODO: better error checking (toast?)
                 console.log({ values, actions });
                 actions.setSubmitting(false);
@@ -154,7 +150,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   </FormGroupItem>
                   <FormGroupItem col={2} row={3}>
                     <FormikInput
-                      name="displayName"
+                      fieldName="first_name"
                       type="text"
                     />
                   </FormGroupItem>
@@ -167,7 +163,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   </FormGroupItem>
                   <FormGroupItem col={2} row={1} alignItems="start">
                     <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
-                      <FormikMultipleInputs baseName="emails" fieldName="email"
+                      <FormikMultipleInputs baseName="emails" fieldName="value"
                         addText="Add another email address" />
                     </Flex>
                   </FormGroupItem>
@@ -176,7 +172,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   </FormGroupItem>
                   <FormGroupItem col={2} row={2} alignItems="start">
                     <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
-                      <FormikMultipleInputs baseName="phone_numbers" fieldName="phone_number"
+                      <FormikMultipleInputs baseName="phone_numbers" fieldName="value"
                         addText="Add a phone number" />
                     </Flex>
                   </FormGroupItem>
@@ -207,7 +203,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   </FormGroupItem>
                   <FormGroupItem col={2} row={3}>
                     <FormikInput
-                      name="gradYear"
+                      fieldName="student.graduation_year"
                       type="text"
                     />
                   </FormGroupItem>

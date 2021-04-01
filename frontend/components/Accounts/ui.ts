@@ -163,6 +163,6 @@ export const Button = styled.button<{ margin?: string }>`
 
 export const selectStyles = {
   container: (base) => ({
-    ...base, width: "100%"
+    ...base, width: "100%", padding: "0.5rem 0 0.5rem 0"
   })
 };

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import Select from "react-select";
 import { useResourceList } from "@pennlabs/rest-hooks";
-import { FieldArray } from "formik";
+import { useField, FieldArray } from "formik";
 import { selectStyles } from "../ui";
 
 
@@ -16,6 +16,7 @@ const toSelectOptions = (options) => (
 
 export const FormikSelectInput = ({ route, fieldName }) => {
   const { data: rawData } = useResourceList<SelectOption>(route, (id) => `${route}/${id}`);
+  const [field, meta, helper] = useField(fieldName);
   const data = rawData || [];
 
   const options = useMemo(() => {
@@ -24,8 +25,8 @@ export const FormikSelectInput = ({ route, fieldName }) => {
 
   return (
     <FieldArray name={fieldName}>
-      {({ form, push, remove }) => {
-        const values = form.values[fieldName] || [];
+      {({ push, remove }) => {
+        const values = field.value || [];
         return (
           <Select
             defaultOptions
@@ -33,11 +34,13 @@ export const FormikSelectInput = ({ route, fieldName }) => {
             styles={selectStyles}
             options={options}
             value={toSelectOptions(values)}
-            onChange={(_, { action, option }) => {
+            onChange={(_, { action, option, removedValue }) => {
               if (action === "select-option") {
                 push(data.filter((obj) => obj.name === option.value)[0]);
               } else if (action === "remove-value") {
-                remove(values.findIndex((obj) => obj.name === option.value));
+                remove(values.findIndex((obj) => obj.name === removedValue.value));
+              } else if (action === "clear") {
+                helper.setValue([]);
               }
             }}
           />
