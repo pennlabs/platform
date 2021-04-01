@@ -162,7 +162,10 @@ class UserSerializer(ManyToManySaveMixin, serializers.ModelSerializer):
             "product_permission",
             "user_permissions",
         )
-        save_related_fields = ["emails", "phone_numbers"]
+        save_related_fields = [
+            {"field": "emails", "mode": None},
+            {"field": "phone_numbers", "mode": "create"},
+        ]
 
     # Users are pulled from Penn DB, so come with no preferred
     # name. Thus, this logic only needs to happen on update.
