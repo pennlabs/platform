@@ -39,7 +39,7 @@ class AttestTestCase(TestCase):
         content = response.json()
         self.assertIsInstance(content, dict)
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        expected_urn = "urn:pennlabs.org:test-application"
+        expected_urn = "urn:pennlabs:test-application"
         access_jwt = jwt.JWT(key=self.key, jwt=content["access"])
         refresh_jwt = jwt.JWT(key=self.key, jwt=content["refresh"])
         access_claims = json.loads(access_jwt.claims)
@@ -96,7 +96,7 @@ class RefreshTestCase(TestCase):
     def setUp(self):
         self.key = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
         self.client = Client()
-        self.urn = "oh:whaddup"
+        self.urn = "urn:random:product"
 
     def test_valid_refresh(self):
         now = time.time()

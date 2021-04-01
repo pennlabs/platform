@@ -40,8 +40,8 @@ class AttestView(OAuthLibMixin, View):
 
         # pulls out name as recorded in DOT application database
         local_name = slugify(request.client.name)
-        # example urn: `urn:pennlabs.org:ohq`
-        urn = f"urn:pennlabs.org:{local_name}"
+        # example urn: `urn:pennlabs:platform`
+        urn = f"urn:pennlabs:{local_name}"
         return JsonResponse(
             data={
                 "access": mint_access_jwt(ID_PRIVATE_KEY, urn).serialize(),
