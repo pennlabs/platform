@@ -6,32 +6,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from accounts.admin import MajorAdmin, SchoolAdmin, StudentAdmin
-from accounts.models import Major, School, Student, User
-
-
-class MajorAdminTestCase(TestCase):
-    def setUp(self):
-        self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
-        self.major_inactive = Major.objects.create(name="Test Inactive Major", is_active=False)
-
-        self.major_admin = MajorAdmin(Major, AdminSite())
-
-    def test_major_active(self):
-        self.assertEqual(self.major_admin.name(self.major_active), self.major_active.name)
-
-    def test_major_inactive(self):
-        self.assertEqual(self.major_admin.name(self.major_inactive), self.major_inactive.name)
-
-
-class SchoolAdminTestCase(TestCase):
-    def setUp(self):
-        self.school1 = School.objects.create(name="Test School")
-
-        self.school_admin = SchoolAdmin(School, AdminSite())
-
-    def test_school(self):
-        self.assertEqual(self.school_admin.name(self.school1), self.school1.name)
+from accounts.admin import StudentAdmin
+from accounts.models import Student, User
 
 
 class StudentAdminTestCase(TestCase):

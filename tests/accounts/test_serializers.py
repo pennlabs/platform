@@ -1,5 +1,4 @@
 import datetime
-import json
 
 import pytz
 from django.contrib.auth import get_user_model
@@ -16,7 +15,6 @@ from accounts.serializers import (
     StudentSerializer,
     UserSearchSerializer,
     UserSerializer,
-    UserSerializer2,
 )
 
 
@@ -202,63 +200,6 @@ class UserSerializerTestCase(TestCase):
         serializer.save()
         self.assertEqual(self.user_preferred_name.preferred_name, "")
         self.assertEqual(self.user_preferred_name.first_name, "First2")
-
-
-class UserSerializer2TestCase(TestCase):
-    def setUp(self):
-        self.date = pytz.timezone("America/New_York").localize(datetime.datetime(2019, 1, 1))
-
-        self.user = get_user_model().objects.create_user(
-            pennid=1,
-            username="student",
-            password="secret",
-            first_name="First",
-            last_name="Last",
-            email="test@test.com",
-        )
-        Major.objects.create(name="Test Active Major", is_active=True)
-        School.objects.create(name="Test School")
-        self.student = StudentSerializer(Student.objects.create(user=self.user))
-
-        # print(json.dumps(self.student.data, indent=4))
-
-        self.serializer = UserSerializer2(self.user)
-
-        self.user.student.major.add(Major.objects.get(name="Test Active Major"))
-        self.user.student.school.add(School.objects.get(name="Test School"))
-        self.user.student.graduation_year = 2024
-
-    def test_str_no_preferred_name(self):
-        sample_response = {
-            "pennid": 1,
-            "first_name": "First",
-            "last_name": "Last",
-            "username": "student",
-            "email": "test@test.com",
-            "groups": [],
-            "student": {"major": ["Test Active Major"], "school": ["Test School"]},
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-
-        print(json.dumps(self.serializer.data, indent=4))
-        self.assertEqual(self.serializer.data, sample_response)
-
-    def test_update_major(self):
-        sample_response = {
-            "pennid": 1,
-            "first_name": "First",
-            "last_name": "Last",
-            "username": "student",
-            "email": "test@test.com",
-            "groups": [],
-            "student": {"major": ["Test Active Major"], "school": ["Test School"], },
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-
-        print(json.dumps(self.serializer.data, indent=4))
-        self.assertEqual(self.serializer.data, sample_response)
 
 
 class UserSearchSerializerTestCase(TestCase):
