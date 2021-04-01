@@ -35,6 +35,7 @@ django-email-tools = "*"
 twilio = "*"
 phonenumbers = "*"
 lxml = "*"
+requests = "*"
 
 [requires]
 python_version = "3"

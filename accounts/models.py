@@ -12,10 +12,10 @@ class School(models.Model):
     Represents a school at the University of Pennsylvania.
     """
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class Major(models.Model):
@@ -42,10 +42,13 @@ class Major(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class User(AbstractUser):
+
+    # implicit username, email, first_name, and last_name fields
+    # from AbstractUser that contains the user's PennKey
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
@@ -67,9 +70,9 @@ class Student(models.Model):
     user = models.OneToOneField(
         get_user_model(), related_name="student", on_delete=models.DO_NOTHING
     )
-    major = models.ManyToManyField(Major)
-    school = models.ManyToManyField(School)
-    graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)])
+    major = models.ManyToManyField(Major, null=True, blank=True)
+    school = models.ManyToManyField(School, null=True, blank=True)
+    graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)], null=True)
 
     def __str__(self):
         return f"{self.user.username}"
@@ -77,25 +80,25 @@ class Student(models.Model):
 
 class Email(models.Model):
     user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.CASCADE)
-    email = models.EmailField()
+    value = models.EmailField()
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
     verification_timestamp = models.DateTimeField(blank=True, null=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user} - {self.email}"
+        return f"{self.user} - {self.value}"
 
 
 class PhoneNumberModel(models.Model):
     user = models.ForeignKey(
         get_user_model(), related_name="phone_numbers", on_delete=models.CASCADE
     )
-    phone_number = PhoneNumberField(unique=True, blank=True, default=None)
+    value = PhoneNumberField(unique=True, blank=True, default=None)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
     verification_timestamp = models.DateTimeField(blank=True, null=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user} - {self.phone_number}"
+        return f"{self.user} - {self.value}"

@@ -32,24 +32,34 @@ class SchoolSerializerTestCase(TestCase):
         self.serializer = SchoolSerializer(self.school)
 
     def test_active_major(self):
-        sample_response = {"name": "Test School"}
+        sample_response = {"id": self.school.id, "name": self.school.name}
         self.assertEqual(self.serializer.data, sample_response)
 
 
 class MajorSerializerTestCase(TestCase):
     def setUp(self):
         self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
-        self.major_inactive = Major.objects.create(name="Test Inactive Major", is_active=False)
+        self.major_inactive = Major.objects.create(
+            name="Test Inactive Major", degree_type="PHD", is_active=False
+        )
 
         self.serializer_active = MajorSerializer(self.major_active)
         self.serializer_inactive = MajorSerializer(self.major_inactive)
 
     def test_active_major(self):
-        sample_response = {"name": "Test Active Major"}
+        sample_response = {
+            "id": self.major_active.id,
+            "name": self.major_active.name,
+            "degree_type": self.major_active.degree_type,
+        }
         self.assertEqual(self.serializer_active.data, sample_response)
 
     def test_inactive_major(self):
-        sample_response = {"name": "Test Inactive Major"}
+        sample_response = {
+            "id": self.major_inactive.id,
+            "name": self.major_inactive.name,
+            "degree_type": self.major_inactive.degree_type,
+        }
         self.assertEqual(self.serializer_inactive.data, sample_response)
 
 
@@ -64,10 +74,12 @@ class StudentSerializerTestCase(TestCase):
             last_name="Last",
             email="test@test.com",
         )
-        Major.objects.create(name="Test Active Major", is_active=True)
-        Major.objects.create(name="Test Active Major 2", is_active=True)
+        self.active_major_1 = Major.objects.create(name="Test Active Major", is_active=True)
+        self.active_major_2 = Major.objects.create(
+            name="Test Active Major 2", degree_type="PHD", is_active=True
+        )
 
-        School.objects.create(name="Test School")
+        self.school = School.objects.create(name="Test School")
 
         Student.objects.create(user=self.user)
         self.user.student.major.add(Major.objects.get(name="Test Active Major"))
@@ -77,42 +89,64 @@ class StudentSerializerTestCase(TestCase):
 
     def test_two_majors(self):
         sample_response = {
-            "major": ["Test Active Major", "Test Active Major 2"],
-            "school": ["Test School"],
+            "major": [
+                {
+                    "id": self.active_major_1.id,
+                    "name": self.active_major_1.name,
+                    "degree_type": self.active_major_1.degree_type,
+                },
+                {
+                    "id": self.active_major_2.id,
+                    "name": self.active_major_2.name,
+                    "degree_type": self.active_major_2.degree_type,
+                },
+            ],
+            "school": [{"id": self.school.id, "name": self.school.name}],
         }
 
-        # print(json.dumps(self.serializer.data, indent=4))
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["major"], sample_response["major"])
+        self.assertEqual(self.serializer.data["school"], sample_response["school"])
 
     def test_remove_major(self):
-        sample_response = {"major": ["Test Active Major"], "school": ["Test School"]}
+        sample_response = {
+            "major": [
+                {
+                    "id": self.active_major_1.id,
+                    "name": self.active_major_1.name,
+                    "degree_type": self.active_major_1.degree_type,
+                }
+            ],
+            "school": [{"id": self.school.id, "name": self.school.name}],
+        }
 
-        major_to_remove = Major.objects.get(name="Test Active Major 2")
+        self.user.student.major.remove(self.active_major_2)
 
-        self.user.student.major.remove(major_to_remove)
-        # print(json.dumps(self.serializer.data, indent=4))
-
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["major"], sample_response["major"])
+        self.assertEqual(self.serializer.data["school"], sample_response["school"])
 
     def test_remove_school(self):
-        sample_response = {"major": ["Test Active Major", "Test Active Major 2"], "school": []}
+        sample_response = {
+            "major": [
+                {
+                    "id": self.active_major_1.id,
+                    "name": self.active_major_1.name,
+                    "degree_type": self.active_major_1.degree_type,
+                },
+                {
+                    "id": self.active_major_2.id,
+                    "name": self.active_major_2.name,
+                    "degree_type": self.active_major_2.degree_type,
+                },
+            ],
+            "school": [],
+        }
 
         school_to_remove = School.objects.get(name="Test School")
 
         self.user.student.school.remove(school_to_remove)
-        print(json.dumps(self.serializer.data, indent=4))
 
-        self.assertEqual(self.serializer.data, sample_response)
-
-    def test_remove_nonexistent_major(self):
-        sample_response = {
-            "major": ["Test Active Major", "Test Active Major Non Existent"],
-            "school": ["Test School"],
-        }
-
-        print(json.dumps(self.serializer.data, indent=4))
-
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["major"], sample_response["major"])
+        self.assertEqual(self.serializer.data["school"], sample_response["school"])
 
 
 class UserSerializerTestCase(TestCase):
@@ -140,36 +174,18 @@ class UserSerializerTestCase(TestCase):
         self.serializer_preferred_name = UserSerializer(self.user_preferred_name)
 
     def test_str_no_preferred_name(self):
-        sample_response = {
-            "pennid": 1,
-            "first_name": "First",
-            "last_name": "Last",
-            "username": "student",
-            "email": "test@test.com",
-            "groups": [],
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-        self.assertEqual(self.serializer.data, sample_response)
+        self.assertEqual(self.serializer.data["first_name"], "First")
+        self.assertEqual(self.serializer.data["last_name"], "Last")
 
     def test_str_preferred_name_provided(self):
-        sample_response = {
-            "pennid": 2,
-            "first_name": "Preferred",
-            "last_name": "Last2",
-            "username": "student2",
-            "email": "test2@test.com",
-            "groups": [],
-            "user_permissions": [],
-            "product_permission": [],  # TODO: remove this after migrating to permissions in DLA
-        }
-        self.assertEqual(self.serializer_preferred_name.data, sample_response)
+        self.assertEqual(self.serializer_preferred_name.data["first_name"], "Preferred")
+        self.assertEqual(self.serializer_preferred_name.data["last_name"], "Last2")
 
     def test_update_preferred_valid_name(self):
         data = {
             "first_name": "new_preferred",
         }
-        serializer = UserSerializer(self.user, data=data)
+        serializer = UserSerializer(self.user, data=data, partial=True)
 
         self.assertTrue(serializer.is_valid())
         serializer.save()
@@ -180,7 +196,7 @@ class UserSerializerTestCase(TestCase):
         data = {
             "first_name": "First2",
         }
-        serializer = UserSerializer(self.user_preferred_name, data=data)
+        serializer = UserSerializer(self.user_preferred_name, data=data, partial=True)
 
         self.assertTrue(serializer.is_valid())
         serializer.save()
@@ -340,7 +356,7 @@ class PhoneNumberSerializerTestCase(TestCase):
 
         self.number1 = PhoneNumberModel.objects.create(
             user=self.user,
-            phone_number="+12150001111",
+            value="+12150001111",
             primary=False,
             verified=False,
             verification_code="123456",
@@ -348,17 +364,17 @@ class PhoneNumberSerializerTestCase(TestCase):
         )
 
         self.number2 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+12058869999", primary=True,
+            user=self.user, value="+12058869999", primary=True,
         )
 
         self.number3 = PhoneNumberModel.objects.create(
-            user=self.user, phone_number="+16170031234", primary=False,
+            user=self.user, value="+16170031234", primary=False,
         )
 
     def test_create(self):
         # If this is your phone number I'm sorry
         data = {
-            "phone_number": "+12154729463",
+            "value": "+12154729463",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -374,7 +390,7 @@ class PhoneNumberSerializerTestCase(TestCase):
 
     def test_create_same_phone(self):
         data = {
-            "phone_number": "+12150001111",
+            "value": "+12150001111",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -429,7 +445,7 @@ class PhoneNumberSerializerTestCase(TestCase):
 
     def test_verification_timeout(self):
         data = {
-            "phone_number": "+12154729463",
+            "value": "+12154729463",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -466,13 +482,13 @@ class EmailSerializerTestCase(TestCase):
         )
         self.email1 = Email.objects.create(
             user=self.user,
-            email="example@test.com",
+            value="example@test.com",
             primary=True,
             verification_timestamp=timezone.now(),
         )
         self.email2 = Email.objects.create(
             user=self.user,
-            email="example2@test.com",
+            value="example2@test.com",
             primary=False,
             verification_code="123456",
             verification_timestamp=timezone.now(),
@@ -480,7 +496,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_create(self):
         data = {
-            "email": "test@example.com",
+            "value": "test@example.com",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -495,7 +511,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_update_verified(self):
         data = {
-            "email": "example2@test.com",
+            "value": "example2@test.com",
             "verification_code": "123456",
         }
         serializer = EmailSerializer(
@@ -508,7 +524,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_update_unverified(self):
         data = {
-            "email": "example2@test.com",
+            "value": "example2@test.com",
             "verification_code": "000123",
         }
         serializer = EmailSerializer(
@@ -524,7 +540,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_update_primary(self):
         data = {
-            "email": "example2@test.com",
+            "value": "example2@test.com",
             "primary": True,
         }
         serializer = EmailSerializer(
@@ -542,7 +558,7 @@ class EmailSerializerTestCase(TestCase):
 
     def test_verification_timeout(self):
         data = {
-            "email": "test@example.com",
+            "value": "test@example.com",
             "primary": True,
             "verified": True,
             "verification_code": "000000",
@@ -556,7 +572,7 @@ class EmailSerializerTestCase(TestCase):
         )
         email.verification_code = "000000"
         data = {
-            "email": "test@example.com",
+            "value": "test@example.com",
             "verification_code": "000000",
         }
         serializer = EmailSerializer(email, data=data, context={"request": FakeRequest(self.user)})
