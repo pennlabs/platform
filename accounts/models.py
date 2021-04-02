@@ -90,7 +90,7 @@ class Email(models.Model):
         return f"{self.user} - {self.value}"
 
 
-class PhoneNumberModel(models.Model):
+class PhoneNumber(models.Model):
     user = models.ForeignKey(
         get_user_model(), related_name="phone_numbers", on_delete=models.CASCADE
     )

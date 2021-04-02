@@ -10,7 +10,7 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 
-from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
+from accounts.models import Email, Major, PhoneNumber, School, Student, User
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
@@ -344,20 +344,20 @@ class PhoneNumberViewTestCase(TestCase):
             pennid=1, username="test1", first_name="first1", last_name="last1"
         )
 
-        self.number1 = PhoneNumberModel.objects.create(
+        self.number1 = PhoneNumber.objects.create(
             user=self.user, value="+12150001111", primary=False, verified=False,
         )
-        self.number2 = PhoneNumberModel.objects.create(
+        self.number2 = PhoneNumber.objects.create(
             user=self.user, value="+12058869999", primary=True, verified=True,
         )
-        self.number3 = PhoneNumberModel.objects.create(
+        self.number3 = PhoneNumber.objects.create(
             user=self.user, value="+16170031234", primary=False, verified=True,
         )
 
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2",
         )
-        self.number4 = PhoneNumberModel.objects.create(
+        self.number4 = PhoneNumber.objects.create(
             user=self.user2, value="+12158989000", primary=True, verified=True,
         )
 

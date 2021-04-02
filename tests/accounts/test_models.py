@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from accounts.models import Email, Major, PhoneNumberModel, School, Student
+from accounts.models import Email, Major, PhoneNumber, School, Student
 
 
 class MajorModelTestCase(TestCase):
@@ -70,7 +70,7 @@ class PhoneNumberModelTestCase(TestCase):
         )
 
         self.phone_number = "+15550000000"
-        self.number = PhoneNumberModel.objects.create(
+        self.number = PhoneNumber.objects.create(
             user=self.user, value=self.phone_number, primary=True, verified=False
         )
 
