@@ -36,7 +36,9 @@ class AttestView(OAuthLibMixin, View):
             request, *args, **kwargs
         )
         if not authenticated:
-            return JsonResponse(data={"error": "unauthenticated"}, status=HTTPStatus.UNAUTHORIZED)
+            return JsonResponse(
+                data={"detail": "Missing or invalid credentials."}, status=HTTPStatus.UNAUTHORIZED
+            )
 
         # pulls out name as recorded in DOT application database
         local_name = slugify(request.client.name)
@@ -82,12 +84,13 @@ class RefreshJWTView(View):
         auth_header = request.META.get("HTTP_AUTHORIZATION")
         if auth_header is None:
             return JsonResponse(
-                data={"error": "no authorization provided"}, status=HTTPStatus.UNAUTHORIZED,
+                data={"detail": "Authentication credentials were not provided."},
+                status=HTTPStatus.UNAUTHORIZED,
             )
         split_header = auth_header.split(" ")
         if len(split_header) < 2 or split_header[0] != "Bearer":
             return JsonResponse(
-                data={"error": "please provide authorization with bearer token"},
+                data={"detail": "No Bearer token present in Authorization header."},
                 status=HTTPStatus.UNAUTHORIZED,
             )
         try:
@@ -97,7 +100,7 @@ class RefreshJWTView(View):
             claims = json.loads(refresh_jwt.claims)
             if "use" not in claims or claims["use"] != "refresh":
                 return JsonResponse(
-                    data={"error": "must provide use -> refresh claim"},
+                    data={"detail": "Invalid JWT. Must provide a valid refresh JWT."},
                     status=HTTPStatus.BAD_REQUEST,
                 )
             urn = claims["sub"]
@@ -105,6 +108,5 @@ class RefreshJWTView(View):
             return JsonResponse(data={"access": new_access_jwt.serialize()})
         except Exception as e:
             return JsonResponse(
-                data={"error": f"failure validating refresh jwt: {e}"},
-                status=HTTPStatus.BAD_REQUEST,
+                data={"detail": f"Invalid JWT: {e}"}, status=HTTPStatus.BAD_REQUEST,
             )
