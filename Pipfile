@@ -33,7 +33,6 @@ django-runtime-options = "*"
 django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
 django-email-tools = "*"
 twilio = "*"
-phonenumbers = "*"
 lxml = "*"
 requests = "*"
 
