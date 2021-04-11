@@ -38,6 +38,13 @@ interface ContactMethodState {
   contact: string;
 }
 
+const selectFields = (form: User) => (
+  {
+    first_name: form.first_name,
+    student: form.student
+  }
+)
+
 const Accounts = ({ user: initialUser }: { user: User }) => {
   // User State
   const { data: userPartial, mutate } = useResource<User>("/accounts/me/", {
@@ -63,26 +70,6 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
     }
   };
 
-  // Contact Method manipulation
-  const addContactMethod = async (props: {
-    type: ContactType;
-    value: string;
-  }) => {
-    const { type, value } = props;
-    try {
-      await createContact(type, value);
-      mutate();
-    } catch (e) {
-      logException(e);
-      // TODO: toast
-    }
-  };
-
-  // Delete contact method state + functions
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-  const [deleteState, setDeleteState] = useState<
-    ContactMethodState | undefined
-  >(undefined);
 
   return (
     <RootContainer>
@@ -107,21 +94,11 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                 }
               />
             )}
-            {deleteState && (
-              <DeleteModal
-                type={deleteState.type}
-                id={deleteState.id}
-                contact={deleteState.contact}
-                show={showDeleteModal}
-                mutate={mutate}
-                closeFunc={() => setShowDeleteModal(false)}
-              />
-            )}
             <Heading>{`Welcome, ${user.first_name}`}</Heading>
             <Formik
               initialValues={user}
               onSubmit={(values, actions) => {
-                mutate(values)
+                mutate(selectFields(values))
                 // TODO: better error checking (toast?)
                 console.log({ values, actions });
                 actions.setSubmitting(false);
