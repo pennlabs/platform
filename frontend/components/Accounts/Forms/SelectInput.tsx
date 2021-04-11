@@ -15,7 +15,7 @@ const toSelectOptions = (options) => (
 );
 
 export const FormikSelectInput = ({ route, fieldName }) => {
-  const { data: rawData } = useResourceList<SelectOption>(route, (id) => `${route}/${id}`);
+  const { data: rawData } = useResourceList<SelectOption>(route, (id) => `${route}${id}/`);
   const [field, meta, helper] = useField(fieldName);
   const data = rawData || [];
 

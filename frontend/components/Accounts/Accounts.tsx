@@ -163,8 +163,8 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   </FormGroupItem>
                   <FormGroupItem col={2} row={1} alignItems="start">
                     <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
-                      <FormikMultipleInputs baseName="emails" fieldName="value"
-                        addText="Add another email address" />
+                      <FormikMultipleInputs route="/accounts/me/email/" initialData={user.emails}
+                        addText="Add another email address" contactType={ContactType.Email} />
                     </Flex>
                   </FormGroupItem>
                   <FormGroupItem col={1} row={2} alignItems="start">
@@ -172,8 +172,8 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                   </FormGroupItem>
                   <FormGroupItem col={2} row={2} alignItems="start">
                     <Flex flexDirection="column" alignItems="start" childMargin="0.2rem" width="100%">
-                      <FormikMultipleInputs baseName="phone_numbers" fieldName="value"
-                        addText="Add a phone number" />
+                      <FormikMultipleInputs route="/accounts/me/phonenumber/" initialData={user.phone_numbers}
+                        addText="Add a phone number" contactType={ContactType.PhoneNumber} />
                     </Flex>
                   </FormGroupItem>
                 </FormGroupGrid>

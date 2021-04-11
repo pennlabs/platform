@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { useField, FieldArray } from "formik";
+import { useResourceList } from "@pennlabs/rest-hooks";
 
 import {
   AddButton,
@@ -13,6 +13,8 @@ import {
   Span,
 } from "../ui";
 import { useOnClickOutside } from "../../useOnClickOutside";
+import { ContactInfo } from "../../../types";
+import { createContact, deleteContact } from "../../../data-fetching/accounts";
 
 const Dropdown = styled.div<{ isVisible: boolean }>`
     position: absolute;
@@ -39,87 +41,60 @@ const DropdownItem = styled.div`
     }
 `;
 
-export const FormikMultipleInputs = ({ baseName, fieldName, addText }) => {
+
+export const FormikMultipleInputs = ({ route, addText, initialData, contactType }) => {
+  const { data, mutate } = useResourceList<ContactInfo>(route, (id) => `${route}${id}/`, { initialData });
   const [showAdd, setShowAdd] = useState(true);
+  // Initial data provided
+  const infolist = data!;
+
   return (
-    <FieldArray name={baseName}>
-      {({ form, push, remove }) => {
-        const addField = () => {
-          if (form.values[baseName].length === 0) {
-            push({ [fieldName]: "", primary: true });
-          } else {
-            push({ [fieldName]: "", primary: false });
-          }
+    <>
+      {infolist.map(({ id, value, primary, verified }) => (
+        <ExistingInput
+          text={value}
+          onDelete={async () => {
+            await deleteContact(contactType, id);
+            mutate();
+          }}
+          onMakePrimary={() => mutate(id, { primary: true })}
+          key={id}
+          isPrimary={primary}
+          isVerified={verified}
+        />
+      ))}
+      {showAdd && (
+        <AddInput text={addText} margin={infolist.length === 0 && "0.6rem"} onClick={() => {
+          setShowAdd(false);
+        }} />
+      )}
+      {!showAdd && (
+        <FieldInput mutate={mutate} contactType={contactType} setShowAdd={setShowAdd} />
+      )}
+    </>
+  )
+}
 
-        };
-        const delField = (index) => {
-          remove(index);
-        }
-        return (
-          <>
-            {form.values[baseName].map(({ id }, index) => (
-              <FieldInput
-                index={index}
-                key={id}
-                baseName={baseName}
-                fieldName={fieldName}
-                onConfirm={() => {
-                  setShowAdd(true);
-                }}
-                delField={delField}
-              />
-            ))}
-            {showAdd && (
-              <AddInput
-                margin={
-                  form.values[baseName].length === 0
-                    ? "0.6rem"
-                    : undefined
-                }
-                text={addText}
-                onClick={() => {
-                  addField();
-                  setShowAdd(false);
-                }}
-              />
-            )}
-          </>
-        );
-      }}
-    </FieldArray>
-  );
-};
+const FieldInput = ({ mutate, contactType, setShowAdd }) => {
+  const [text, setText] = useState("");
 
-const FieldInput = ({ index, baseName, fieldName, onConfirm, delField }) => {
-  const [textField] = useField({
-    name: `${baseName}[${index}][${fieldName}]`,
-  });
-  const [fullField] = useField({
-    name: `${baseName}[${index}]`,
-  });
-  const [isEdit, setIsEdit] = useState(textField.value.length === 0);
-
-  if (isEdit) {
-    return (
-      <EditInput
-        {...textField}
-        onConfirm={() => {
-          onConfirm();
-          setIsEdit(false);
-        }}
-      />
-    );
-  } else {
-    return <ExistingInput
-      text={textField.value}
-      onDelete={() => delField(index)}
-      isPrimary={fullField.value.primary}
-      isVerified={fullField.value.verified}
-    />;
+  const onChange = (e) => {
+    setText(e.target.value);
   }
-};
 
-const MoreIndicator = ({ onDelete }) => {
+  const onConfirm = async () => {
+    await createContact(contactType, text);
+    mutate();
+    setShowAdd(true);
+  }
+
+  return (
+    <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />
+  )
+}
+
+
+const MoreIndicator = ({ onDelete, onMakePrimary }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
   return (
@@ -127,12 +102,18 @@ const MoreIndicator = ({ onDelete }) => {
       <Span position="relative">
         <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
         <Dropdown ref={ref as any} isVisible={isVisible}>
-          <DropdownItem>
+          <DropdownItem onClick={() => {
+            onMakePrimary();
+            setIsVisible(false);
+          }}>
             <Text weight="400" size="0.7rem">
               Set primary
                         </Text>
           </DropdownItem>
-          <DropdownItem onClick={onDelete}>
+          <DropdownItem onClick={() => {
+            onDelete();
+            setIsVisible(false);
+          }}>
             <Text weight="400" size="0.7rem">
               Remove
                         </Text>
@@ -143,7 +124,7 @@ const MoreIndicator = ({ onDelete }) => {
   );
 };
 
-export const ExistingInput = ({ text, onDelete, isPrimary, isVerified }) => {
+export const ExistingInput = ({ text, onDelete, onMakePrimary, isPrimary, isVerified }) => {
   return (
     <Flex childMargin="0.2rem">
       {
@@ -157,7 +138,7 @@ export const ExistingInput = ({ text, onDelete, isPrimary, isVerified }) => {
           <span>PRIMARY</span>
         </Tag>
       }
-      <MoreIndicator onDelete={onDelete} />
+      <MoreIndicator onDelete={onDelete} onMakePrimary={onMakePrimary} />
     </Flex>
   );
 };
@@ -170,10 +151,10 @@ export const AddInput = ({ text, onClick, margin }) => {
   );
 };
 
-export const EditInput = ({ onConfirm, ...field }) => {
+export const EditInput = ({ onConfirm, value, onChange }) => {
   return (
     <Flex childMargin="0.2rem" width="100%">
-      <FormInput height="2rem" {...field} />
+      <FormInput height="2rem" value={value} onChange={onChange} />
       <Button onClick={onConfirm}>Confirm</Button>
     </Flex>
   );
