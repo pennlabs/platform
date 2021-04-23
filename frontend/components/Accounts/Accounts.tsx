@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { Heading } from "react-bulma-components";
+import { useToasts } from "react-toast-notifications";
 import parsePhoneNumber from "libphonenumber-js";
 import { useResource } from "@pennlabs/rest-hooks";
 import * as Yup from "yup";
@@ -45,6 +46,7 @@ const FormSchema = Yup.object({
 });
 
 const Accounts = ({ user: initialUser }: { user: User }) => {
+    const { addToast } = useToasts();
     // User State
     const { data: userPartial, mutate } = useResource<User>("/accounts/me/", {
         initialData: initialUser,
@@ -96,10 +98,9 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                         <Formik
                             initialValues={user}
                             validationSchema={FormSchema}
-                            onSubmit={(values, actions) => {
-                                mutate(selectFields(values));
-                                // TODO: better error checking (toast?)
-                                console.log({ values, actions });
+                            onSubmit={async (values, actions) => {
+                                await mutate(selectFields(values));
+                                addToast("Success!");
                                 actions.setSubmitting(false);
                             }}
                         >
