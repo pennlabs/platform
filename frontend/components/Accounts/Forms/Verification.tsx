@@ -1,9 +1,10 @@
 import React, { useRef } from "react";
 import ReactCodeInput from "react-code-input";
+import { useToasts } from "react-toast-notifications";
 import { Modal } from "react-bulma-components";
-import { mutateResourceFunction } from "@pennlabs/rest-hooks/dist/types";
+import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
 import { verifyContact } from "../../../data-fetching/accounts";
-import { ContactType, User } from "../../../types";
+import { ContactType, ContactInfo } from "../../../types";
 import { logException } from "../../../utils/sentry";
 
 // TODO: combine some of these types
@@ -11,7 +12,7 @@ interface VerificationFormProps {
     type: ContactType;
     id: number;
     closeFunc: () => void;
-    mutate: mutateResourceFunction<User>;
+    mutate: mutateResourceListFunction<ContactInfo>;
     // toastFunc: (Toast) => void;
 }
 
@@ -26,6 +27,7 @@ interface CodeInputRef extends ReactCodeInput {
 }
 
 const VerificationForm = (props: VerificationFormProps) => {
+    const { addToast } = useToasts();
     const { type, id, closeFunc, mutate } = props;
     const codeInput = useRef<CodeInputRef>(null);
     const handleInputChange = async (value: string) => {
@@ -34,10 +36,10 @@ const VerificationForm = (props: VerificationFormProps) => {
                 await verifyContact(type, id, value);
                 closeFunc();
                 mutate();
-                // TODO: toast
+                addToast("Verification success!");
             } catch (e) {
+                addToast("Verification failed");
                 logException(e);
-                // TODO: toast
             }
         }
     };
@@ -58,7 +60,7 @@ interface VerificationModalProps {
     contact: string;
     show: boolean;
     closeFunc: () => void;
-    mutate: mutateResourceFunction<User>;
+    mutate: mutateResourceListFunction<ContactInfo>;
 }
 const VerificationModal = (props: VerificationModalProps) => {
     const { show, closeFunc, type, contact, id, mutate } = props;

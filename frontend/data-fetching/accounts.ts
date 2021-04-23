@@ -2,41 +2,43 @@ import { ContactType, NamedObject, Option } from "../types";
 import { doApiRequest } from "../utils/fetch";
 
 export const verifyContact = async (
-  type: ContactType,
-  id: number,
-  code: string
+    type: ContactType,
+    id: number,
+    code: string
 ) => {
-  const payload = { verification_code: code };
-  const res = await doApiRequest(`/accounts/me/${type}/${id}/`, {
-    method: "PATCH",
-    body: payload,
-  });
+    const payload = { verification_code: code };
+    const res = await doApiRequest(`/accounts/me/${type}/${id}/`, {
+        method: "PATCH",
+        body: payload,
+    });
 
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.detail);
-  }
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.detail);
+    }
 };
 
 export const createContact = async (type: ContactType, value: string) => {
-  const res = await doApiRequest(`/accounts/me/${type}/`, {
-    method: "POST",
-    body: { value },
-  });
+    const res = await doApiRequest(`/accounts/me/${type}/`, {
+        method: "POST",
+        body: { value },
+    });
 
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.detail);
-  }
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.detail);
+    }
+
+    return await res.json();
 };
 
 export const deleteContact = async (type: ContactType, id: number) => {
-  const res = await doApiRequest(`/accounts/me/${type}/${id}/`, {
-    method: "DELETE",
-  });
+    const res = await doApiRequest(`/accounts/me/${type}/${id}/`, {
+        method: "DELETE",
+    });
 
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body.detail);
-  }
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.detail);
+    }
 };

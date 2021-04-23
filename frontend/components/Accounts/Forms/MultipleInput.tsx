@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
+import parsePhoneNumber from "libphonenumber-js";
 
 import {
     AddButton,
@@ -15,7 +16,7 @@ import {
 } from "../ui";
 import VerificationModal from "./Verification";
 import { useOnClickOutside } from "../../useOnClickOutside";
-import { ContactInfo } from "../../../types";
+import { ContactInfo, ContactType } from "../../../types";
 import { createContact, deleteContact } from "../../../data-fetching/accounts";
 
 const Dropdown = styled.div<{ isVisible: boolean }>`
@@ -56,6 +57,9 @@ export const FormikMultipleInputs = ({
         { initialData }
     );
     const [showAdd, setShowAdd] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [verifyContact, setVerifyContact] = useState({ id: 0, contact: "" });
+
     // Initial data provided
     const infolist = data!;
 
@@ -92,14 +96,29 @@ export const FormikMultipleInputs = ({
                     mutate={mutate}
                     contactType={contactType}
                     setShowAdd={setShowAdd}
+                    setShowModal={setShowModal}
+                    setVerifyContact={setVerifyContact}
                 />
             )}
-            <VerificationModal type={contactType} show={true} />
+            <VerificationModal
+                type={contactType}
+                show={showModal}
+                id={verifyContact.id}
+                contact={verifyContact.contact}
+                closeFunc={() => setShowModal(false)}
+                mutate={mutate}
+            />
         </>
     );
 };
 
-const FieldInput = ({ mutate, contactType, setShowAdd }) => {
+const FieldInput = ({
+    mutate,
+    contactType,
+    setShowAdd,
+    setVerifyContact,
+    setShowModal,
+}) => {
     const { addToast } = useToasts();
     const [text, setText] = useState("");
 
@@ -108,14 +127,29 @@ const FieldInput = ({ mutate, contactType, setShowAdd }) => {
     };
 
     const onConfirm = async () => {
+        let res;
+
         try {
-            await createContact(contactType, text);
+            let payload;
+
+            if (contactType === ContactType.PhoneNumber) {
+                const phone = parsePhoneNumber(text, "US");
+                payload = phone ? phone.number : "";
+            } else {
+                payload = text;
+            }
+
+            res = await createContact(contactType, payload);
         } catch (e) {
             addToast("Failed to create contact");
             return;
         }
 
-        mutate();
+        await mutate();
+        if (!res.verified) {
+            setShowModal(true);
+            setVerifyContact({ id: res.id, contact: res.value });
+        }
         setShowAdd(true);
     };
 
