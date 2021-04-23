@@ -106,12 +106,14 @@ export const FormGroupItem = styled.div<FormGroupItemProps>`
   align-items: ${(props) => props.alignItems ? props.alignItems : "center"};
 `
 
-export const FormInput = styled.input<{ height?: string }>`
+export const FormInput = styled.input<{ height?: string, error?: boolean }>`
   height: ${(props) => props.height ? props.height : "2.3rem"};
   width: ${(props) => props.width ? props.width : "100%"};
   outline: none;
   border: solid 1px #d6d6d6;
   border-radius: 0.2rem 0.2rem 0.2rem 0.2rem;
+  border-color: ${(props) => props.error ? "#e0b4b4" : "#d6d6d6"};
+  background-color: ${(props) => props.error && "#fff6f6"};
   padding-left: 0.3rem;
 `;
 
@@ -154,9 +156,10 @@ export const Button = styled.button<{ margin?: string }>`
   color: #FFFFFF;
   border: none;
   border-radius: 0.2rem;
+  cursor: pointer;
   font-weight: 600;
   padding: 0.5rem 0.7rem 0.5rem 0.7rem;
-  margin: ${(props) => props.margin}
+  margin: ${(props) => props.margin};
 `;
 
 
