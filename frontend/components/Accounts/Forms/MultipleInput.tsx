@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
 
 import {
@@ -47,6 +48,7 @@ export const FormikMultipleInputs = ({
     initialData,
     contactType,
 }) => {
+    const { addToast } = useToasts();
     const { data, mutate } = useResourceList<ContactInfo>(
         route,
         (id) => `${route}${id}/`,
@@ -62,7 +64,11 @@ export const FormikMultipleInputs = ({
                 <ExistingInput
                     text={value}
                     onDelete={async () => {
-                        await deleteContact(contactType, id);
+                        try {
+                            await deleteContact(contactType, id);
+                        } catch (e) {
+                            addToast("Delete contact failed");
+                        }
                         mutate();
                     }}
                     onMakePrimary={() => mutate(id, { primary: true })}
@@ -92,6 +98,7 @@ export const FormikMultipleInputs = ({
 };
 
 const FieldInput = ({ mutate, contactType, setShowAdd }) => {
+    const { addToast } = useToasts();
     const [text, setText] = useState("");
 
     const onChange = (e) => {
@@ -99,7 +106,13 @@ const FieldInput = ({ mutate, contactType, setShowAdd }) => {
     };
 
     const onConfirm = async () => {
-        await createContact(contactType, text);
+        try {
+            await createContact(contactType, text);
+        } catch (e) {
+            addToast("Failed to create contact");
+            return;
+        }
+
         mutate();
         setShowAdd(true);
     };
@@ -174,7 +187,9 @@ export const EditInput = ({ onConfirm, value, onChange }) => {
     return (
         <Flex childMargin="0.2rem" width="100%">
             <FormInput height="2rem" value={value} onChange={onChange} />
-            <Button onClick={onConfirm}>Confirm</Button>
+            <Button type="button" onClick={onConfirm}>
+                Confirm
+            </Button>
         </Flex>
     );
 };

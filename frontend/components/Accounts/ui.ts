@@ -119,9 +119,9 @@ export const FormInput = styled.input<{ height?: string; error?: boolean }>`
     padding-left: 0.3rem;
 `;
 
-export const Indicator = styled.img`
+export const Indicator = styled.img<{ paddingTop?: string }>`
     width: 1rem;
-    padding-top: 0.1rem;
+    padding-top: ${(props) => props.paddingTop};
     cursor: pointer;
 `;
 
