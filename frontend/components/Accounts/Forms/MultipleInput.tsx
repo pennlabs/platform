@@ -13,6 +13,7 @@ import {
     Text,
     Span,
 } from "../ui";
+import VerificationModal from "./Verification";
 import { useOnClickOutside } from "../../useOnClickOutside";
 import { ContactInfo } from "../../../types";
 import { createContact, deleteContact } from "../../../data-fetching/accounts";
@@ -93,6 +94,7 @@ export const FormikMultipleInputs = ({
                     setShowAdd={setShowAdd}
                 />
             )}
+            <VerificationModal type={contactType} show={true} />
         </>
     );
 };

@@ -23,7 +23,6 @@ import { FormikInput } from "./Forms/Input";
 import { FormikMultipleInputs } from "./Forms/MultipleInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
-import VerificationModal from "./Verification/VerificationModal";
 import { logException } from "../../utils/sentry";
 import DeleteModal from "./DeleteModal";
 
