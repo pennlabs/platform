@@ -5,6 +5,7 @@ from accounts.views import (
     LabsProtectedViewSet,
     LoginView,
     LogoutView,
+    ProductAdminView,
     ProtectedViewSet,
     UserSearchView,
     UUIDIntrospectTokenView,
@@ -21,6 +22,7 @@ urlpatterns = [
     path("authorize/", AuthorizationView.as_view(), name="authorize"),
     path("token/", TokenView.as_view(), name="token"),
     path("introspect/", UUIDIntrospectTokenView.as_view(), name="introspect"),
+    path("productadmin/", ProductAdminView.as_view(), name="productadmin"),
     path("protected/", ProtectedViewSet.as_view(), name="protected"),
     path("labsprotected/", LabsProtectedViewSet.as_view(), name="labsprotected"),
 ]
