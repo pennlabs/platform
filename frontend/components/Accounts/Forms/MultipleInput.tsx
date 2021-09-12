@@ -196,36 +196,30 @@ export const ExistingInput = ({
     onMakePrimary,
     isPrimary,
     isVerified,
-}) => {
-    return (
-        <Flex childMargin="0.2rem">
-            {isVerified && <Indicator src="/greentick.png" />}
-            <span>{text}</span>
-            {isPrimary && (
-                <Tag>
-                    <span>PRIMARY</span>
-                </Tag>
-            )}
-            <MoreIndicator onDelete={onDelete} onMakePrimary={onMakePrimary} />
-        </Flex>
-    );
-};
+}) => (
+    <Flex childMargin="0.2rem">
+        {isVerified && <Indicator src="/greentick.png" />}
+        <span>{text}</span>
+        {isPrimary && (
+            <Tag>
+                <span>PRIMARY</span>
+            </Tag>
+        )}
+        <MoreIndicator onDelete={onDelete} onMakePrimary={onMakePrimary} />
+    </Flex>
+);
 
-export const AddInput = ({ text, onClick, margin }) => {
-    return (
-        <AddButton onClick={onClick} marginTop={margin}>
-            {text}
-        </AddButton>
-    );
-};
+export const AddInput = ({ text, onClick, margin }) => (
+    <AddButton onClick={onClick} marginTop={margin}>
+        {text}
+    </AddButton>
+);
 
-export const EditInput = ({ onConfirm, value, onChange }) => {
-    return (
-        <Flex childMargin="0.2rem" width="100%">
-            <FormInput height="2rem" value={value} onChange={onChange} />
-            <Button type="button" onClick={onConfirm}>
-                Confirm
-            </Button>
-        </Flex>
-    );
-};
+export const EditInput = ({ onConfirm, value, onChange }) => (
+    <Flex childMargin="0.2rem" width="100%">
+        <FormInput height="2rem" value={value} onChange={onChange} />
+        <Button type="button" onClick={onConfirm}>
+            Confirm
+        </Button>
+    </Flex>
+);

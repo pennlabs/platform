@@ -23,8 +23,6 @@ import { FormikInput } from "./Forms/Input";
 import { FormikMultipleInputs } from "./Forms/MultipleInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
-import { logException } from "../../utils/sentry";
-import DeleteModal from "./DeleteModal";
 
 interface ContactMethodState {
     type: ContactType;
@@ -54,9 +52,8 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
     const user = userPartial!;
 
     // Verification State + Functions
-    const [showVerificationModal, setShowVerificationModal] = useState<boolean>(
-        false
-    );
+    const [showVerificationModal, setShowVerificationModal] =
+        useState<boolean>(false);
     const [verificationState, setVerificationState] = useState<
         ContactMethodState | undefined
     >(undefined);
