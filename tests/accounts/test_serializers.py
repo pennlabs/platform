@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
+from accounts.models import Email, Major, PhoneNumber, School, Student, User
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
@@ -295,7 +295,7 @@ class PhoneNumberSerializerTestCase(TestCase):
             email="test@example.com",
         )
 
-        self.number1 = PhoneNumberModel.objects.create(
+        self.number1 = PhoneNumber.objects.create(
             user=self.user,
             value="+12150001111",
             primary=False,
@@ -304,11 +304,11 @@ class PhoneNumberSerializerTestCase(TestCase):
             verification_timestamp=timezone.now(),
         )
 
-        self.number2 = PhoneNumberModel.objects.create(
+        self.number2 = PhoneNumber.objects.create(
             user=self.user, value="+12058869999", primary=True,
         )
 
-        self.number3 = PhoneNumberModel.objects.create(
+        self.number3 = PhoneNumber.objects.create(
             user=self.user, value="+16170031234", primary=False,
         )
 

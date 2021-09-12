@@ -256,10 +256,10 @@ class EmailViewSet(viewsets.ModelViewSet):
         return self.request.user.emails.all()
 
     def destroy(self, request, *args, **kwargs):
-        if self.get_queryset().filter(verified=True).count() < 2:
+        is_primary = self.get_object().primary
+        if is_primary and self.get_queryset().filter(verified=True).count() < 2:
             return Response({"detail": "You can't delete the only verified email"}, status=405)
 
-        is_primary = self.get_object().primary
         self.get_object().delete()
         next_email = self.get_queryset().filter(verified=True).first()
         if is_primary and next_email is not None:

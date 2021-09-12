@@ -3,7 +3,7 @@ from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
 from accounts.mixins import ManyToManySaveMixin
-from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
+from accounts.models import Email, Major, PhoneNumber, School, Student, User
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
@@ -43,7 +43,7 @@ class UserSearchSerializer(serializers.ModelSerializer):
 
 class PhoneNumberSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PhoneNumberModel
+        model = PhoneNumber
         fields = ["id", "value", "primary", "verified", "verification_code"]
         read_only_fields = ["verified"]
         extra_kwargs = {"verification_code": {"write_only": True}}

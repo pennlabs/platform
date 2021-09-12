@@ -46,7 +46,6 @@ class Major(models.Model):
 
 
 class User(AbstractUser):
-
     # implicit username, email, first_name, and last_name fields
     # from AbstractUser that contains the user's PennKey
     pennid = models.IntegerField(primary_key=True)
@@ -90,7 +89,7 @@ class Email(models.Model):
         return f"{self.user} - {self.value}"
 
 
-class PhoneNumberModel(models.Model):
+class PhoneNumber(models.Model):
     user = models.ForeignKey(
         get_user_model(), related_name="phone_numbers", on_delete=models.CASCADE
     )
