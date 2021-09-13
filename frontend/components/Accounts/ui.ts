@@ -59,6 +59,11 @@ export const MainContainer = styled.div`
 export const CenterContainer = styled.div`
     width: 40%;
     height: 85%;
+
+    @media screen and (max-width: 800px) {
+        width: 70%;
+        height: 85%;
+    }
 `;
 
 export const Logo = styled.img`
