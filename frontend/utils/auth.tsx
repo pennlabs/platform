@@ -46,7 +46,7 @@ export function withAuth<T>(getServerSidePropsFunc: GetServerSidePropsFunc<T>) {
 
         const res = await doApiRequest("/accounts/me/", headers);
         if (res.ok) {
-            let user = await res.json();
+            const user = await res.json();
             const wrapped = await getServerSidePropsFunc(ctx);
             const casted = convertGetServerSidePropsResult(wrapped);
 
