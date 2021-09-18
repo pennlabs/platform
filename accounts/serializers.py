@@ -54,7 +54,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
         instance.verified = False
         instance.primary = False
         instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
-        instance.verification_timestamp = timezone.now()
+        # timestamp is set by django
         instance.save()
         sendSMSVerification(instance.value, instance.verification_code)
         return instance
@@ -99,7 +99,7 @@ class EmailSerializer(serializers.ModelSerializer):
         instance.verified = False
         instance.primary = False
         instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
-        instance.verification_timestamp = timezone.now()
+        # timestamp is set by django
         instance.save()
         sendEmailVerification(instance.value, instance.verification_code)
         return instance

@@ -82,7 +82,7 @@ class Email(models.Model):
     value = models.EmailField(unique=True)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
-    verification_timestamp = models.DateTimeField(blank=True, null=True)
+    verification_timestamp = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
@@ -96,7 +96,7 @@ class PhoneNumber(models.Model):
     value = PhoneNumberField(unique=True, blank=True, default=None)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
-    verification_timestamp = models.DateTimeField(blank=True, null=True)
+    verification_timestamp = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
