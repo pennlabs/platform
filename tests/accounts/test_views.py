@@ -345,20 +345,35 @@ class PhoneNumberViewTestCase(TestCase):
         )
 
         self.number1 = PhoneNumber.objects.create(
-            user=self.user, value="+12150001111", primary=False, verified=False,
+            user=self.user,
+            value="+12150001111",
+            primary=False,
+            verified=False,
         )
         self.number2 = PhoneNumber.objects.create(
-            user=self.user, value="+12058869999", primary=True, verified=True,
+            user=self.user,
+            value="+12058869999",
+            primary=True,
+            verified=True,
         )
         self.number3 = PhoneNumber.objects.create(
-            user=self.user, value="+16170031234", primary=False, verified=True,
+            user=self.user,
+            value="+16170031234",
+            primary=False,
+            verified=True,
         )
 
         self.user2 = User.objects.create(
-            pennid=2, username="test2", first_name="first2", last_name="last2",
+            pennid=2,
+            username="test2",
+            first_name="first2",
+            last_name="last2",
         )
         self.number4 = PhoneNumber.objects.create(
-            user=self.user2, value="+12158989000", primary=True, verified=True,
+            user=self.user2,
+            value="+12158989000",
+            primary=True,
+            verified=True,
         )
 
         self.client = APIClient()
@@ -410,6 +425,24 @@ class PhoneNumberViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(len(self.user2.phone_numbers.all()), 0)
 
+    def test_resend_verification_fail(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("accounts:me-phonenumber-resend-verification", args=[self.number1.id])
+        )
+        self.assertEqual(400, response.status_code)
+
+    def test_resend_verification_success(self):
+        # Mark verification code as expired
+        self.number1.verification_timestamp = timezone.now() - datetime.timedelta(days=1)
+        self.number1.save()
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("accounts:me-phonenumber-resend-verification", args=[self.number1.id])
+        )
+        self.assertEqual(200, response.status_code)
+
 
 class EmailViewTestCase(TestCase):
     def setUp(self):
@@ -417,13 +450,22 @@ class EmailViewTestCase(TestCase):
             pennid=1, username="test1", first_name="first1", last_name="last1"
         )
         self.email1 = Email.objects.create(
-            user=self.user, value="example@test.com", primary=True, verified=True,
+            user=self.user,
+            value="example@test.com",
+            primary=True,
+            verified=True,
         )
         self.email2 = Email.objects.create(
-            user=self.user, value="example2@test.com", primary=False, verified=False,
+            user=self.user,
+            value="example2@test.com",
+            primary=False,
+            verified=False,
         )
         self.email3 = Email.objects.create(
-            user=self.user, value="example3@test.com", primary=False, verified=True,
+            user=self.user,
+            value="example3@test.com",
+            primary=False,
+            verified=True,
         )
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2"
@@ -481,3 +523,21 @@ class EmailViewTestCase(TestCase):
         self.assertEqual(json.loads(response.content), self.failure_response)
         self.assertEqual(response.status_code, 405)
         self.assertTrue(self.user2.emails.filter(value="example4@test.com").exists())
+
+    def test_resend_verification_fail(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("accounts:me-email-resend-verification", args=[self.email2.id])
+        )
+        self.assertEqual(400, response.status_code)
+
+    def test_resend_verification_success(self):
+        # Mark verification code as expired
+        self.email2.verification_timestamp = timezone.now() - datetime.timedelta(days=1)
+        self.email2.save()
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("accounts:me-email-resend-verification", args=[self.email2.id])
+        )
+        self.assertEqual(200, response.status_code)

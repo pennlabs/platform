@@ -69,8 +69,8 @@ class Student(models.Model):
     user = models.OneToOneField(
         get_user_model(), related_name="student", on_delete=models.DO_NOTHING
     )
-    major = models.ManyToManyField(Major, null=True, blank=True)
-    school = models.ManyToManyField(School, null=True, blank=True)
+    major = models.ManyToManyField(Major, blank=True)
+    school = models.ManyToManyField(School, blank=True)
     graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)], null=True)
 
     def __str__(self):
@@ -79,10 +79,10 @@ class Student(models.Model):
 
 class Email(models.Model):
     user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.CASCADE)
-    value = models.EmailField()
+    value = models.EmailField(unique=True)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
-    verification_timestamp = models.DateTimeField(blank=True, null=True)
+    verification_timestamp = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):
@@ -96,7 +96,7 @@ class PhoneNumber(models.Model):
     value = PhoneNumberField(unique=True, blank=True, default=None)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
-    verification_timestamp = models.DateTimeField(blank=True, null=True)
+    verification_timestamp = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
 
     def __str__(self):

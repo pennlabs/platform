@@ -1,3 +1,6 @@
+from django.utils import timezone
+from django.utils.crypto import get_random_string
+from accounts.verification import sendEmailVerification, sendSMSVerification
 import calendar
 import json
 
@@ -5,7 +8,7 @@ from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +16,7 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from rest_framework import generics, viewsets
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response
@@ -225,6 +229,18 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
             next_number.save()
         return Response({"detail": "Phone number successfully deleted"}, status=200)
 
+    @action(detail=True, methods=["post"])
+    def resend_verification(self, request, pk=None):
+        obj = self.get_object()
+        elapsed_time = timezone.now() - obj.verification_timestamp
+        if elapsed_time.total_seconds() > User.VERIFICATION_EXPIRATION_MINUTES * 60:
+            obj.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+            obj.verification_timestamp = timezone.now()
+            sendSMSVerification(obj.value, obj.verification_code)
+            obj.save()
+            return Response({"detail": "success"})
+        return HttpResponseBadRequest()
+
 
 class EmailViewSet(viewsets.ModelViewSet):
     """
@@ -266,6 +282,18 @@ class EmailViewSet(viewsets.ModelViewSet):
             next_email.primary = True
             next_email.save()
         return Response({"detail": "Email successfully deleted"}, status=200)
+
+    @action(detail=True, methods=["post"])
+    def resend_verification(self, request, pk=None):
+        obj = self.get_object()
+        elapsed_time = timezone.now() - obj.verification_timestamp
+        if elapsed_time.total_seconds() > User.VERIFICATION_EXPIRATION_MINUTES * 60:
+            obj.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+            obj.verification_timestamp = timezone.now()
+            sendEmailVerification(obj.value, obj.verification_code)
+            obj.save()
+            return Response({"detail": "success"})
+        return HttpResponseBadRequest()
 
 
 class ProtectedViewSet(PennView):
