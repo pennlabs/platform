@@ -391,6 +391,18 @@ class PhoneNumberSerializerTestCase(TestCase):
         self.assertTrue(self.number3.primary)
         self.assertFalse(self.number2.primary)
 
+    def test_attempt_unverified_make_primary(self):
+        data = {
+            "primary": True,
+        }
+        serializer = PhoneNumberSerializer(
+            self.number3, data=data, context={"request": FakeRequest(self.user)}
+        )
+
+        if serializer.is_valid(raise_exception=True):
+            with self.assertRaises(serializers.ValidationError):
+                serializer.save()
+
     def test_verification_timeout(self):
         data = {
             "value": "+12154729463",
@@ -506,6 +518,19 @@ class EmailSerializerTestCase(TestCase):
 
         self.assertTrue(self.email2.primary)
         self.assertFalse(self.email1.primary)
+
+    def test_attempt_unverified_make_primary(self):
+        data = {
+            "value": "example2@test.com",
+            "primary": True,
+        }
+        serializer = EmailSerializer(
+            self.email2, data=data, context={"request": FakeRequest(self.user)}
+        )
+
+        if serializer.is_valid(raise_exception=True):
+            with self.assertRaises(serializers.ValidationError):
+                serializer.save()
 
     def test_verification_timeout(self):
         data = {
