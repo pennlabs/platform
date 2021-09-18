@@ -17,7 +17,7 @@ export const FormikSelectInput = ({ route, fieldName }) => {
         route,
         (id) => `${route}${id}/`
     );
-    const [field, meta, helper] = useField(fieldName);
+    const [field, , helper] = useField(fieldName);
     const data = rawData || [];
 
     const options = useMemo(() => toSelectOptions(data), [data]);

@@ -14,7 +14,8 @@ import {
     Text,
     Span,
 } from "../ui";
-import VerificationModal from "./Verification";
+import VerificationModal from "../Modals/Verification";
+import DeleteModal from "../Modals/Delete";
 import { useOnClickOutside } from "../../useOnClickOutside";
 import { ContactInfo, ContactType } from "../../../types";
 import { createContact, deleteContact } from "../../../data-fetching/accounts";
@@ -67,6 +68,7 @@ export const FormikMultipleInputs = ({
         <>
             {infolist.map(({ id, value, primary, verified }) => (
                 <ExistingInput
+                    contactType={contactType}
                     text={value}
                     onDelete={async () => {
                         try {
@@ -191,23 +193,41 @@ const MoreIndicator = ({ onDelete, onMakePrimary }) => {
 };
 
 export const ExistingInput = ({
+    contactType,
     text,
     onDelete,
     onMakePrimary,
     isPrimary,
     isVerified,
-}) => (
-    <Flex childMargin="0.2rem">
-        {isVerified && <Indicator src="/greentick.png" />}
-        <span>{text}</span>
-        {isPrimary && (
-            <Tag>
-                <span>PRIMARY</span>
-            </Tag>
-        )}
-        <MoreIndicator onDelete={onDelete} onMakePrimary={onMakePrimary} />
-    </Flex>
-);
+}) => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    return (
+        <Flex childMargin="0.2rem">
+            {isVerified && <Indicator src="/greentick.png" />}
+            <span>{text}</span>
+            {isPrimary && (
+                <Tag>
+                    <span>PRIMARY</span>
+                </Tag>
+            )}
+            <MoreIndicator
+                onDelete={() => setModalIsOpen(true)}
+                onMakePrimary={onMakePrimary}
+            />
+            <DeleteModal
+                type={contactType}
+                contact={text}
+                show={modalIsOpen}
+                onDelete={() => {
+                    onDelete();
+                    setModalIsOpen(false);
+                }}
+                closeFunc={() => setModalIsOpen(false)}
+            />
+        </Flex>
+    );
+};
 
 export const AddInput = ({ text, onClick, margin }) => (
     <AddButton onClick={onClick} marginTop={margin}>

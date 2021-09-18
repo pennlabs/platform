@@ -57,7 +57,7 @@ export const MainContainer = styled.div`
 `;
 
 export const CenterContainer = styled.div`
-    width: 40%;
+    width: 50%;
     height: 85%;
 
     @media screen and (max-width: 800px) {

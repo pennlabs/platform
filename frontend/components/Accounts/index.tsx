@@ -1,8 +1,6 @@
-import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { Heading } from "react-bulma-components";
 import { useToasts } from "react-toast-notifications";
-import parsePhoneNumber from "libphonenumber-js";
 import { useResource } from "@pennlabs/rest-hooks";
 import * as Yup from "yup";
 import {
@@ -24,11 +22,13 @@ import { FormikMultipleInputs } from "./Forms/MultipleInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
 
-interface ContactMethodState {
-    type: ContactType;
-    id: number;
-    contact: string;
-}
+// TODO: Figure out login/logout
+// TODO: figure out a resend verification code flow
+// TODO: delete contact modal/confirmation
+
+// TODO: Check backend
+// - Adding a verified phone number makes it primary by default, so there one can create multiple primaries
+// - Can add multiple emails
 
 const selectFields = (form: User) => ({
     first_name: form.first_name,
@@ -44,28 +44,10 @@ const FormSchema = Yup.object({
 
 const Accounts = ({ user: initialUser }: { user: User }) => {
     const { addToast } = useToasts();
-    // User State
     const { data: userPartial, mutate } = useResource<User>("/accounts/me/", {
         initialData: initialUser,
     });
-    // TODO: this feels weird
     const user = userPartial!;
-
-    // Verification State + Functions
-    const [showVerificationModal, setShowVerificationModal] =
-        useState<boolean>(false);
-    const [verificationState, setVerificationState] = useState<
-        ContactMethodState | undefined
-    >(undefined);
-    const openVerificationModal = ({
-        verified,
-        ...props
-    }: ContactMethodState & { verified: boolean }) => {
-        if (!verified) {
-            setVerificationState(props);
-            setShowVerificationModal(true);
-        }
-    };
 
     return (
         <RootContainer>
@@ -78,18 +60,6 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
             <MainContainer>
                 <CenterContainer>
                     <div>
-                        {verificationState && (
-                            <VerificationModal
-                                type={verificationState.type}
-                                id={verificationState.id}
-                                contact={verificationState.contact}
-                                show={showVerificationModal}
-                                mutate={mutate}
-                                closeFunc={() =>
-                                    setShowVerificationModal(false)
-                                }
-                            />
-                        )}
                         <Heading>{`Welcome, ${user.first_name}`}</Heading>
                         <Formik
                             initialValues={user}
@@ -231,9 +201,3 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
     );
 };
 export default Accounts;
-
-// TODO: figure out a resend verification code flow
-// TODO: toasts
-// TODO: add contact flow
-// TODO: delete contact modal/confirmation
-// TODO: make primary button

@@ -1,33 +1,18 @@
-import { mutateResourceFunction } from "@pennlabs/rest-hooks/dist/types";
 import React from "react";
 import { Modal, Button } from "react-bulma-components";
-import { deleteContact } from "../../data-fetching/accounts";
-import { ContactType, User } from "../../types";
-import { logException } from "../../utils/sentry";
+import { ContactType } from "../../../types";
 
 interface DeleteModalProps {
     type: ContactType;
-    id: number;
     contact: string;
     show: boolean;
+    onDelete: () => void;
     closeFunc: () => void;
-    mutate: mutateResourceFunction<User>;
 }
 
 const DeleteModal = (props: DeleteModalProps) => {
-    const { show, closeFunc, type, contact, id, mutate } = props;
+    const { show, closeFunc, type, contact, onDelete } = props;
     const prettyType = type === ContactType.Email ? "email" : "phone number";
-    const deleteContactMethod = async () => {
-        try {
-            await deleteContact(type, id);
-            closeFunc();
-            mutate();
-            // TODO: toast
-        } catch (e) {
-            logException(e);
-            // TODO: toast
-        }
-    };
     return (
         <Modal show={show} onClose={closeFunc}>
             <Modal.Card>
@@ -36,9 +21,12 @@ const DeleteModal = (props: DeleteModalProps) => {
                 </Modal.Card.Header>
                 <Modal.Card.Body>
                     {`You will no longer be able to use ${contact} with your account.`}
-                    <Button>Cancel</Button>
-                    <Button>Remove</Button>
                 </Modal.Card.Body>
+                <Modal.Card.Footer>
+                    <Button color="link" onClick={onDelete}>
+                        Remove
+                    </Button>
+                </Modal.Card.Footer>
             </Modal.Card>
         </Modal>
     );

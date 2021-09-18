@@ -3,7 +3,7 @@ import { NextPageContext } from "next";
 import { ToastProvider } from "react-toast-notifications";
 import { User } from "../types";
 import { doApiRequest } from "../utils/fetch";
-import Accounts from "../components/Accounts/Accounts";
+import Accounts from "../components/Accounts";
 
 interface AccountPageProps {
     user: User;
@@ -24,10 +24,9 @@ AccountPage.getInitialProps = async (
             ? { cookie: context.req.headers.cookie }
             : undefined,
     };
-    const user: User = await doApiRequest(
-        "/accounts/me/",
-        headers
-    ).then((res) => res.json());
+    const user: User = await doApiRequest("/accounts/me/", headers).then(
+        (res) => res.json()
+    );
     return { user };
 };
 

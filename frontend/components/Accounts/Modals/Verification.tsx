@@ -6,6 +6,7 @@ import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
 import { verifyContact } from "../../../data-fetching/accounts";
 import { ContactType, ContactInfo } from "../../../types";
 import { logException } from "../../../utils/sentry";
+import { Flex } from "../ui";
 
 // TODO: combine some of these types
 interface VerificationFormProps {
@@ -68,20 +69,22 @@ const VerificationModal = (props: VerificationModalProps) => {
     return (
         <Modal show={show} onClose={closeFunc}>
             <Modal.Card>
-                <Modal.Card.Head onClose={closeFunc}>
+                <Modal.Card.Header onClose={closeFunc}>
                     <Modal.Card.Title>
                         Verify your {prettyType}
                     </Modal.Card.Title>
-                </Modal.Card.Head>
+                </Modal.Card.Header>
                 <Modal.Card.Body>
                     Please enter the 6 digit confirmation code sent to {contact}
                     :
-                    <VerificationForm
-                        type={type}
-                        id={id}
-                        closeFunc={closeFunc}
-                        mutate={mutate}
-                    />
+                    <Flex>
+                        <VerificationForm
+                            type={type}
+                            id={id}
+                            closeFunc={closeFunc}
+                            mutate={mutate}
+                        />
+                    </Flex>
                 </Modal.Card.Body>
             </Modal.Card>
         </Modal>

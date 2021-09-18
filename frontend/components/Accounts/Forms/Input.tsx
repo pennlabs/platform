@@ -7,8 +7,10 @@ export const FormikInput = ({ fieldName, ...props }) => {
 
     return (
         <FormInput
+            /* eslint-disable */
             {...field}
             {...props}
+            /* eslint-enable */
             error={meta.touched && meta.error !== undefined}
         />
     );

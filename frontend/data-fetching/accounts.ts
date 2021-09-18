@@ -1,4 +1,4 @@
-import { ContactType, NamedObject, Option } from "../types";
+import { ContactType } from "../types";
 import { doApiRequest } from "../utils/fetch";
 
 export const verifyContact = async (
@@ -29,7 +29,7 @@ export const createContact = async (type: ContactType, value: string) => {
         throw new Error(body.detail);
     }
 
-    return await res.json();
+    return res.json();
 };
 
 export const deleteContact = async (type: ContactType, id: number) => {
