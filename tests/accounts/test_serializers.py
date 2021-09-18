@@ -305,11 +305,15 @@ class PhoneNumberSerializerTestCase(TestCase):
         )
 
         self.number2 = PhoneNumber.objects.create(
-            user=self.user, value="+12058869999", primary=True,
+            user=self.user,
+            value="+12058869999",
+            primary=True,
         )
 
         self.number3 = PhoneNumber.objects.create(
-            user=self.user, value="+16170031234", primary=False,
+            user=self.user,
+            value="+16170031234",
+            primary=False,
         )
 
     def test_create(self):
@@ -369,6 +373,9 @@ class PhoneNumberSerializerTestCase(TestCase):
         self.assertFalse(self.number1.primary)
 
     def test_update_primary(self):
+        self.number3.verified = True
+        self.number3.save()
+
         data = {
             "primary": True,
         }
@@ -480,6 +487,9 @@ class EmailSerializerTestCase(TestCase):
         self.assertFalse(self.email2.primary)
 
     def test_update_primary(self):
+        self.email2.verified = True
+        self.email2.save()
+
         data = {
             "value": "example2@test.com",
             "primary": True,

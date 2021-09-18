@@ -76,8 +76,13 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
             else:
                 raise serializers.ValidationError(detail={"detail": "Incorrect verification code"})
         if "primary" in validated_data and validated_data["primary"]:
-            self.context["request"].user.phone_numbers.all().update(primary=False)
-            instance.primary = True
+            if instance.verified:
+                self.context["request"].user.phone_numbers.all().update(primary=False)
+                instance.primary = True
+            else:
+                raise serializers.ValidationError(
+                    detail={"detail": "Must verify point of contact before marking as primary"}
+                )
         instance.save()
         return instance
 
@@ -116,9 +121,13 @@ class EmailSerializer(serializers.ModelSerializer):
             else:
                 raise serializers.ValidationError(detail={"detail": "Incorrect verification code"})
         if "primary" in validated_data and validated_data["primary"]:
-            self.context["request"].user.emails.all().update(primary=False)
-            instance.primary = True
-
+            if instance.verified:
+                self.context["request"].user.emails.all().update(primary=False)
+                instance.primary = True
+            else:
+                raise serializers.ValidationError(
+                    detail={"detail": "Must verify point of contact before marking as primary"}
+                )
         instance.save()
         return instance
 
