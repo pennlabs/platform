@@ -79,7 +79,7 @@ class Student(models.Model):
 
 class Email(models.Model):
     user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.CASCADE)
-    value = models.EmailField()
+    value = models.EmailField(unique=True)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)
     verification_timestamp = models.DateTimeField(blank=True, null=True)
