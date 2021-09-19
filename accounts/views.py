@@ -1,7 +1,10 @@
 import calendar
 import json
+from json.decoder import JSONDecodeError
 
 from django.contrib import auth
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
@@ -18,7 +21,8 @@ from rest_framework import generics, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import Response
+from rest_framework.views import APIView, Response
+from rest_framework_api_key.permissions import HasAPIKey
 from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
@@ -344,3 +348,47 @@ class SchoolViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ["name"]
     queryset = School.objects.all()
+
+
+class ProductAdminView(APIView):
+    """
+    Idempotently set admin permissions on all of our products.
+    Takes in a POST body in the form {"pennkey": ["permissions"]}
+    """
+
+    permission_classes = [HasAPIKey]
+
+    def post(self, request, format=None):
+        # Revoke all existing admin permissions
+        content_type = ContentType.objects.get(app_label="accounts", model="user")
+        perms = Permission.objects.filter(content_type=content_type, codename__endswith="_admin")
+        for perm in perms:
+            perm.user_set.clear()
+        User.objects.filter(Q(is_superuser=True) | Q(is_staff=True)).update(
+            is_superuser=False, is_staff=False
+        )
+
+        try:
+            body = json.loads(request.body)
+        except JSONDecodeError:
+            return HttpResponseBadRequest()
+
+        for pennkey in body:
+            user = User.objects.filter(username=pennkey).first()
+            if user is not None:
+                for permission_slug in body[pennkey]:
+                    # Handle platform separately
+                    if permission_slug == "platform_admin":
+                        user.is_superuser = True
+                        user.is_staff = True
+                        user.save()
+                        continue
+                    product_name = permission_slug[:-6].replace("_", " ").title()
+                    permission_name = f"{product_name} Admin"
+                    permission, _ = Permission.objects.get_or_create(
+                        content_type=content_type,
+                        codename=permission_slug,
+                        defaults={"name": permission_name},
+                    )
+                    user.user_permissions.add(permission)
+        return Response({"detail": "success"})
