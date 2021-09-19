@@ -4,8 +4,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 from django.contrib.auth.models import Group
 
-from accounts.models import Student
-
 
 class ShibbolethRemoteUserBackend(RemoteUserBackend):
     """
@@ -59,10 +57,6 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             if affiliation_name:  # Some users don't have any affiliation somehow ¯\_(ツ)_/¯
                 group, _ = Group.objects.get_or_create(name=affiliation_name)
                 user.groups.add(group)
-
-        # Create a student object if the user is a student
-        if "student" in shibboleth_attributes["affiliation"]:
-            Student.objects.get_or_create(user=user)
 
         user.save()
 
