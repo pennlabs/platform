@@ -22,13 +22,6 @@ import ContactInput from "./Forms/ContactInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
 
-// TODO: figure out a resend verification code flow
-
-// TODO: Check backend
-// - Adding a verified phone number makes it primary by default, so there one can create multiple primaries
-// - Can add multiple emails
-// - verification
-
 const selectFields = (form: User) => ({
     first_name: form.first_name,
     student: form.student,
