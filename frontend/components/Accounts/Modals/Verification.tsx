@@ -8,13 +8,11 @@ import { ContactType, ContactInfo } from "../../../types";
 import { logException } from "../../../utils/sentry";
 import { Flex } from "../ui";
 
-// TODO: combine some of these types
 interface VerificationFormProps {
     type: ContactType;
     id: number;
     closeFunc: () => void;
     mutate: mutateResourceListFunction<ContactInfo>;
-    // toastFunc: (Toast) => void;
 }
 
 interface CodeInputRefState {
