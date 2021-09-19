@@ -4,10 +4,12 @@
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
     <style type="text/css">
+        body {
+          font-family: 'Lato', sans-serif;
+        }
+
         .content-box {
-            border: 2px #F5F8FE;
-            border-style: solid;
-            padding: 1.5em;
+            padding: 20px;
         }
 
         .title {
@@ -16,9 +18,8 @@
 
         .header-logo {
             width: 120px;
-            padding-bottom: 15px;
             padding-top: 20px;
-            padding-left: 5px;
+            padding-left: 20px;
         }
 
         .footer {
@@ -30,40 +31,39 @@
             font-size: 12px;
         }
 
-        h1 {
-            font-family: 'Lato', sans-serif;
-        }
-
-        p {
-            font-family: 'Lato', sans-serif;
-        }
-
-        .link-container {
-            text-align: center;
-            padding: 10px;
-            margin: 25px;
-        }
-
-        .link-container a {
-            color: #4285f4;
-            text-decoration: none;
-        }
-
-        .link-container h1 {
-            font-family: 'Lato', sans-serif;
-            display: inline;
-            padding: 10px 20px;
-            border: 3px solid #4285F4;
-        }
-
         span.line {
             display: inline-block;
         }
+
+        #verification-div {
+          display: flex;
+          flex-direction: row;
+          margin-left: -3px;
+        }
+
+        .verification-block {
+          width: 40px;
+          height: 55px;
+          margin: 3px;
+          border-radius: 2px;
+          background-color: #E7E7E7;
+          display:flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .verification-number {
+          font-weight: 600;
+          font-size: 20px;
+          color: #767676;
+        }
+
+
     </style>
 </head>
 
 <body>
-    <a href="https://ohq.io">
+    <a href="https://platform.pennlabs.org">
         <img src="https://cdn.mcauto-images-production.sendgrid.net/d1623489cc8dbe1a/e60e7de0-8c49-4734-8109-307a3a1bd2ab/772x380.png"
             class="header-logo">
     </a>

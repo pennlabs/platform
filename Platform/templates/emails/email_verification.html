@@ -2,18 +2,19 @@
 
 {% block content %}
 
-<h1 class="title">Verify your email address</h1>
+<p>Hey {{ first_name }}!</p>
 
-<p>Your Penn Labs verification code is: {{ verification_code }}</p>
+<p>Your Penn Labs verification code is:</p>
+
+<div id="verification-div">
+  {% for num in verification_code %}
+    <div class="verification-block">
+      <span class="verification-number">
+        num
+      </span>
+    </div>
+  {% endfor %}
+</div>
 
 <p>Do not share this verification code with anyone.</p>
-
-<div class="link-container">
-    <a href="{{ product_link }}">
-        <h1>
-            <span class="line">Get</span>
-            <span class="line">started</span>
-        </h1>
-    </a>
-</div>
 {% endblock %}
