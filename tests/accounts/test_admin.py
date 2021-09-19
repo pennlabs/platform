@@ -15,7 +15,7 @@ class StudentAdminTestCase(TestCase):
         self.user = User.objects.create(
             pennid=1, username="user", first_name="First", last_name="Last"
         )
-        self.student = Student.objects.create(user=self.user)
+        self.student = self.user.student
         self.student_admin = StudentAdmin(Student, AdminSite())
 
     def test_username(self):

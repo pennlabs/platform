@@ -79,7 +79,6 @@ class StudentSerializerTestCase(TestCase):
 
         self.school = School.objects.create(name="Test School")
 
-        Student.objects.create(user=self.user)
         self.user.student.major.add(Major.objects.get(name="Test Active Major"))
         self.user.student.major.add(Major.objects.get(name="Test Active Major 2"))
         self.user.student.school.add(School.objects.get(name="Test School"))

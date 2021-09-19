@@ -6,7 +6,6 @@ from django.urls import reverse
 from django.utils import timezone
 from oauth2_provider.models import AccessToken, Application
 
-from accounts.models import Student
 from org.models import Member
 
 
@@ -16,11 +15,9 @@ class AuthTestCase(TestCase):
         self.student = get_user_model().objects.create_user(
             pennid=1, username="student", password="secret"
         )
-        Student.objects.create(user=self.student)
         self.member = get_user_model().objects.create_user(
             pennid=2, username="member", password="secret"
         )
-        Student.objects.create(user=self.member)
         Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
         self.application = Application(
             name="Test",

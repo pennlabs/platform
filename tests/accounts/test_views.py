@@ -13,7 +13,7 @@ from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 from rest_framework_api_key.models import APIKey
 
-from accounts.models import Email, Major, PhoneNumber, School, Student, User
+from accounts.models import Email, Major, PhoneNumber, School, User
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
@@ -226,7 +226,6 @@ class UserViewTestCase(TestCase):
         School.objects.create(name="Test School")
         School.objects.create(name="Test School 2")
 
-        Student.objects.create(user=self.user)
         self.user.student.major.add(Major.objects.get(name="Test Active Major"))
         self.user.student.major.add(Major.objects.get(name="Test Active Major 2"))
         self.user.student.school.add(School.objects.get(name="Test School"))

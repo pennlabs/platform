@@ -35,10 +35,9 @@ class StudentTestCase(TestCase):
         self.user = get_user_model().objects.create_user(
             pennid=1, username="student", password="secret"
         )
-        self.student = Student.objects.create(user=self.user)
 
     def test_str(self):
-        self.assertEqual(str(self.student), self.user.username)
+        self.assertEqual(str(self.user.student), self.user.username)
 
 
 class UserTestCase(TestCase):
