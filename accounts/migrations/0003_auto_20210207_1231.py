@@ -52,15 +52,23 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="student", name="graduation_year", field=models.IntegerField(null=True),
+            model_name="student",
+            name="graduation_year",
+            field=models.IntegerField(null=True),
         ),
         migrations.AddField(
             model_name="user",
             name="preferred_name",
             field=models.CharField(blank=True, max_length=225),
         ),
-        migrations.RemoveField(model_name="student", name="major",),
-        migrations.RemoveField(model_name="student", name="school",),
+        migrations.RemoveField(
+            model_name="student",
+            name="major",
+        ),
+        migrations.RemoveField(
+            model_name="student",
+            name="school",
+        ),
         migrations.AlterField(
             model_name="student",
             name="user",
@@ -129,9 +137,13 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="student", name="major", field=models.ManyToManyField(to="accounts.Major"),
+            model_name="student",
+            name="major",
+            field=models.ManyToManyField(to="accounts.Major"),
         ),
         migrations.AddField(
-            model_name="student", name="school", field=models.ManyToManyField(to="accounts.School"),
+            model_name="student",
+            name="school",
+            field=models.ManyToManyField(to="accounts.School"),
         ),
     ]

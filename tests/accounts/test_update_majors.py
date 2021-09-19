@@ -8,34 +8,30 @@ from accounts.update_majors import update_all_majors
 
 @patch("accounts.update_majors.requests.get")
 class UpdateMajorsTestCase(TestCase):
-    def testTotalMajorCount(self, mock_source_file):
+    def setUp(self):
         with open(r"./tests/accounts/PennCoursePrograms.html", "r") as f:
-            mock_source_file.return_value.text = f.read()
+            self.html = f.read()
 
+    def testTotalMajorCount(self, mock_source_file):
+        mock_source_file.return_value.text = self.html
         update_all_majors()
 
         self.assertEquals(Major.objects.all().count(), 469)
 
     def testBachelorMajorCount(self, mock_source_file):
-        with open(r"./tests/accounts/PennCoursePrograms.html", "r") as f:
-            mock_source_file.return_value.text = f.read()
-
+        mock_source_file.return_value.text = self.html
         update_all_majors()
 
         self.assertEquals(Major.objects.filter(degree_type="BACHELORS").count(), 215)
 
     def testMasterCount(self, mock_source_file):
-        with open(r"./tests/accounts/PennCoursePrograms.html", "r") as f:
-            mock_source_file.return_value.text = f.read()
-
+        mock_source_file.return_value.text = self.html
         update_all_majors()
 
         self.assertEquals(Major.objects.filter(degree_type="MASTERS").count(), 123)
 
     def testProfessionalCount(self, mock_source_file):
-        with open(r"./tests/accounts/PennCoursePrograms.html", "r") as f:
-            mock_source_file.return_value.text = f.read()
-
+        mock_source_file.return_value.text = self.html
         update_all_majors()
 
         self.assertEquals(Major.objects.filter(degree_type="PROFESSIONAL").count(), 47)

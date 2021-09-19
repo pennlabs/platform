@@ -24,7 +24,7 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(admin.ModelAdmin):
-    readonly_fields = ("username", "first_name", "last_name", "pennid", "last_login", "date_joined")
+    readonly_fields = ("username", "pennid", "last_login", "date_joined")
     search_fields = ("username", "first_name", "last_name")
     list_display = ("username", "first_name", "last_name", "is_staff")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
@@ -32,10 +32,21 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ("username",)
     fieldsets = (
         (None, {"fields": ("username", "pennid")}),
-        (("Personal info"), {"fields": ("preferred_name", "email")},),
+        (
+            ("Personal info"),
+            {"fields": ("first_name", "preferred_name", "last_name", "email")},
+        ),
         (
             ("Permissions"),
-            {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions",)},
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
         ),
         (("Important dates"), {"fields": ("last_login", "date_joined")}),
     )

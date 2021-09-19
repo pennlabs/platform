@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -75,6 +77,15 @@ class Student(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+@receiver(post_save, sender=User)
+def ensure_student_object(sender, instance, created, **kwargs):
+    """
+    This post_save hook triggers automatically when a User object is saved, and if no Student
+    object exists for that User, it will create one
+    """
+    Student.objects.get_or_create(user=instance)
 
 
 class Email(models.Model):
