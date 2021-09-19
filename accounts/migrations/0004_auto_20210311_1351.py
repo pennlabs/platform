@@ -11,12 +11,20 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameField(model_name="email", old_name="email", new_name="value",),
         migrations.RenameField(
-            model_name="phonenumbermodel", old_name="phone_number", new_name="value",
+            model_name="email",
+            old_name="email",
+            new_name="value",
+        ),
+        migrations.RenameField(
+            model_name="phonenumbermodel",
+            old_name="phone_number",
+            new_name="value",
         ),
         migrations.AlterField(
-            model_name="school", name="name", field=models.CharField(max_length=255),
+            model_name="school",
+            name="name",
+            field=models.CharField(max_length=255),
         ),
         migrations.AlterField(
             model_name="student",

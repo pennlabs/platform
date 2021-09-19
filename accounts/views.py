@@ -1,6 +1,3 @@
-from django.utils import timezone
-from django.utils.crypto import get_random_string
-from accounts.verification import sendEmailVerification, sendSMSVerification
 import calendar
 import json
 
@@ -10,6 +7,8 @@ from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
+from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
@@ -32,6 +31,7 @@ from accounts.serializers import (
     UserSearchSerializer,
     UserSerializer,
 )
+from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
 class LoginView(View):

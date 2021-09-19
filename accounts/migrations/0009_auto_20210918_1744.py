@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0008_auto_20210918_1742'),
+        ("accounts", "0008_auto_20210918_1742"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='student',
-            name='major',
-            field=models.ManyToManyField(blank=True, to='accounts.Major'),
+            model_name="student",
+            name="major",
+            field=models.ManyToManyField(blank=True, to="accounts.Major"),
         ),
         migrations.AlterField(
-            model_name='student',
-            name='school',
-            field=models.ManyToManyField(blank=True, to='accounts.School'),
+            model_name="student",
+            name="school",
+            field=models.ManyToManyField(blank=True, to="accounts.School"),
         ),
     ]
