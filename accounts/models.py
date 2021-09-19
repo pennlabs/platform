@@ -62,6 +62,10 @@ class User(AbstractUser):
         else:
             return self.first_name
 
+    def get_email(self):
+        email = self.emails.get(primary=True)
+        return email if email else ""
+
 
 class Student(models.Model):
     """

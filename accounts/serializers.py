@@ -135,6 +135,7 @@ class EmailSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     # SerializerMethodFields are read_only
     first_name = serializers.CharField(source="get_preferred_name", required=False)
+    email = serializers.CharField(source="get_email", required=False)
     groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     user_permissions = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="codename"
