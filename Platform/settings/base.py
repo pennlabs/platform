@@ -96,6 +96,9 @@ DATABASES = {
     "default": dj_database_url.config(default="sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3"))
 }
 
+# Set default PK type
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
