@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts.models import Email, Major, PhoneNumber, School, Student, User
+from accounts.models import Email, Major, PhoneNumber, School, User
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
