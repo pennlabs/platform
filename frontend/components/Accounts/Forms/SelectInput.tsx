@@ -18,8 +18,7 @@ export const FormikSelectInput = ({ route, fieldName }) => {
         (id) => `${route}${id}/`
     );
     const [field, , helper] = useField(fieldName);
-    const data = rawData || [];
-
+    const data = useMemo(() => rawData || [], [rawData]);
     const options = useMemo(() => toSelectOptions(data), [data]);
 
     return (
@@ -33,20 +32,21 @@ export const FormikSelectInput = ({ route, fieldName }) => {
                         styles={selectStyles}
                         options={options}
                         value={toSelectOptions(values)}
-                        onChange={(_, { action, option, removedValue }) => {
-                            if (action === "select-option") {
+                        onChange={(value, action) => {
+                            if (action.action === "select-option") {
                                 push(
                                     data.filter(
-                                        (obj) => obj.name === option.value
+                                        (obj) =>
+                                            obj.name === action.option.value
                                     )[0]
                                 );
-                            } else if (action === "remove-value") {
+                            } else if (action.action === "remove-value") {
                                 remove(
                                     values.findIndex(
-                                        (obj) => obj.name === removedValue.value
+                                        (obj) => obj.name === value
                                     )
                                 );
-                            } else if (action === "clear") {
+                            } else if (action.action === "clear") {
                                 helper.setValue([]);
                             }
                         }}
