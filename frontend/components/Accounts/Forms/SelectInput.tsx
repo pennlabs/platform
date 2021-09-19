@@ -41,7 +41,6 @@ export const FormikSelectInput = ({ route, fieldName }) => {
                                     )[0]
                                 );
                             } else if (action.action === "remove-value") {
-                                console.log(action);
                                 remove(
                                     values.findIndex(
                                         (obj) =>
