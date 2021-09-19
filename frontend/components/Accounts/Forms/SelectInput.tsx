@@ -32,7 +32,7 @@ export const FormikSelectInput = ({ route, fieldName }) => {
                         styles={selectStyles}
                         options={options}
                         value={toSelectOptions(values)}
-                        onChange={(value, action) => {
+                        onChange={(_, action) => {
                             if (action.action === "select-option") {
                                 push(
                                     data.filter(
@@ -41,9 +41,12 @@ export const FormikSelectInput = ({ route, fieldName }) => {
                                     )[0]
                                 );
                             } else if (action.action === "remove-value") {
+                                console.log(action);
                                 remove(
                                     values.findIndex(
-                                        (obj) => obj.name === value
+                                        (obj) =>
+                                            obj.name ===
+                                            action.removedValue.value
                                     )
                                 );
                             } else if (action.action === "clear") {
