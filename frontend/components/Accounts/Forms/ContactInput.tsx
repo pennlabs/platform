@@ -18,7 +18,11 @@ import VerificationModal from "../Modals/Verification";
 import DeleteModal from "../Modals/Delete";
 import { useOnClickOutside } from "../../useOnClickOutside";
 import { ContactInfo, ContactType } from "../../../types";
-import { createContact, deleteContact } from "../../../data-fetching/accounts";
+import {
+    createContact,
+    deleteContact,
+    reverifyContact,
+} from "../../../data-fetching/accounts";
 
 const Dropdown = styled.div<{ isVisible: boolean }>`
     position: absolute;
@@ -44,75 +48,6 @@ const DropdownItem = styled.div`
         cursor: pointer;
     }
 `;
-
-export const FormikMultipleInputs = ({
-    route,
-    addText,
-    initialData,
-    contactType,
-}) => {
-    const { addToast } = useToasts();
-    const { data, mutate } = useResourceList<ContactInfo>(
-        route,
-        (id) => `${route}${id}/`,
-        { initialData }
-    );
-    const [showAdd, setShowAdd] = useState(true);
-    const [showModal, setShowModal] = useState(false);
-    const [verifyContact, setVerifyContact] = useState({ id: 0, contact: "" });
-
-    // Initial data provided
-    const infolist = data!;
-
-    return (
-        <>
-            {infolist.map(({ id, value, primary, verified }) => (
-                <ExistingInput
-                    contactType={contactType}
-                    text={value}
-                    onDelete={async () => {
-                        try {
-                            await deleteContact(contactType, id);
-                        } catch (e) {
-                            addToast("Delete contact failed");
-                        }
-                        mutate();
-                    }}
-                    onMakePrimary={() => mutate(id, { primary: true })}
-                    key={id}
-                    isPrimary={primary}
-                    isVerified={verified}
-                />
-            ))}
-            {showAdd && (
-                <AddInput
-                    text={addText}
-                    margin={infolist.length === 0 && "0.6rem"}
-                    onClick={() => {
-                        setShowAdd(false);
-                    }}
-                />
-            )}
-            {!showAdd && (
-                <FieldInput
-                    mutate={mutate}
-                    contactType={contactType}
-                    setShowAdd={setShowAdd}
-                    setShowModal={setShowModal}
-                    setVerifyContact={setVerifyContact}
-                />
-            )}
-            <VerificationModal
-                type={contactType}
-                show={showModal}
-                id={verifyContact.id}
-                contact={verifyContact.contact}
-                closeFunc={() => setShowModal(false)}
-                mutate={mutate}
-            />
-        </>
-    );
-};
 
 const FieldInput = ({
     mutate,
@@ -158,7 +93,7 @@ const FieldInput = ({
     return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
 };
 
-const MoreIndicator = ({ onDelete, onMakePrimary }) => {
+const MoreIndicator = ({ onDelete, onMakePrimary, onReverify, isVerified }) => {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
@@ -186,6 +121,18 @@ const MoreIndicator = ({ onDelete, onMakePrimary }) => {
                             Remove
                         </Text>
                     </DropdownItem>
+                    {!isVerified && (
+                        <DropdownItem
+                            onClick={() => {
+                                onReverify();
+                                setIsVisible(false);
+                            }}
+                        >
+                            <Text weight="400" size="0.7rem">
+                                Verify
+                            </Text>
+                        </DropdownItem>
+                    )}
                 </Dropdown>
             </Span>
         </>
@@ -197,6 +144,7 @@ export const ExistingInput = ({
     text,
     onDelete,
     onMakePrimary,
+    onReverify,
     isPrimary,
     isVerified,
 }) => {
@@ -212,8 +160,10 @@ export const ExistingInput = ({
                 </Tag>
             )}
             <MoreIndicator
+                isVerified={isVerified}
                 onDelete={() => setModalIsOpen(true)}
                 onMakePrimary={onMakePrimary}
+                onReverify={onReverify}
             />
             <DeleteModal
                 type={contactType}
@@ -243,3 +193,78 @@ export const EditInput = ({ onConfirm, value, onChange }) => (
         </Button>
     </Flex>
 );
+
+const ContactInput = ({ route, addText, initialData, contactType }) => {
+    const { addToast } = useToasts();
+    const { data, mutate } = useResourceList<ContactInfo>(
+        route,
+        (id) => `${route}${id}/`,
+        { initialData }
+    );
+    const [showAdd, setShowAdd] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [verifyContact, setVerifyContact] = useState({ id: 0, contact: "" });
+
+    // Initial data provided
+    const infolist = data!;
+
+    return (
+        <>
+            {infolist.map(({ id, value, primary, verified }) => (
+                <ExistingInput
+                    contactType={contactType}
+                    text={value}
+                    onReverify={async () => {
+                        try {
+                            setVerifyContact({ id, contact: value });
+                            await reverifyContact(contactType, id);
+                        } catch (e) {
+                            addToast("Sending verification code failed");
+                        }
+                        setShowModal(true);
+                    }}
+                    onDelete={async () => {
+                        try {
+                            await deleteContact(contactType, id);
+                        } catch (e) {
+                            addToast("Delete contact failed");
+                        }
+                        mutate();
+                    }}
+                    onMakePrimary={() => mutate(id, { primary: true })}
+                    key={id}
+                    isPrimary={primary}
+                    isVerified={verified}
+                />
+            ))}
+            {showAdd && (
+                <AddInput
+                    text={addText}
+                    margin={infolist.length === 0 && "0.6rem"}
+                    onClick={() => {
+                        setShowAdd(false);
+                    }}
+                />
+            )}
+            {!showAdd && (
+                <FieldInput
+                    mutate={mutate}
+                    contactType={contactType}
+                    setShowAdd={setShowAdd}
+                    setShowModal={setShowModal}
+                    setVerifyContact={setVerifyContact}
+                />
+            )}
+            <VerificationModal
+                type={contactType}
+                show={showModal}
+                id={verifyContact.id}
+                contact={verifyContact.contact}
+                closeFunc={() => setShowModal(false)}
+                mutate={mutate}
+            />
+        </>
+    );
+};
+
+export default ContactInput;

@@ -18,7 +18,7 @@ import {
     FormGroupHeader,
 } from "./ui";
 import { FormikInput } from "./Forms/Input";
-import { FormikMultipleInputs } from "./Forms/MultipleInput";
+import ContactInput from "./Forms/ContactInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
 
@@ -120,7 +120,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                             childMargin="0.2rem"
                                             width="100%"
                                         >
-                                            <FormikMultipleInputs
+                                            <ContactInput
                                                 route="/accounts/me/email/"
                                                 initialData={user.emails}
                                                 addText="Add another email address"
@@ -148,7 +148,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                             childMargin="0.2rem"
                                             width="100%"
                                         >
-                                            <FormikMultipleInputs
+                                            <ContactInput
                                                 route="/accounts/me/phonenumber/"
                                                 initialData={user.phone_numbers}
                                                 addText="Add a phone number"

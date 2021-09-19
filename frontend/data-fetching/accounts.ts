@@ -42,3 +42,15 @@ export const deleteContact = async (type: ContactType, id: number) => {
         throw new Error(body.detail);
     }
 };
+
+export const reverifyContact = async (type: ContactType, id: number) => {
+    const res = await doApiRequest(
+        `/accounts/me/${type}/${id}/resend_verification/`,
+        { method: "POST" }
+    );
+
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.detail);
+    }
+};
