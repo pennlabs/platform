@@ -93,7 +93,13 @@ const FieldInput = ({
     return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
 };
 
-const MoreIndicator = ({ onDelete, onMakePrimary, onReverify, isVerified }) => {
+const MoreIndicator = ({
+    onDelete,
+    onMakePrimary,
+    onReverify,
+    isVerified,
+    isPrimary,
+}) => {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
@@ -101,16 +107,18 @@ const MoreIndicator = ({ onDelete, onMakePrimary, onReverify, isVerified }) => {
             <Span position="relative">
                 <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
                 <Dropdown ref={ref as any} isVisible={isVisible}>
-                    <DropdownItem
-                        onClick={() => {
-                            onMakePrimary();
-                            setIsVisible(false);
-                        }}
-                    >
-                        <Text weight="400" size="0.7rem">
-                            Set primary
-                        </Text>
-                    </DropdownItem>
+                    {!isPrimary && isVerified && (
+                        <DropdownItem
+                            onClick={() => {
+                                onMakePrimary();
+                                setIsVisible(false);
+                            }}
+                        >
+                            <Text weight="400" size="0.7rem">
+                                Set primary
+                            </Text>
+                        </DropdownItem>
+                    )}
                     <DropdownItem
                         onClick={() => {
                             onDelete();
@@ -159,7 +167,13 @@ export const ExistingInput = ({
                     <span>PRIMARY</span>
                 </Tag>
             )}
+            {!isVerified && (
+                <Tag>
+                    <span>UNVERIFIED</span>
+                </Tag>
+            )}
             <MoreIndicator
+                isPrimary={isPrimary}
                 isVerified={isVerified}
                 onDelete={() => setModalIsOpen(true)}
                 onMakePrimary={onMakePrimary}

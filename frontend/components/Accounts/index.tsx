@@ -2,6 +2,7 @@ import { Form, Formik } from "formik";
 import { Heading } from "react-bulma-components";
 import { useToasts } from "react-toast-notifications";
 import { useResource } from "@pennlabs/rest-hooks";
+import * as _ from "lodash";
 import * as Yup from "yup";
 import {
     RootContainer,
@@ -22,17 +23,23 @@ import ContactInput from "./Forms/ContactInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
 
-const selectFields = (form: User) => ({
-    first_name: form.first_name,
-    student: form.student,
-});
-
 const FormSchema = Yup.object({
     first_name: Yup.string().required("Required"),
     student: Yup.object({
-        graduation_year: Yup.number().required().positive().integer(),
+        graduation_year: Yup.number().positive().integer().nullable(),
     }),
 });
+
+const selectFields = (form: User) => {
+    const payload = _.cloneDeep(form);
+    if (payload.student && !payload.student?.graduation_year) {
+        payload.student.graduation_year = null;
+    }
+    return {
+        first_name: payload.first_name,
+        student: payload.student,
+    };
+};
 
 const Accounts = ({ user: initialUser }: { user: User }) => {
     const { addToast } = useToasts();
@@ -73,7 +80,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                         </Text>
                                     </FormGroupItem>
                                     <FormGroupItem col={1} row={2}>
-                                        <Text weight="400">Username</Text>
+                                        <Text weight="400">Pennkey</Text>
                                     </FormGroupItem>
                                     <FormGroupItem col={2} row={2}>
                                         <Text weight="300">
@@ -152,37 +159,49 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                         </Flex>
                                     </FormGroupItem>
                                 </FormGroupGrid>
-                                <Break />
-                                <FormGroupHeader>Academics</FormGroupHeader>
-                                <FormGroupGrid>
-                                    <FormGroupItem col={1} row={1}>
-                                        <Text weight="400">School(s)</Text>
-                                    </FormGroupItem>
-                                    <FormGroupItem col={2} row={1}>
-                                        <FormikSelectInput
-                                            route="/accounts/schools/"
-                                            fieldName="student.school"
-                                        />
-                                    </FormGroupItem>
-                                    <FormGroupItem col={1} row={2}>
-                                        <Text weight="400">Major(s)</Text>
-                                    </FormGroupItem>
-                                    <FormGroupItem col={2} row={2}>
-                                        <FormikSelectInput
-                                            route="/accounts/majors/"
-                                            fieldName="student.major"
-                                        />
-                                    </FormGroupItem>
-                                    <FormGroupItem col={1} row={3}>
-                                        <Text weight="400">Grad Year</Text>
-                                    </FormGroupItem>
-                                    <FormGroupItem col={2} row={3}>
-                                        <FormikInput
-                                            fieldName="student.graduation_year"
-                                            type="text"
-                                        />
-                                    </FormGroupItem>
-                                </FormGroupGrid>
+                                {user.groups.includes("student") && (
+                                    <>
+                                        <Break />
+                                        <FormGroupHeader>
+                                            Academics
+                                        </FormGroupHeader>
+                                        <FormGroupGrid>
+                                            <FormGroupItem col={1} row={1}>
+                                                <Text weight="400">
+                                                    School(s)
+                                                </Text>
+                                            </FormGroupItem>
+                                            <FormGroupItem col={2} row={1}>
+                                                <FormikSelectInput
+                                                    route="/accounts/schools/"
+                                                    fieldName="student.school"
+                                                />
+                                            </FormGroupItem>
+                                            <FormGroupItem col={1} row={2}>
+                                                <Text weight="400">
+                                                    Major(s)
+                                                </Text>
+                                            </FormGroupItem>
+                                            <FormGroupItem col={2} row={2}>
+                                                <FormikSelectInput
+                                                    route="/accounts/majors/"
+                                                    fieldName="student.major"
+                                                />
+                                            </FormGroupItem>
+                                            <FormGroupItem col={1} row={3}>
+                                                <Text weight="400">
+                                                    Grad Year
+                                                </Text>
+                                            </FormGroupItem>
+                                            <FormGroupItem col={2} row={3}>
+                                                <FormikInput
+                                                    fieldName="student.graduation_year"
+                                                    type="text"
+                                                />
+                                            </FormGroupItem>
+                                        </FormGroupGrid>
+                                    </>
+                                )}
                                 <Button margin="1.5rem 0 0 0">Save</Button>
                             </Form>
                         </Formik>

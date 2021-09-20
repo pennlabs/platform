@@ -11,7 +11,7 @@ export interface Major extends NamedObject {
 export interface Student {
     major: Major[];
     school: NamedObject[];
-    graduation_year: number;
+    graduation_year: number | null;
 }
 
 export interface ContactInfo {
@@ -21,6 +21,9 @@ export interface ContactInfo {
     verified: boolean;
 }
 
+// TODO-someday:
+// Have some check that enforces that student field
+// is not read when "student" is not in "groups"
 export interface User {
     pennid: number;
     first_name: string;
