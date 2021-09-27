@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+// TODO: tailwind (or styled-components) ui library
+
 interface FlexProps {
     margin?: string;
     childMargin?: string;

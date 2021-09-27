@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import styled from "styled-components";
 import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
@@ -49,13 +49,29 @@ const DropdownItem = styled.div`
     }
 `;
 
+// TODO: replace a lot of these inputs with headless-ui
+
+type VerifyContactState = {
+    id: Number;
+    contact: String;
+};
+
+type FieldInputProps = {
+    // TODO: don't really understand what mutate does
+    mutate: () => void;
+    contactType: ContactType;
+    setShowAdd: Dispatch<boolean>;
+    setVerifyContact: Dispatch<VerifyContactState>;
+    setShowModal: Dispatch<boolean>;
+};
+
 const FieldInput = ({
     mutate,
     contactType,
     setShowAdd,
     setVerifyContact,
     setShowModal,
-}) => {
+}: FieldInputProps) => {
     const { addToast } = useToasts();
     const [text, setText] = useState("");
 
@@ -71,7 +87,7 @@ const FieldInput = ({
 
             if (contactType === ContactType.PhoneNumber) {
                 const phone = parsePhoneNumber(text, "US");
-                payload = phone ? phone.number : "";
+                payload = phone ? phone.number.toString() : "";
             } else {
                 payload = text;
             }
@@ -82,6 +98,7 @@ const FieldInput = ({
             return;
         }
 
+        // bruh what is this
         await mutate();
         if (!res.verified) {
             setShowModal(true);
@@ -93,13 +110,21 @@ const FieldInput = ({
     return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
 };
 
+type MoreIndicatorProps = {
+    onDelete: () => void;
+    onMakePrimary: () => void;
+    onReverify: () => void;
+    isVerified: boolean;
+    isPrimary: boolean;
+};
+
 const MoreIndicator = ({
     onDelete,
     onMakePrimary,
     onReverify,
     isVerified,
     isPrimary,
-}) => {
+}: MoreIndicatorProps) => {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
@@ -207,6 +232,8 @@ export const EditInput = ({ onConfirm, value, onChange }) => (
         </Button>
     </Flex>
 );
+
+// TODO: fix up layout so it's clearer what's primary, verified, unverified
 
 const ContactInput = ({ route, addText, initialData, contactType }) => {
     const { addToast } = useToasts();
