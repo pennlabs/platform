@@ -6,12 +6,12 @@ import { FormInput } from "../ui";
 export const FormikInput = ({
     fieldName,
     ...props
-}: { fieldName: string } & React.ComponentPropsWithoutRef<"input">) => {
+}: { fieldName: string } & React.ComponentPropsWithoutRef<
+    typeof FormInput
+>) => {
     const [field, meta] = useField(fieldName);
 
     return (
-        // TODO: make this neater
-        // @ts-ignore
         <FormInput
             /* eslint-disable */
             {...field}
