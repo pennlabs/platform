@@ -1,4 +1,4 @@
-import { Dispatch, useState } from "react";
+import React, { ChangeEventHandler, Dispatch, useState } from "react";
 import styled from "styled-components";
 import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
@@ -52,18 +52,18 @@ const DropdownItem = styled.div`
 // TODO: replace a lot of these inputs with headless-ui
 
 type VerifyContactState = {
-    id: Number;
-    contact: String;
+    id: number;
+    contact: string;
 };
 
-type FieldInputProps = {
+interface FieldInputProps {
     // TODO: don't really understand what mutate does
     mutate: () => void;
     contactType: ContactType;
     setShowAdd: Dispatch<boolean>;
     setVerifyContact: Dispatch<VerifyContactState>;
     setShowModal: Dispatch<boolean>;
-};
+}
 
 const FieldInput = ({
     mutate,
@@ -75,8 +75,8 @@ const FieldInput = ({
     const { addToast } = useToasts();
     const [text, setText] = useState("");
 
-    const onChange = (e) => {
-        setText(e.target.value);
+    const onChange = (e: React.FormEvent<HTMLInputElement>) => {
+        setText(e.currentTarget.value);
     };
 
     const onConfirm = async () => {
@@ -110,13 +110,13 @@ const FieldInput = ({
     return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
 };
 
-type MoreIndicatorProps = {
+interface ContactEventProps {
     onDelete: () => void;
     onMakePrimary: () => void;
     onReverify: () => void;
     isVerified: boolean;
     isPrimary: boolean;
-};
+}
 
 const MoreIndicator = ({
     onDelete,
@@ -124,7 +124,7 @@ const MoreIndicator = ({
     onReverify,
     isVerified,
     isPrimary,
-}: MoreIndicatorProps) => {
+}: ContactEventProps) => {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
@@ -180,7 +180,7 @@ export const ExistingInput = ({
     onReverify,
     isPrimary,
     isVerified,
-}) => {
+}: ContactEventProps & { contactType: ContactType; text: string }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     return (
@@ -218,13 +218,29 @@ export const ExistingInput = ({
     );
 };
 
-export const AddInput = ({ text, onClick, margin }) => (
+export const AddInput = ({
+    text,
+    onClick,
+    margin,
+}: {
+    text: string;
+    onClick: () => void;
+    margin: string | undefined;
+}) => (
     <AddButton onClick={onClick} marginTop={margin}>
         {text}
     </AddButton>
 );
 
-export const EditInput = ({ onConfirm, value, onChange }) => (
+export const EditInput = ({
+    onConfirm,
+    value,
+    onChange,
+}: {
+    onConfirm: () => void;
+    value: string;
+    onChange: ChangeEventHandler<HTMLInputElement>;
+}) => (
     <Flex childMargin="0.2rem" width="100%">
         <FormInput height="2rem" value={value} onChange={onChange} />
         <Button type="button" onClick={onConfirm}>
@@ -235,7 +251,19 @@ export const EditInput = ({ onConfirm, value, onChange }) => (
 
 // TODO: fix up layout so it's clearer what's primary, verified, unverified
 
-const ContactInput = ({ route, addText, initialData, contactType }) => {
+interface ContactInputProps {
+    route: string;
+    addText: string;
+    initialData: ContactInfo[];
+    contactType: ContactType;
+}
+
+const ContactInput = ({
+    route,
+    addText,
+    initialData,
+    contactType,
+}: ContactInputProps) => {
     const { addToast } = useToasts();
     const { data, mutate } = useResourceList<ContactInfo>(
         route,
@@ -281,7 +309,7 @@ const ContactInput = ({ route, addText, initialData, contactType }) => {
             {showAdd && (
                 <AddInput
                     text={addText}
-                    margin={infolist.length === 0 && "0.6rem"}
+                    margin={infolist.length === 0 ? "0.6rem" : undefined}
                     onClick={() => {
                         setShowAdd(false);
                     }}

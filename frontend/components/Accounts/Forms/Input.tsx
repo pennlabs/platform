@@ -2,7 +2,7 @@ import { useField } from "formik";
 
 import { FormInput } from "../ui";
 
-export const FormikInput = ({ fieldName, ...props }) => {
+export const FormikInput = ({ fieldName, ...props }: { fieldName: string }) => {
     const [field, meta] = useField(fieldName);
 
     return (
