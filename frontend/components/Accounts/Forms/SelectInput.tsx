@@ -9,6 +9,8 @@ interface SelectOption {
     name: string;
 }
 
+// TODO: this
+
 const toSelectOptions = (options) =>
     options.map((obj) => ({ value: obj.name, label: obj.name }));
 
