@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-// TODO: tailwind (or styled-components) ui library
+// TODO: component library
 
 interface FlexProps {
     margin?: string;
@@ -190,8 +190,9 @@ export const Button = styled.button<{
     margin-top: ${(props) => props.marginTop};
 `;
 
+// TODO: don't think this is ok as type any...
 export const selectStyles = {
-    container: (base) => ({
+    container: (base: any) => ({
         ...base,
         width: "100%",
         padding: "0.5rem 0 0.5rem 0",
