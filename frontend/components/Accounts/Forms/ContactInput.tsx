@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
 import parsePhoneNumber from "libphonenumber-js";
+import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
 
 import {
     AddButton,
@@ -49,7 +50,7 @@ const DropdownItem = styled.div`
     }
 `;
 
-// TODO: replace a lot of these inputs with headless-ui
+// TODO: replace this repeated input code (custom ui library components)
 
 type VerifyContactState = {
     id: number;
@@ -57,8 +58,7 @@ type VerifyContactState = {
 };
 
 interface FieldInputProps {
-    // TODO: don't really understand what mutate does
-    mutate: () => void;
+    mutate: mutateResourceListFunction<ContactInfo>;
     contactType: ContactType;
     setShowAdd: Dispatch<boolean>;
     setVerifyContact: Dispatch<VerifyContactState>;

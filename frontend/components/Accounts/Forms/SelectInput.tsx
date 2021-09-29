@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import Select from "react-select";
+import Select, { ActionMeta } from "react-select";
 import { useResourceList } from "@pennlabs/rest-hooks";
 import { useField, FieldArray } from "formik";
 import { selectStyles } from "../ui";
@@ -8,8 +8,6 @@ interface SelectOption {
     id: number;
     name: string;
 }
-
-// TODO: figure this out
 
 const toSelectOptions = (options: SelectOption[]) =>
     options.map((obj) => ({ value: obj.name, label: obj.name }));
@@ -40,18 +38,22 @@ export const FormikSelectInput = ({
                         styles={selectStyles}
                         options={options}
                         value={toSelectOptions(values)}
-                        onChange={(_, action) => {
+                        onChange={(
+                            _,
+                            // TODO: yo is this typing reasonable..?
+                            action: ActionMeta<typeof options[number]>
+                        ) => {
                             if (action.action === "select-option") {
                                 push(
                                     data.filter(
-                                        (obj) =>
-                                            obj.name === action.option.value
+                                        (obj: SelectOption) =>
+                                            obj.name === action.option?.value
                                     )[0]
                                 );
                             } else if (action.action === "remove-value") {
                                 remove(
                                     values.findIndex(
-                                        (obj) =>
+                                        (obj: SelectOption) =>
                                             obj.name ===
                                             action.removedValue.value
                                     )
