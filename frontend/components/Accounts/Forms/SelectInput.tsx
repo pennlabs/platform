@@ -9,12 +9,18 @@ interface SelectOption {
     name: string;
 }
 
-// TODO: this
+// TODO: figure this out
 
-const toSelectOptions = (options) =>
+const toSelectOptions = (options: SelectOption[]) =>
     options.map((obj) => ({ value: obj.name, label: obj.name }));
 
-export const FormikSelectInput = ({ route, fieldName }) => {
+export const FormikSelectInput = ({
+    route,
+    fieldName,
+}: {
+    route: string;
+    fieldName: string;
+}) => {
     const { data: rawData } = useResourceList<SelectOption>(
         route,
         (id) => `${route}${id}/`
