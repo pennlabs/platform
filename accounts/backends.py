@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 from django.contrib.auth.models import Group
 
+from accounts.models import Email
+
 
 class ShibbolethRemoteUserBackend(RemoteUserBackend):
     """
@@ -42,9 +44,9 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
             if email is None:
                 email = f"{shibboleth_attributes['username']}@upenn.edu"
             user.set_unusable_password()
-            user.email = email
             user.save()
             user = self.configure_user(request, user)
+            Email.objects.create(user=user, value=email, primary=True, verified=True)
 
         # Update fields if changed
         for key, value in shibboleth_attributes.items():

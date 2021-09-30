@@ -63,7 +63,7 @@ class User(AbstractUser):
             return self.first_name
 
     def get_email(self):
-        email = self.emails.get(primary=True)
+        email = self.emails.filter(primary=True).first()
         return email if email else ""
 
 
