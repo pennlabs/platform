@@ -11,22 +11,19 @@ export interface Major extends NamedObject {
 export interface Student {
     major: Major[];
     school: NamedObject[];
+    graduation_year: number | null;
 }
 
-export interface Email {
+export interface ContactInfo {
     id: number;
-    email: string;
+    value: string;
     primary: boolean;
     verified: boolean;
 }
 
-export interface PhoneNumber {
-    id: number;
-    phone_number: string;
-    primary: boolean;
-    verified: boolean;
-}
-
+// TODO-someday:
+// Have some check that enforces that student field
+// is not read when "student" is not in "groups"
 export interface User {
     pennid: number;
     first_name: string;
@@ -37,8 +34,8 @@ export interface User {
     product_permissions: string[];
     user_permissions: string[];
     student: Student;
-    emails: Email[];
-    phone_numbers: PhoneNumber[];
+    emails: ContactInfo[];
+    phone_numbers: ContactInfo[];
 }
 
 export enum ContactType {
