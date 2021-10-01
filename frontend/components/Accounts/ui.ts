@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { CSSObject } from "styled-components";
 
 // TODO: component library
 
@@ -190,9 +190,8 @@ export const Button = styled.button<{
     margin-top: ${(props) => props.marginTop};
 `;
 
-// TODO: don't think this is ok as type any...
 export const selectStyles = {
-    container: (base: any) => ({
+    container: (base: CSSObject) => ({
         ...base,
         width: "100%",
         padding: "0.5rem 0 0.5rem 0",
