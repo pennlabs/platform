@@ -9,8 +9,13 @@ interface SelectOption {
     name: string;
 }
 
+interface FormOption {
+    value: string;
+    label: string;
+}
+
 const toSelectOptions = (options: SelectOption[]) =>
-    options.map((obj) => ({ value: obj.name, label: obj.name }));
+    options.map((obj): FormOption => ({ value: obj.name, label: obj.name }));
 
 export const FormikSelectInput = ({
     route,
@@ -38,11 +43,7 @@ export const FormikSelectInput = ({
                         styles={selectStyles}
                         options={options}
                         value={toSelectOptions(values)}
-                        onChange={(
-                            _,
-                            // TODO: yo is this typing reasonable..?
-                            action: ActionMeta<typeof options[number]>
-                        ) => {
+                        onChange={(_, action: ActionMeta<FormOption>) => {
                             if (action.action === "select-option") {
                                 push(
                                     data.filter(
