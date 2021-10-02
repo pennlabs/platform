@@ -1,7 +1,5 @@
 import styled, { CSSObject } from "styled-components";
 
-// TODO: component library
-
 interface FlexProps {
     margin?: string;
     childMargin?: string;
