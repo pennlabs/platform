@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, Dispatch, useState } from "react";
+import { ChangeEventHandler, FormEvent, Dispatch, useState } from "react";
 import styled from "styled-components";
 import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
@@ -73,7 +73,7 @@ const FieldInput = ({
     const { addToast } = useToasts();
     const [text, setText] = useState("");
 
-    const onChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const onChange = (e: FormEvent<HTMLInputElement>) => {
         setText(e.currentTarget.value);
     };
 
@@ -96,7 +96,6 @@ const FieldInput = ({
             return;
         }
 
-        // bruh what is this
         await mutate();
         if (!res.verified) {
             setShowModal(true);

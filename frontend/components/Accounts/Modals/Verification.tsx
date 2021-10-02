@@ -37,6 +37,7 @@ const VerificationForm = (props: VerificationFormProps) => {
                 mutate();
                 addToast("Verification success!");
             } catch (e: any) {
+                // TODO: read up on error handling
                 addToast("Verification failed");
                 logException(e);
             }
