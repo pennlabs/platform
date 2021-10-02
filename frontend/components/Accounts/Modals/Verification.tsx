@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import ReactCodeInput from "react-code-input";
 import { useToasts } from "react-toast-notifications";
 import { Modal } from "react-bulma-components";
