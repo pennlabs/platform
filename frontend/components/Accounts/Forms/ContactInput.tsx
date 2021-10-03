@@ -233,7 +233,8 @@ const ContactInput = ({ route, addText, initialData, contactType }) => {
                             setVerifyContact({ id, contact: value });
                             await reverifyContact(contactType, id);
                         } catch (e) {
-                            addToast("Sending verification code failed");
+                            addToast(`Did not resend verification message - check your
+${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         }
                         setShowModal(true);
                     }}
