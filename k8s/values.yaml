@@ -10,7 +10,15 @@ applications:
       hosts:
         - host: platform.pennlabs.org
           paths:
-            ["/admin", "/accounts", "/options", "/openapi", "/documentation"]
+            [
+              "/admin",
+              "/accounts",
+              "/assets",
+              "/options",
+              "/openapi",
+              "/documentation",
+              "/Shibboleth.sso",
+            ]
       annotations:
         ingress.kubernetes.io/protocol: http
     extraEnv:
