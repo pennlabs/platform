@@ -64,7 +64,7 @@ class User(AbstractUser):
 
     def get_email(self):
         email = self.emails.filter(primary=True).first()
-        return email if email else ""
+        return email.value if email else ""
 
 
 class Student(models.Model):
