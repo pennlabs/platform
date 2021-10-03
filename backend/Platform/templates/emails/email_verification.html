@@ -1,0 +1,20 @@
+{% extends 'emails/base.html' %}
+
+{% block content %}
+
+<p>Hey {{ first_name }}!</p>
+
+<p>Your Penn Labs verification code is:</p>
+
+<div id="verification-div">
+  {% for num in verification_code %}
+    <div class="verification-block">
+      <span class="verification-number">
+        {{ num }}
+      </span>
+    </div>
+  {% endfor %}
+</div>
+
+<p>Do not share this verification code with anyone.</p>
+{% endblock %}
