@@ -9,7 +9,9 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.test import Client, TestCase
+from django.core.management import call_command
+from django.test import Client, TestCase, override_settings
+from django.urls import clear_url_caches, reverse
 from django.urls import reverse
 from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model

@@ -5,11 +5,12 @@ from json.decoder import JSONDecodeError
 from django.contrib import auth
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -65,6 +66,18 @@ class LoginView(View):
             return redirect(request.GET.get("next", "/"))
         capture_message("Invalid user returned from shibboleth")
         return HttpResponseServerError()
+
+
+class LogoutView(View):
+    """
+    Log out a user from both Platform and Shibboleth.
+    """
+
+    def get(self, request):
+        auth.logout(request)
+        return redirect(
+            "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+        )
 
 
 class DevLoginView(View):
@@ -128,18 +141,6 @@ class DevLogoutView(View):
     def get(self, request):
         auth.logout(request)
         return redirect("accounts:login")
-
-
-class LogoutView(View):
-    """
-    Log out a user from both Platform and Shibboleth.
-    """
-
-    def get(self, request):
-        auth.logout(request)
-        return redirect(
-            "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
-        )
 
 
 @method_decorator(csrf_exempt, name="dispatch")

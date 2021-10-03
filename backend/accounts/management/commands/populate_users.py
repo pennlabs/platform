@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.management import BaseCommand
 
-from accounts.models import Email, Major, PhoneNumberModel, School, Student, User
+from accounts.models import Email, Major, PhoneNumber, School, Student, User
 
 
 users = [
@@ -132,16 +132,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        # check if already filled
-        all_users = get_user_model().objects.all()
-        if (
-            len(all_users) == 10
-            and len(all_users.filter(username="rajivgandhi")) > 0
-            and (not options["force"])
-        ):
-            self.stdout.write("Users already populated")
-            return
-
         # Main Command
         Student.objects.all().delete()
         Group.objects.all().delete()
@@ -151,7 +141,9 @@ class Command(BaseCommand):
 
         for i, user in enumerate(users):
             username = (user["first_name"].strip() + user["last_name"].strip()).lower()
-            school = user["student"]["school"][0].lower() + "." if "student" in user else ""
+            school = (
+                user["student"]["school"][0].lower() + "." if "student" in user else ""
+            )
             email_address = f"{user['first_name'].strip().lower()}@{school}upenn.edu"
             first_name = user["first_name"]
             last_name = user["last_name"]
@@ -180,10 +172,8 @@ class Command(BaseCommand):
 
             if "student" in user:
                 student_details = user["student"]
-                student = Student(
-                    user=User.objects.all().get(username=username),
-                    graduation_year=student_details["graduation_year"],
-                )
+                student = user_obj.student
+                student.graduation_year = student_details["graduation_year"]
                 student.save()
                 for major_name in student_details["major"]:
                     majors = Major.objects.filter(name=major_name)
@@ -238,7 +228,7 @@ class Command(BaseCommand):
                 number = ""
                 for _ in range(10):
                     number += str(random.randint(0, 9))
-                phone = PhoneNumberModel(
+                phone = PhoneNumber(
                     user=User.objects.all().get(username=username),
                     value=number,
                     primary=True,

@@ -32,7 +32,6 @@ router.register("schools", SchoolViewSet, basename="schools")
 FinalLoginView = DevLoginView if settings.IS_DEV_LOGIN else LoginView
 FinalLogoutView = DevLogoutView if settings.IS_DEV_LOGIN else LogoutView
 
-
 urlpatterns = [
     path("login/", FinalLoginView.as_view(), name="login"),
     path("logout/", FinalLogoutView.as_view(), name="logout"),
