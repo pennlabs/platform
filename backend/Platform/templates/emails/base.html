@@ -1,0 +1,79 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
+    <style type="text/css">
+        body {
+          font-family: 'Lato', sans-serif;
+        }
+
+        .content-box {
+            padding: 20px;
+        }
+
+        .title {
+            margin-top: 0;
+        }
+
+        .header-logo {
+            width: 120px;
+            padding-top: 20px;
+            padding-left: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 30px;
+        }
+
+        .footer p {
+            font-size: 12px;
+        }
+
+        span.line {
+            display: inline-block;
+        }
+
+        #verification-div {
+          display: flex;
+          flex-direction: row;
+          margin-left: -3px;
+        }
+
+        .verification-block {
+          width: 40px;
+          height: 55px;
+          margin: 3px;
+          border-radius: 2px;
+          background-color: #E7E7E7;
+          display:flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .verification-number {
+          font-weight: 600;
+          font-size: 20px;
+          color: #767676;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <a href="https://platform.pennlabs.org">
+      <img src="https://pennlabs-assets.s3.amazonaws.com/labs-full-logo.svg"
+            class="header-logo">
+    </a>
+
+    <div class="content-box">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+        <a href="https://platform.pennlabs.org/">Penn Labs Account Management</a>
+        <br />
+        Made with <span style="color: red">&hearts;</span> by <a href="https://pennlabs.org/">Penn Labs</a>
+    </div>
+</body>
