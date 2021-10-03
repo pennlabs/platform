@@ -34,6 +34,7 @@ export const RootContainer = styled.div`
     display: flex;
     flex-flow: column;
     height: 100%;
+    background: #f7fbff;
 `;
 
 export const Nav = styled.div`
@@ -44,10 +45,10 @@ export const Nav = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
+    margin-bottom: 2rem;
 `;
 
 export const MainContainer = styled.div`
-    background: #f7fbff;
     flex: 1 1 auto;
     position: relative;
     overflow: auto;
