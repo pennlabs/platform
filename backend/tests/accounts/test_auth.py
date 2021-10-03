@@ -18,7 +18,9 @@ class AuthTestCase(TestCase):
         self.member = get_user_model().objects.create_user(
             pennid=2, username="member", password="secret"
         )
-        Member.objects.create(student=self.member.student, year_joined=datetime.date.today())
+        Member.objects.create(
+            student=self.member.student, year_joined=datetime.date.today()
+        )
         self.application = Application(
             name="Test",
             redirect_uris="http://a.a",
@@ -41,7 +43,9 @@ class AuthTestCase(TestCase):
             expires=timezone.now() + datetime.timedelta(days=1),
             scope="read write",
         )
-        self.student_header = {"HTTP_AUTHORIZATION": "Bearer " + self.student_token.token}
+        self.student_header = {
+            "HTTP_AUTHORIZATION": "Bearer " + self.student_token.token
+        }
         self.member_header = {"HTTP_AUTHORIZATION": "Bearer " + self.member_token.token}
 
     def test_penn_view_anonymous(self):
@@ -61,9 +65,13 @@ class AuthTestCase(TestCase):
         self.assertEqual(request.status_code, 403)
 
     def test_labs_view_student(self):
-        request = self.client.get(reverse("accounts:labsprotected"), **self.student_header)
+        request = self.client.get(
+            reverse("accounts:labsprotected"), **self.student_header
+        )
         self.assertEqual(request.status_code, 403)
 
     def test_labs_view_member(self):
-        request = self.client.get(reverse("accounts:labsprotected"), **self.member_header)
+        request = self.client.get(
+            reverse("accounts:labsprotected"), **self.member_header
+        )
         self.assertEqual(request.status_code, 200)

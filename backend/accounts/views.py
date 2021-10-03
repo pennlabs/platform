@@ -57,7 +57,9 @@ class LoginView(View):
             "last_name": last_name,
             "affiliation": affiliation,
         }
-        user = auth.authenticate(remote_user=pennid, shibboleth_attributes=shibboleth_attributes)
+        user = auth.authenticate(
+            remote_user=pennid, shibboleth_attributes=shibboleth_attributes
+        )
         if user:
             auth.login(request, user)
             return redirect(request.GET.get("next", "/"))
@@ -72,7 +74,9 @@ class LogoutView(View):
 
     def get(self, request):
         auth.logout(request)
-        return redirect("/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout")
+        return redirect(
+            "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+        )
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -83,7 +87,9 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
             token = get_access_token_model().objects.get(token=token_value)
         except ObjectDoesNotExist:
             return HttpResponse(
-                content=json.dumps({"active": False}), status=401, content_type="application/json"
+                content=json.dumps({"active": False}),
+                status=401,
+                content_type="application/json",
             )
         else:
             if token.is_valid():
@@ -97,7 +103,9 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
                 if token.user:
                     data["user"] = UserSerializer(token.user).data
                 return HttpResponse(
-                    content=json.dumps(data), status=200, content_type="application/json"
+                    content=json.dumps(data),
+                    status=200,
+                    content_type="application/json",
                 )
             else:
                 return HttpResponse(
@@ -238,7 +246,9 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
         obj = self.get_object()
         elapsed_time = timezone.now() - obj.verification_timestamp
         if elapsed_time.total_seconds() > User.VERIFICATION_EXPIRATION_MINUTES * 60:
-            obj.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+            obj.verification_code = get_random_string(
+                length=6, allowed_chars="1234567890"
+            )
             obj.verification_timestamp = timezone.now()
             sendSMSVerification(obj.value, obj.verification_code)
             obj.save()
@@ -278,7 +288,9 @@ class EmailViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         is_primary = self.get_object().primary
         if is_primary and self.get_queryset().filter(verified=True).count() < 2:
-            return Response({"detail": "You can't delete the only verified email"}, status=405)
+            return Response(
+                {"detail": "You can't delete the only verified email"}, status=405
+            )
 
         self.get_object().delete()
         next_email = self.get_queryset().filter(verified=True).first()
@@ -292,7 +304,9 @@ class EmailViewSet(viewsets.ModelViewSet):
         obj = self.get_object()
         elapsed_time = timezone.now() - obj.verification_timestamp
         if elapsed_time.total_seconds() > User.VERIFICATION_EXPIRATION_MINUTES * 60:
-            obj.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+            obj.verification_code = get_random_string(
+                length=6, allowed_chars="1234567890"
+            )
             obj.verification_timestamp = timezone.now()
             sendEmailVerification(obj.value, obj.verification_code)
             obj.save()
@@ -315,7 +329,9 @@ class LabsProtectedViewSet(LabsView):
     """
 
     def get(self, request, format=None):
-        return HttpResponse({"secret_information": "this is a Penn Labs protected route"})
+        return HttpResponse(
+            {"secret_information": "this is a Penn Labs protected route"}
+        )
 
 
 class MajorViewSet(viewsets.ReadOnlyModelViewSet):
@@ -361,7 +377,9 @@ class ProductAdminView(APIView):
     def post(self, request, format=None):
         # Revoke all existing admin permissions
         content_type = ContentType.objects.get(app_label="accounts", model="user")
-        perms = Permission.objects.filter(content_type=content_type, codename__endswith="_admin")
+        perms = Permission.objects.filter(
+            content_type=content_type, codename__endswith="_admin"
+        )
         for perm in perms:
             perm.user_set.clear()
         User.objects.filter(Q(is_superuser=True) | Q(is_staff=True)).update(

@@ -80,7 +80,9 @@ class LabsAdminSite(admin.AdminSite):
 
     def login(self, request, extra_context=None):
         if not request.user.is_authenticated:
-            return redirect(reverse("accounts:login") + "?next=" + request.GET.get("next"))
+            return redirect(
+                reverse("accounts:login") + "?next=" + request.GET.get("next")
+            )
         return super().login(request, extra_context)
 
 

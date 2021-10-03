@@ -41,8 +41,13 @@ class LoginViewTestCase(TestCase):
             "HTTP_SN": "user-hyphenated",
             "HTTP_MAIL": "test@student.edu",
         }
-        params = reverse("accounts:authorize") + "?client_id=abc123&response_type=code&state=abc"
-        response = self.client.get(reverse("accounts:login") + "?next=" + quote(params), **headers)
+        params = (
+            reverse("accounts:authorize")
+            + "?client_id=abc123&response_type=code&state=abc"
+        )
+        response = self.client.get(
+            reverse("accounts:login") + "?next=" + quote(params), **headers
+        )
         base_url = "/accounts/authorize/"
         sample_response = base_url + "?client_id=abc123&response_type=code&state=abc"
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
@@ -56,16 +61,22 @@ class LogoutViewTestCase(TestCase):
         self.client = Client()
 
     def test_logged_in_user(self):
-        get_user_model().objects.create_user(pennid=1, username="user", password="secret")
+        get_user_model().objects.create_user(
+            pennid=1, username="user", password="secret"
+        )
         self.client.login(username="user", password="secret")
         response = self.client.get(reverse("accounts:logout"))
         self.assertNotIn("_auth_user_id", self.client.session)
-        sample_response = "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+        sample_response = (
+            "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+        )
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
 
     def test_guest_user(self):
         response = self.client.get(reverse("accounts:logout"))
-        sample_response = "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+        sample_response = (
+            "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
+        )
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
 
 
@@ -82,7 +93,9 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         self.resource_server_user = self.UserModel.objects.create_user(
             pennid=1, username="resource_server"
         )
-        self.test_user = self.UserModel.objects.create_user(pennid=2, username="bar_user")
+        self.test_user = self.UserModel.objects.create_user(
+            pennid=2, username="bar_user"
+        )
 
         self.application = self.Application(
             name="Test Application",
@@ -118,9 +131,13 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         )
 
     def test_view_post_valid_token(self):
-        auth_headers = {"HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token}
+        auth_headers = {
+            "HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token
+        }
         response = self.client.post(
-            reverse("accounts:introspect"), {"token": self.valid_token.token}, **auth_headers
+            reverse("accounts:introspect"),
+            {"token": self.valid_token.token},
+            **auth_headers,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -138,9 +155,13 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         )
 
     def test_view_post_invalid_token(self):
-        auth_headers = {"HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token}
+        auth_headers = {
+            "HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token
+        }
         response = self.client.post(
-            reverse("accounts:introspect"), {"token": self.invalid_token.token}, **auth_headers
+            reverse("accounts:introspect"),
+            {"token": self.invalid_token.token},
+            **auth_headers,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -149,7 +170,9 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         self.assertDictEqual(content, {"active": False})
 
     def test_view_post_notexisting_token(self):
-        auth_headers = {"HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token}
+        auth_headers = {
+            "HTTP_AUTHORIZATION": "Bearer " + self.resource_server_token.token
+        }
         response = self.client.post(
             reverse("accounts:introspect"), {"token": "kaudawelsch"}, **auth_headers
         )
@@ -180,7 +203,9 @@ class UserSearchTestCase(TestCase):
         self.auth_headers = {"HTTP_AUTHORIZATION": f"Bearer {self.token}"}
 
     def test_short_query(self):
-        response = self.client.get(reverse("accounts:search") + "?q=t", **self.auth_headers)
+        response = self.client.get(
+            reverse("accounts:search") + "?q=t", **self.auth_headers
+        )
         self.assertFalse(response.json())
         self.assertNotIn(UserSearchSerializer(self.user1).data, response.json())
         self.assertNotIn(UserSearchSerializer(self.user2).data, response.json())
@@ -193,17 +218,23 @@ class UserSearchTestCase(TestCase):
         self.assertIn(UserSearchSerializer(self.user2).data, response.json())
 
     def test_exact_pennkey_user1(self):
-        response = self.client.get(reverse("accounts:search") + "?q=test1", **self.auth_headers)
+        response = self.client.get(
+            reverse("accounts:search") + "?q=test1", **self.auth_headers
+        )
         self.assertIn(UserSearchSerializer(self.user1).data, response.json())
         self.assertNotIn(UserSearchSerializer(self.user2).data, response.json())
 
     def test_exact_pennkey_user2(self):
-        response = self.client.get(reverse("accounts:search") + "?q=test2", **self.auth_headers)
+        response = self.client.get(
+            reverse("accounts:search") + "?q=test2", **self.auth_headers
+        )
         self.assertNotIn(UserSearchSerializer(self.user1).data, response.json())
         self.assertIn(UserSearchSerializer(self.user2).data, response.json())
 
     def test_first_name(self):
-        response = self.client.get(reverse("accounts:search") + "?q=tes", **self.auth_headers)
+        response = self.client.get(
+            reverse("accounts:search") + "?q=tes", **self.auth_headers
+        )
         self.assertIn(UserSearchSerializer(self.user1).data, response.json())
         self.assertIn(UserSearchSerializer(self.user2).data, response.json())
 
@@ -219,9 +250,15 @@ class UserViewTestCase(TestCase):
             email="test@test.com",
         )
 
-        Major.objects.create(name="Test Active Major", is_active=True, degree_type="BACHELORS")
-        Major.objects.create(name="Test Active Major 2", degree_type="PHD", is_active=True)
-        Major.objects.create(name="Test Active Major 3", degree_type="PROFESSIONAL", is_active=True)
+        Major.objects.create(
+            name="Test Active Major", is_active=True, degree_type="BACHELORS"
+        )
+        Major.objects.create(
+            name="Test Active Major 2", degree_type="PHD", is_active=True
+        )
+        Major.objects.create(
+            name="Test Active Major 3", degree_type="PROFESSIONAL", is_active=True
+        )
 
         School.objects.create(name="Test School")
         School.objects.create(name="Test School 2")
@@ -252,7 +289,9 @@ class UserViewTestCase(TestCase):
 
     def test_update_school(self):
         self.client.force_authenticate(user=self.user)
-        update_data = {"student": {"school": [{"name": "Test School"}, {"name": "Test School 2"}]}}
+        update_data = {
+            "student": {"school": [{"name": "Test School"}, {"name": "Test School 2"}]}
+        }
 
         response = self.client.patch(reverse("accounts:me"), update_data, format="json")
 
@@ -306,11 +345,19 @@ class UserViewTestCase(TestCase):
 
 class MajorViewTestCase(TestCase):
     def setUp(self):
-        self.major_active_1 = Major.objects.create(name="Test Active Major", is_active=True)
-        self.major_active_2 = Major.objects.create(name="Test Active Major 2", is_active=True)
+        self.major_active_1 = Major.objects.create(
+            name="Test Active Major", is_active=True
+        )
+        self.major_active_2 = Major.objects.create(
+            name="Test Active Major 2", is_active=True
+        )
 
-        self.major_inactive_1 = Major.objects.create(name="Test Inactive Major", is_active=False)
-        self.major_inactive_2 = Major.objects.create(name="Test Inactive Major 2", is_active=False)
+        self.major_inactive_1 = Major.objects.create(
+            name="Test Inactive Major", is_active=False
+        )
+        self.major_inactive_2 = Major.objects.create(
+            name="Test Inactive Major 2", is_active=False
+        )
 
         self.client = APIClient()
         self.serializer_active_1 = MajorSerializer(self.major_active_1)
@@ -336,7 +383,8 @@ class SchoolViewTestCase(TestCase):
     def test_get_queryset(self):
         response = self.client.get(reverse("accounts:schools-list"))
         self.assertEqual(
-            json.loads(response.content), [self.serializer_1.data, self.serializer_2.data]
+            json.loads(response.content),
+            [self.serializer_1.data, self.serializer_2.data],
         )
 
 
@@ -430,18 +478,24 @@ class PhoneNumberViewTestCase(TestCase):
     def test_resend_verification_fail(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            reverse("accounts:me-phonenumber-resend-verification", args=[self.number1.id])
+            reverse(
+                "accounts:me-phonenumber-resend-verification", args=[self.number1.id]
+            )
         )
         self.assertEqual(400, response.status_code)
 
     def test_resend_verification_success(self):
         # Mark verification code as expired
-        self.number1.verification_timestamp = timezone.now() - datetime.timedelta(days=1)
+        self.number1.verification_timestamp = timezone.now() - datetime.timedelta(
+            days=1
+        )
         self.number1.save()
 
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            reverse("accounts:me-phonenumber-resend-verification", args=[self.number1.id])
+            reverse(
+                "accounts:me-phonenumber-resend-verification", args=[self.number1.id]
+            )
         )
         self.assertEqual(200, response.status_code)
 
@@ -495,7 +549,9 @@ class EmailViewTestCase(TestCase):
 
     def test_destroy_nonprimary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-email-detail", args=[self.email2.id]))
+        response = self.client.delete(
+            reverse("accounts:me-email-detail", args=[self.email2.id])
+        )
         self.email1.refresh_from_db()
         self.email3.refresh_from_db()
         self.assertTrue(self.email1.primary)
@@ -506,7 +562,9 @@ class EmailViewTestCase(TestCase):
 
     def test_destroy_primary(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(reverse("accounts:me-email-detail", args=[self.email1.id]))
+        response = self.client.delete(
+            reverse("accounts:me-email-detail", args=[self.email1.id])
+        )
         self.email2.refresh_from_db()
         self.email3.refresh_from_db()
         self.assertFalse(self.email2.primary)
@@ -517,7 +575,9 @@ class EmailViewTestCase(TestCase):
 
     def test_destroy_only_verified_email(self):
         self.client.force_authenticate(user=self.user2)
-        response = self.client.delete(reverse("accounts:me-email-detail", args=[self.email4.id]))
+        response = self.client.delete(
+            reverse("accounts:me-email-detail", args=[self.email4.id])
+        )
         self.email4.refresh_from_db()
         self.email5.refresh_from_db()
         self.assertTrue(self.email4.primary)

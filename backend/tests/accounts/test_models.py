@@ -7,7 +7,11 @@ from accounts.models import Email, Major, PhoneNumber, School
 class MajorModelTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+            pennid=1,
+            username="student",
+            first_name="first",
+            last_name="last",
+            password="secret",
         )
 
         self.major_name = "Test Major"
@@ -20,7 +24,11 @@ class MajorModelTestCase(TestCase):
 class SchoolModelTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+            pennid=1,
+            username="student",
+            first_name="first",
+            last_name="last",
+            password="secret",
         )
 
         self.school_name = "Test School"
@@ -43,7 +51,11 @@ class StudentTestCase(TestCase):
 class UserTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+            pennid=1,
+            username="student",
+            first_name="first",
+            last_name="last",
+            password="secret",
         )
 
         self.user2 = get_user_model().objects.create_user(
@@ -65,7 +77,11 @@ class UserTestCase(TestCase):
 class PhoneNumberModelTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+            pennid=1,
+            username="student",
+            first_name="first",
+            last_name="last",
+            password="secret",
         )
 
         self.phone_number = "+15550000000"
@@ -80,7 +96,11 @@ class PhoneNumberModelTestCase(TestCase):
 class EmailTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            pennid=1, username="student", first_name="first", last_name="last", password="secret"
+            pennid=1,
+            username="student",
+            first_name="first",
+            last_name="last",
+            password="secret",
         )
 
         self.email_address = "example@example.com"

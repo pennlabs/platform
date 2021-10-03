@@ -53,7 +53,9 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
         instance.verified = False
         instance.primary = False
-        instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+        instance.verification_code = get_random_string(
+            length=6, allowed_chars="1234567890"
+        )
         # timestamp is set by django
         instance.save()
         sendSMSVerification(instance.value, instance.verification_code)
@@ -64,24 +66,37 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
             elapsed_time = timezone.now() - instance.verification_timestamp
             if (
                 validated_data["verification_code"] == instance.verification_code
-                and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
+                and elapsed_time.total_seconds()
+                < User.VERIFICATION_EXPIRATION_MINUTES * 60
             ):
-                if self.context["request"].user.phone_numbers.filter(verified=True).count() == 0:
+                if (
+                    self.context["request"]
+                    .user.phone_numbers.filter(verified=True)
+                    .count()
+                    == 0
+                ):
                     instance.primary = True
                 instance.verified = True
-            elif elapsed_time.total_seconds() >= User.VERIFICATION_EXPIRATION_MINUTES * 60:
+            elif (
+                elapsed_time.total_seconds()
+                >= User.VERIFICATION_EXPIRATION_MINUTES * 60
+            ):
                 raise serializers.ValidationError(
                     detail={"detail": "Verification code has expired"}
                 )
             else:
-                raise serializers.ValidationError(detail={"detail": "Incorrect verification code"})
+                raise serializers.ValidationError(
+                    detail={"detail": "Incorrect verification code"}
+                )
         if "primary" in validated_data and validated_data["primary"]:
             if instance.verified:
                 self.context["request"].user.phone_numbers.all().update(primary=False)
                 instance.primary = True
             else:
                 raise serializers.ValidationError(
-                    detail={"detail": "Must verify point of contact before marking as primary"}
+                    detail={
+                        "detail": "Must verify point of contact before marking as primary"
+                    }
                 )
         instance.save()
         return instance
@@ -98,7 +113,9 @@ class EmailSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
         instance.verified = False
         instance.primary = False
-        instance.verification_code = get_random_string(length=6, allowed_chars="1234567890")
+        instance.verification_code = get_random_string(
+            length=6, allowed_chars="1234567890"
+        )
         # timestamp is set by django
         instance.save()
         sendEmailVerification(instance.value, instance.verification_code)
@@ -109,24 +126,35 @@ class EmailSerializer(serializers.ModelSerializer):
             elapsed_time = timezone.now() - instance.verification_timestamp
             if (
                 validated_data["verification_code"] == instance.verification_code
-                and elapsed_time.total_seconds() < User.VERIFICATION_EXPIRATION_MINUTES * 60
+                and elapsed_time.total_seconds()
+                < User.VERIFICATION_EXPIRATION_MINUTES * 60
             ):
-                if self.context["request"].user.emails.filter(verified=True).count() == 0:
+                if (
+                    self.context["request"].user.emails.filter(verified=True).count()
+                    == 0
+                ):
                     instance.primary = True
                 instance.verified = True
-            elif elapsed_time.total_seconds() >= User.VERIFICATION_EXPIRATION_MINUTES * 60:
+            elif (
+                elapsed_time.total_seconds()
+                >= User.VERIFICATION_EXPIRATION_MINUTES * 60
+            ):
                 raise serializers.ValidationError(
                     detail={"detail": "Verification code has expired"}
                 )
             else:
-                raise serializers.ValidationError(detail={"detail": "Incorrect verification code"})
+                raise serializers.ValidationError(
+                    detail={"detail": "Incorrect verification code"}
+                )
         if "primary" in validated_data and validated_data["primary"]:
             if instance.verified:
                 self.context["request"].user.emails.all().update(primary=False)
                 instance.primary = True
             else:
                 raise serializers.ValidationError(
-                    detail={"detail": "Must verify point of contact before marking as primary"}
+                    detail={
+                        "detail": "Must verify point of contact before marking as primary"
+                    }
                 )
         instance.save()
         return instance

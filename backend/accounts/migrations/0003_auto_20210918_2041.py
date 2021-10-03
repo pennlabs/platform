@@ -44,7 +44,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("name", models.CharField(max_length=100)),
@@ -70,7 +73,10 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("name", models.CharField(max_length=255)),
@@ -108,7 +114,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="first_name",
-            field=models.CharField(blank=True, max_length=150, verbose_name="first name"),
+            field=models.CharField(
+                blank=True, max_length=150, verbose_name="first name"
+            ),
         ),
         migrations.CreateModel(
             name="PhoneNumber",
@@ -116,17 +124,27 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 (
                     "value",
                     phonenumber_field.modelfields.PhoneNumberField(
-                        blank=True, default=None, max_length=128, region=None, unique=True
+                        blank=True,
+                        default=None,
+                        max_length=128,
+                        region=None,
+                        unique=True,
                     ),
                 ),
                 ("primary", models.BooleanField(default=False)),
-                ("verification_code", models.CharField(blank=True, max_length=6, null=True)),
+                (
+                    "verification_code",
+                    models.CharField(blank=True, max_length=6, null=True),
+                ),
                 ("verification_timestamp", models.DateTimeField(auto_now_add=True)),
                 ("verified", models.BooleanField(default=False)),
                 (
@@ -145,12 +163,18 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
                     ),
                 ),
                 ("value", models.EmailField(max_length=254, unique=True)),
                 ("primary", models.BooleanField(default=False)),
-                ("verification_code", models.CharField(blank=True, max_length=6, null=True)),
+                (
+                    "verification_code",
+                    models.CharField(blank=True, max_length=6, null=True),
+                ),
                 ("verification_timestamp", models.DateTimeField(auto_now_add=True)),
                 ("verified", models.BooleanField(default=False)),
                 (

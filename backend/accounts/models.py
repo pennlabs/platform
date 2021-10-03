@@ -77,7 +77,9 @@ class Student(models.Model):
     )
     major = models.ManyToManyField(Major, blank=True)
     school = models.ManyToManyField(School, blank=True)
-    graduation_year = models.PositiveIntegerField(validators=[MinValueValidator(1740)], null=True)
+    graduation_year = models.PositiveIntegerField(
+        validators=[MinValueValidator(1740)], null=True
+    )
 
     def __str__(self):
         return self.user.username
@@ -93,7 +95,9 @@ def ensure_student_object(sender, instance, created, **kwargs):
 
 
 class Email(models.Model):
-    user = models.ForeignKey(get_user_model(), related_name="emails", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        get_user_model(), related_name="emails", on_delete=models.CASCADE
+    )
     value = models.EmailField(unique=True)
     primary = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=True, null=True)

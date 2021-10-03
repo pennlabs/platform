@@ -1,7 +1,12 @@
 from rest_framework import generics, viewsets
 
 from org.models import Member, Role, Team
-from org.serializers import MemberSerializer, RoleSerializer, ShortUrlSerializer, TeamSerializer
+from org.serializers import (
+    MemberSerializer,
+    RoleSerializer,
+    ShortUrlSerializer,
+    TeamSerializer,
+)
 
 
 class ShortUrlCreateView(generics.CreateAPIView):

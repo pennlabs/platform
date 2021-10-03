@@ -17,7 +17,10 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         try:
             response = requests.get(
                 settings.EMAIL_WEB_SERVICE_URL + str(pennid),
-                auth=(settings.EMAIL_WEB_SERVICE_USERNAME, settings.EMAIL_WEB_SERVICE_PASSWORD),
+                auth=(
+                    settings.EMAIL_WEB_SERVICE_USERNAME,
+                    settings.EMAIL_WEB_SERVICE_PASSWORD,
+                ),
             )
             response = response.json()
             response = response["result_data"]
@@ -56,7 +59,9 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         # Update groups with every log in
         user.groups.clear()
         for affiliation_name in shibboleth_attributes["affiliation"]:
-            if affiliation_name:  # Some users don't have any affiliation somehow ¯\_(ツ)_/¯
+            if (
+                affiliation_name
+            ):  # Some users don't have any affiliation somehow ¯\_(ツ)_/¯
                 group, _ = Group.objects.get_or_create(name=affiliation_name)
                 user.groups.add(group)
 

@@ -23,12 +23,22 @@ class ManyToManySaveMixin(object):
                 return model.objects.get(**item)
             except ObjectDoesNotExist:
                 raise serializers.ValidationError(
-                    {field_name: ["The object with these values does not exist: {}".format(item)]},
+                    {
+                        field_name: [
+                            "The object with these values does not exist: {}".format(
+                                item
+                            )
+                        ]
+                    },
                     code="invalid",
                 )
             except MultipleObjectsReturned:
                 raise serializers.ValidationError(
-                    {field_name: ["Multiple objects exist with these values: {}".format(item)]}
+                    {
+                        field_name: [
+                            "Multiple objects exist with these values: {}".format(item)
+                        ]
+                    }
                 )
 
     def save(self):
@@ -65,7 +75,9 @@ class ManyToManySaveMixin(object):
 
                 for item in items:
                     # adds item to list
-                    m2m_lists[field_name].append(self._lookup_item(model, field_name, item, mode))
+                    m2m_lists[field_name].append(
+                        self._lookup_item(model, field_name, item, mode)
+                    )
             else:
                 m2m["many"] = False
                 # handles if it's a 1:1 field
@@ -73,7 +85,9 @@ class ManyToManySaveMixin(object):
                     model = field.Meta.model
                     item = self.validated_data.pop(field_name, None)
                     # creates/gets objects associaated with list and creates list of objects
-                    m2m_lists[field_name] = self._lookup_item(model, field_name, item, mode)
+                    m2m_lists[field_name] = self._lookup_item(
+                        model, field_name, item, mode
+                    )
                 else:
                     # handles if it's accidentally added (e.g. Integer field, character field, etc.)
                     ignore_fields.add(field_name)

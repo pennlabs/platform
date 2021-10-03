@@ -1,6 +1,12 @@
 from django.urls import include, path
 
-from org.views import AlumniViewSet, MemberViewSet, RoleViewSet, ShortUrlCreateView, TeamViewSet
+from org.views import (
+    AlumniViewSet,
+    MemberViewSet,
+    RoleViewSet,
+    ShortUrlCreateView,
+    TeamViewSet,
+)
 
 
 app_name = "org"

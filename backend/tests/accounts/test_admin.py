@@ -22,14 +22,20 @@ class StudentAdminTestCase(TestCase):
         self.assertEqual(self.student_admin.username(self.student), self.user.username)
 
     def test_first_name(self):
-        self.assertEqual(self.student_admin.first_name(self.student), self.user.first_name)
+        self.assertEqual(
+            self.student_admin.first_name(self.student), self.user.first_name
+        )
 
     def test_last_name(self):
-        self.assertEqual(self.student_admin.last_name(self.student), self.user.last_name)
+        self.assertEqual(
+            self.student_admin.last_name(self.student), self.user.last_name
+        )
 
 
 class LabsAdminTestCase(TestCase):
-    check = os.environ.get("DJANGO_SETTINGS_MODULE", "") == "Platform.settings.development"
+    check = (
+        os.environ.get("DJANGO_SETTINGS_MODULE", "") == "Platform.settings.development"
+    )
 
     @skipIf(check, "This test doesn't matter in development")
     def test_admin_not_logged_in(self):

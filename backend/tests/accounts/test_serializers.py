@@ -36,7 +36,9 @@ class SchoolSerializerTestCase(TestCase):
 
 class MajorSerializerTestCase(TestCase):
     def setUp(self):
-        self.major_active = Major.objects.create(name="Test Active Major", is_active=True)
+        self.major_active = Major.objects.create(
+            name="Test Active Major", is_active=True
+        )
         self.major_inactive = Major.objects.create(
             name="Test Inactive Major", degree_type="PHD", is_active=False
         )
@@ -63,7 +65,9 @@ class MajorSerializerTestCase(TestCase):
 
 class StudentSerializerTestCase(TestCase):
     def setUp(self):
-        self.date = pytz.timezone("America/New_York").localize(datetime.datetime(2019, 1, 1))
+        self.date = pytz.timezone("America/New_York").localize(
+            datetime.datetime(2019, 1, 1)
+        )
         self.user = get_user_model().objects.create_user(
             pennid=1,
             username="student",
@@ -72,7 +76,9 @@ class StudentSerializerTestCase(TestCase):
             last_name="Last",
             email="test@test.com",
         )
-        self.active_major_1 = Major.objects.create(name="Test Active Major", is_active=True)
+        self.active_major_1 = Major.objects.create(
+            name="Test Active Major", is_active=True
+        )
         self.active_major_2 = Major.objects.create(
             name="Test Active Major 2", degree_type="PHD", is_active=True
         )
@@ -148,7 +154,9 @@ class StudentSerializerTestCase(TestCase):
 
 class UserSerializerTestCase(TestCase):
     def setUp(self):
-        self.date = pytz.timezone("America/New_York").localize(datetime.datetime(2019, 1, 1))
+        self.date = pytz.timezone("America/New_York").localize(
+            datetime.datetime(2019, 1, 1)
+        )
         self.user = get_user_model().objects.create_user(
             pennid=1,
             username="student",
@@ -203,7 +211,9 @@ class UserSerializerTestCase(TestCase):
 
 class UserSearchSerializerTestCase(TestCase):
     def setUp(self):
-        self.date = pytz.timezone("America/New_York").localize(datetime.datetime(2019, 1, 1))
+        self.date = pytz.timezone("America/New_York").localize(
+            datetime.datetime(2019, 1, 1)
+        )
         self.user = get_user_model().objects.create_user(
             pennid=1,
             username="student",
@@ -245,7 +255,9 @@ class UserSearchSerializerTestCase(TestCase):
 # student serializer info / test using nested serializer editing
 class StudentSerializerTestCaseOLD(TestCase):
     def setUp(self):
-        self.date = pytz.timezone("America/New_York").localize(datetime.datetime(2019, 1, 1))
+        self.date = pytz.timezone("America/New_York").localize(
+            datetime.datetime(2019, 1, 1)
+        )
         self.user = get_user_model().objects.create_user(
             pennid=1,
             username="student",
@@ -323,7 +335,9 @@ class PhoneNumberSerializerTestCase(TestCase):
             "verified": True,
             "verification_code": "000000",
         }
-        serializer = PhoneNumberSerializer(data=data, context={"request": FakeRequest(self.user)})
+        serializer = PhoneNumberSerializer(
+            data=data, context={"request": FakeRequest(self.user)}
+        )
         self.assertTrue(serializer.is_valid(raise_exception=True))
         phone_number = serializer.save()
         self.assertEqual(phone_number.user, self.user)
@@ -339,7 +353,9 @@ class PhoneNumberSerializerTestCase(TestCase):
             "verified": True,
             "verification_code": "000000",
         }
-        serializer = PhoneNumberSerializer(data=data, context={"request": FakeRequest(self.user)})
+        serializer = PhoneNumberSerializer(
+            data=data, context={"request": FakeRequest(self.user)}
+        )
 
         with self.assertRaises(serializers.ValidationError):
             serializer.is_valid(raise_exception=True)
@@ -409,7 +425,9 @@ class PhoneNumberSerializerTestCase(TestCase):
             "verified": True,
             "verification_code": "000000",
         }
-        serializer = PhoneNumberSerializer(data=data, context={"request": FakeRequest(self.user)})
+        serializer = PhoneNumberSerializer(
+            data=data, context={"request": FakeRequest(self.user)}
+        )
         self.assertTrue(serializer.is_valid(raise_exception=True))
         phone_number = serializer.save()
 
@@ -460,7 +478,9 @@ class EmailSerializerTestCase(TestCase):
             "verified": True,
             "verification_code": "000000",
         }
-        serializer = EmailSerializer(data=data, context={"request": FakeRequest(self.user)})
+        serializer = EmailSerializer(
+            data=data, context={"request": FakeRequest(self.user)}
+        )
         self.assertTrue(serializer.is_valid())
         email = serializer.save()
         self.assertEqual(email.user, self.user)
@@ -538,7 +558,9 @@ class EmailSerializerTestCase(TestCase):
             "verified": True,
             "verification_code": "000000",
         }
-        serializer = EmailSerializer(data=data, context={"request": FakeRequest(self.user)})
+        serializer = EmailSerializer(
+            data=data, context={"request": FakeRequest(self.user)}
+        )
         self.assertTrue(serializer.is_valid(raise_exception=True))
         email = serializer.save()
 
@@ -550,7 +572,9 @@ class EmailSerializerTestCase(TestCase):
             "value": "test@example.com",
             "verification_code": "000000",
         }
-        serializer = EmailSerializer(email, data=data, context={"request": FakeRequest(self.user)})
+        serializer = EmailSerializer(
+            email, data=data, context={"request": FakeRequest(self.user)}
+        )
         if serializer.is_valid(raise_exception=True):
             with self.assertRaises(serializers.ValidationError):
                 serializer.save()
