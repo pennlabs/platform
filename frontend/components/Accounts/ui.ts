@@ -30,40 +30,39 @@ export const Span = styled.div<{ position?: string }>`
     position: ${(props) => props.position};
 `;
 
-export const RootContainer = styled.div`
-    display: flex;
-    flex-flow: column;
-    height: 100%;
+// This is the main element everything scrolls around inside of
+export const MainContainer = styled.div`
+    position: relative;
+    height: 100vh;
+    overflow: auto;
     background: #f7fbff;
 `;
 
 export const Nav = styled.div`
-    background: #fefefe;
-    box-shadow: 0px 2px 10px rgba(185, 185, 185, 0.32);
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
     z-index: 99;
-    position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
+    background: #fefefe;
+    box-shadow: 0px 2px 10px rgba(185, 185, 185, 0.32);
     margin-bottom: 2rem;
 `;
 
-export const MainContainer = styled.div`
-    flex: 1 1 auto;
-    position: relative;
-    overflow: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
 export const CenterContainer = styled.div`
-    width: 50%;
-    height: 85%;
+    width: 100%;
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
 
-    @media screen and (max-width: 800px) {
-        width: 70%;
-        height: 85%;
+    @media screen and (min-width: 600px) {
+        width: 500px;
+        padding: 0;
+    }
+
+    @media screen and (min-width: 1000px) {
+        width: 800px;
     }
 `;
 
