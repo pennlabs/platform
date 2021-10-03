@@ -5,7 +5,6 @@ import { useResource } from "@pennlabs/rest-hooks";
 import * as _ from "lodash";
 import * as Yup from "yup";
 import {
-    RootContainer,
     Button,
     Flex,
     Nav,
