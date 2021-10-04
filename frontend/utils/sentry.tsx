@@ -16,13 +16,13 @@ if (!dev) {
     // Sentry.init({ dsn: SENTRY_URL });
 }
 
-export function logException(ex: Error, context?: any): void {
+export function logException(_ex: Error, _context?: any): void {
     // Sentry.captureException(ex, {
     //     extra: context,
     // });
     // window.console && console.error && console.error(ex); // eslint-disable-line no-console
 }
 
-export function logMessage(msg: string): void {
+export function logMessage(_msg: string): void {
     // Sentry.captureMessage(msg);
 }
