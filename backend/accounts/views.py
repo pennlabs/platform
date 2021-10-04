@@ -3,9 +3,9 @@ import json
 from json.decoder import JSONDecodeError
 
 from django.contrib import auth
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
