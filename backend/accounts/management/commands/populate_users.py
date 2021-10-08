@@ -1,3 +1,5 @@
+import json
+import os
 import random
 import uuid
 
@@ -8,122 +10,13 @@ from django.core.management import BaseCommand
 from accounts.models import Email, Major, PhoneNumber, School, Student, User
 
 
-users = [
-    {
-        "group": ["student"],
-        "first_name": "Armaan",
-        "last_name": "Tobaccowalla",
-        "student": {
-            "degree": "B",
-            "major": ["Finance", "Computer Science"],
-            "school": ["Wharton", "SEAS"],
-            "graduation_year": 2022,
-        },
-        "email": {"verified": True},
-        "phone": {"verified": True},
-    },
-    {
-        "group": ["student"],
-        "first_name": "Jay",
-        "last_name": "Vishwarupe",
-        "student": {
-            "degree": "B",
-            "major": ["Computer Science"],
-            "school": ["SEAS"],
-            "graduation_year": 2024,
-        },
-        "email": {"verified": True},
-        "phone": {"verified": True},
-    },
-    {
-        "group": ["student"],
-        "first_name": "Rafa",
-        "last_name": "Marques",
-        "student": {
-            "degree": "M",
-            "major": ["Electrical Engineering"],
-            "school": ["SEAS"],
-            "graduation_year": 2023,
-        },
-        "email": {"verified": False},
-        "phone": {"verified": True},
-    },
-    {
-        "group": ["student", "employee"],
-        "first_name": "Peyton",
-        "last_name": "Walters",
-        "student": {
-            "degree": "PhD",
-            "major": ["Accounting"],
-            "school": ["Wharton"],
-            "graduation_year": 2025,
-        },
-        "email": {"verified": False},
-        "phone": {"verified": False},
-    },
-    {
-        "group": ["student"],
-        "first_name": "William",
-        "last_name": "Goeller",
-        "preferred_name": "Goeller",
-        "student": {
-            "degree": "Submat",
-            "major": ["Mathematics"],
-            "school": ["College"],
-            "graduation_year": 2021,
-        },
-        "email": {"verified": False, "multiple": True},
-        "phone": {"verified": True},
-    },
-    {
-        "group": ["student", "employee"],
-        "first_name": "Brandon",
-        "last_name": "Wang",
-        "student": {
-            "degree": "B",
-            "major": ["Nursing"],
-            "school": ["Nursing"],
-            "graduation_year": 2022,
-        },
-        "email": {"verified": False},
-        "phone": {"verified": False},
-    },
-    {
-        "group": ["student"],
-        "first_name": "Marcus",
-        "last_name": "Goldman",
-        "preferred_name": "Samuel",
-        "student": {
-            "degree": "P",
-            "major": ["Finance"],
-            "school": ["Wharton"],
-            "graduation_year": 2023,
-        },
-        "email": {"verified": True, "multiple": True},
-        "phone": {"verified": True},
-    },
-    {
-        "group": ["faculty", "alum"],
-        "first_name": "Amy",
-        "last_name": "Gutman",
-        "email": {"verified": True},
-        "phone": {"verified": True},
-    },
-    {
-        "group": ["faculty", "staff", "alum"],
-        "first_name": "Nakia",
-        "last_name": "Rimmer",
-        "email": {"verified": False},
-        "phone": {"verified": True},
-    },
-    {
-        "group": ["faculty", "staff"],
-        "first_name": "Rajiv",
-        "last_name": "Gandhi",
-        "email": {"verified": True},
-        "phone": {"verified": True},
-    },
-]
+dirname = os.path.dirname(__file__)
+dirname = os.path.dirname(dirname)
+dirname = os.path.dirname(dirname)
+filename = os.path.join(dirname, "data/users.json")
+
+with open(filename) as f:
+    users = json.load(f)["users"]
 
 
 class Command(BaseCommand):
@@ -138,7 +31,6 @@ class Command(BaseCommand):
         get_user_model().objects.all().delete()
         for x in ["alum", "employee", "faculty", "member", "staff", "student"]:
             Group.objects.get_or_create(name=x)
-
         for i, user in enumerate(users):
             username = (user["first_name"].strip() + user["last_name"].strip()).lower()
             school = (
