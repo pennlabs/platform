@@ -18,6 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
+from oauth2_provider.views.mixins import ProtectedResourceMixin
 from rest_framework import generics, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
@@ -28,6 +29,7 @@ from sentry_sdk import capture_message
 
 from accounts.auth import LabsView, PennView
 from accounts.models import Major, School, Student, User
+
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
@@ -179,7 +181,7 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
                 )
 
 
-class UserSearchView(PennView, generics.ListAPIView):
+class UserSearchView(ProtectedResourceMixin, generics.ListAPIView):
     """
     Search for users by first name, last name, or pennkey. Authentication Required.
     """
@@ -376,26 +378,6 @@ class EmailViewSet(viewsets.ModelViewSet):
             obj.save()
             return Response({"detail": "success"})
         return HttpResponseBadRequest()
-
-
-class ProtectedViewSet(PennView):
-    """
-    An example api endpoint to test user authentication.
-    """
-
-    def get(self, request, format=None):
-        return HttpResponse({"secret_information": "this is a login protected route"})
-
-
-class LabsProtectedViewSet(LabsView):
-    """
-    An example api endpoint to test Penn Labs authentication.
-    """
-
-    def get(self, request, format=None):
-        return HttpResponse(
-            {"secret_information": "this is a Penn Labs protected route"}
-        )
 
 
 class MajorViewSet(viewsets.ReadOnlyModelViewSet):
