@@ -2,8 +2,8 @@
     "users": [
         {
             "group": ["student"],
-            "first_name": "Armaan",
-            "last_name": "Tobaccowalla",
+            "first_name": "Liza",
+            "last_name": "Lepage",
             "student": {
                 "degree": "B",
                 "major": ["Finance", "Computer Science"],
@@ -15,8 +15,8 @@
         },
         {
             "group": ["student"],
-            "first_name": "Jay",
-            "last_name": "Vishwarupe",
+            "first_name": "Nikki",
+            "last_name": "Newcomb",
             "student": {
                 "degree": "B",
                 "major": ["Computer Science"],
@@ -28,8 +28,8 @@
         },
         {
             "group": ["student"],
-            "first_name": "Rafa",
-            "last_name": "Marques",
+            "first_name": "Jammie",
+            "last_name": "Janey",
             "student": {
                 "degree": "M",
                 "major": ["Electrical Engineering"],
@@ -41,8 +41,8 @@
         },
         {
             "group": ["student", "employee"],
-            "first_name": "Peyton",
-            "last_name": "Walters",
+            "first_name": "Sandie",
+            "last_name": "Squillante",
             "student": {
                 "degree": "PhD",
                 "major": ["Accounting"],
@@ -54,9 +54,9 @@
         },
         {
             "group": ["student"],
-            "first_name": "William",
-            "last_name": "Goeller",
-            "preferred_name": "Goeller",
+            "first_name": "Victor",
+            "last_name": "Vanduzer",
+            "preferred_name": "Vicky",
             "student": {
                 "degree": "Submat",
                 "major": ["Mathematics"],
@@ -68,8 +68,8 @@
         },
         {
             "group": ["student", "employee"],
-            "first_name": "Brandon",
-            "last_name": "Wang",
+            "first_name": "Matthew",
+            "last_name": "Mattie",
             "student": {
                 "degree": "B",
                 "major": ["Nursing"],
@@ -81,9 +81,9 @@
         },
         {
             "group": ["student"],
-            "first_name": "Marcus",
-            "last_name": "Goldman",
-            "preferred_name": "Samuel",
+            "first_name": "Claude",
+            "last_name": "Coney",
+            "preferred_name": "Claus",
             "student": {
                 "degree": "P",
                 "major": ["Finance"],
@@ -95,22 +95,22 @@
         },
         {
             "group": ["faculty", "alum"],
-            "first_name": "Amy",
-            "last_name": "Gutman",
+            "first_name": "Jacelyn",
+            "last_name": "Juckett",
             "email": {"verified": true},
             "phone": {"verified": true}
         },
         {
             "group": ["faculty", "staff", "alum"],
-            "first_name": "Nakia",
-            "last_name": "Rimmer",
+            "first_name": "Rodrigo",
+            "last_name": "Rolando",
             "email": {"verified": false},
             "phone": {"verified": true}
         },
         {
             "group": ["faculty", "staff"],
-            "first_name": "Rajiv",
-            "last_name": "Gandhi",
+            "first_name": "Marianela",
+            "last_name": "Moss",
             "email": {"verified": true},
             "phone": {"verified": true}
         }
