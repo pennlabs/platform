@@ -1,5 +1,4 @@
 import json
-import os.path as osp
 import random
 import uuid
 
@@ -9,8 +8,10 @@ from django.core.management import BaseCommand
 
 from accounts.models import Email, Major, PhoneNumber, School, Student, User
 
+
 with open("accounts/data/users.json") as f:
     users = json.load(f)["users"]
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
