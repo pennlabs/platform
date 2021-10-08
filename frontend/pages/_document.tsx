@@ -40,9 +40,13 @@ export default class MyDocument extends Document {
                     <NextScript />
                     <style jsx global>
                         {`
+                            #__next {
+                                height: 100vh;
+                            }
                             html,
                             body {
-                                height: 100%;
+                                height: 100vh;
+                                overflow: hidden;
                             }
                         `}
                     </style>
