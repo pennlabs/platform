@@ -112,17 +112,17 @@ class DevLoginViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_login_valid_choice(self):
-        response = self.client.post(reverse("accounts:login"), data={"userChoice": 1})
+        self.client.post(reverse("accounts:login"), data={"userChoice": 1})
         # sample_response = reverse("application:homepage")
         expected_user_pennid = 1
-        actual_user_pennid = User.objects.all()[0].pennid
+        actual_user_pennid = int(self.client.session["_auth_user_id"])
         self.assertTrue(expected_user_pennid, actual_user_pennid)
         # self.assertRedirects(response, sample_response, fetch_redirect_response=False)
 
     def test_login_invalid_choice(self):
         self.client.post(reverse("accounts:login"), data={"userChoice": 24})
         expected_user_pennid = 1
-        actual_user_pennid = User.objects.all()[0].pennid
+        actual_user_pennid = int(self.client.session["_auth_user_id"])
         self.assertTrue(expected_user_pennid, actual_user_pennid)
 
 
