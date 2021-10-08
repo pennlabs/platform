@@ -1,5 +1,5 @@
 import json
-import os
+import os.path as osp
 import random
 import uuid
 
@@ -9,15 +9,8 @@ from django.core.management import BaseCommand
 
 from accounts.models import Email, Major, PhoneNumber, School, Student, User
 
-
-dirname = os.path.dirname(__file__)
-dirname = os.path.dirname(dirname)
-dirname = os.path.dirname(dirname)
-filename = os.path.join(dirname, "data/users.json")
-
-with open(filename) as f:
+with open("accounts/data/users.json") as f:
     users = json.load(f)["users"]
-
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
