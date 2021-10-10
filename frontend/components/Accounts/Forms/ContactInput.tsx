@@ -172,13 +172,15 @@ export const ExistingInput = ({
                     <span>UNVERIFIED</span>
                 </Tag>
             )}
-            <MoreIndicator
-                isPrimary={isPrimary}
-                isVerified={isVerified}
-                onDelete={() => setModalIsOpen(true)}
-                onMakePrimary={onMakePrimary}
-                onReverify={onReverify}
-            />
+            {!isVerified || onDelete ? (
+                <MoreIndicator
+                    isPrimary={isPrimary}
+                    isVerified={isVerified}
+                    onDelete={() => setModalIsOpen(true)}
+                    onMakePrimary={onMakePrimary}
+                    onReverify={onReverify}
+                />
+            ) : undefined}
             <DeleteModal
                 type={contactType}
                 contact={text}
@@ -238,14 +240,18 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         }
                         setShowModal(true);
                     }}
-                    onDelete={async () => {
-                        try {
-                            await deleteContact(contactType, id);
-                        } catch (e) {
-                            addToast("Delete contact failed");
-                        }
-                        mutate();
-                    }}
+                    onDelete={
+                        contactType === "email" && infolist.length === 1
+                            ? undefined
+                            : async () => {
+                                  try {
+                                      await deleteContact(contactType, id);
+                                  } catch (e) {
+                                      addToast("Delete contact failed");
+                                  }
+                                  mutate();
+                              }
+                    }
                     onMakePrimary={() => mutate(id, { primary: true })}
                     key={id}
                     isPrimary={primary}
