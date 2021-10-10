@@ -55,6 +55,7 @@ const FieldInput = ({
     setShowAdd,
     setVerifyContact,
     setShowModal,
+    onCancel,
 }) => {
     const { addToast } = useToasts();
     const [text, setText] = useState("");
@@ -90,7 +91,14 @@ const FieldInput = ({
         setShowAdd(true);
     };
 
-    return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
+    return (
+        <EditInput
+            value={text}
+            onChange={onChange}
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+        />
+    );
 };
 
 const MoreIndicator = ({
@@ -163,7 +171,7 @@ export const ExistingInput = ({
             {isVerified && <Indicator src="/greentick.png" />}
             <span>{text}</span>
             {isPrimary && (
-                <Tag>
+                <Tag blue>
                     <span>PRIMARY</span>
                 </Tag>
             )}
@@ -201,11 +209,14 @@ export const AddInput = ({ text, onClick, margin }) => (
     </AddButton>
 );
 
-export const EditInput = ({ onConfirm, value, onChange }) => (
+export const EditInput = ({ onConfirm, value, onChange, onCancel }) => (
     <Flex childMargin="0.2rem" width="100%">
         <FormInput height="2rem" value={value} onChange={onChange} />
         <Button type="button" onClick={onConfirm}>
             Confirm
+        </Button>
+        <Button type="button" cancel onClick={onCancel}>
+            X
         </Button>
     </Flex>
 );
@@ -274,6 +285,7 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                     setShowAdd={setShowAdd}
                     setShowModal={setShowModal}
                     setVerifyContact={setVerifyContact}
+                    onCancel={() => setShowAdd(true)}
                 />
             )}
             <VerificationModal

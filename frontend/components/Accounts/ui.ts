@@ -130,20 +130,21 @@ export const Indicator = styled.img<{ paddingTop?: string }>`
     cursor: pointer;
 `;
 
-export const Tag = styled.div`
+export const Tag = styled.div<{ blue?: boolean }>`
     height: 1rem;
     margin-top: 0.35rem;
-    background-color: #e7e7e7;
+    ${({ blue }) => `background-color: ${blue ? "#adcced" : "#e7e7e7"};`}
+    ${({ blue }) => `color: ${blue ? "#344a61" : "#767676"};`}
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 0.1rem;
+    box-shadow: 0 0.05rem 0.05rem rgba(0, 0, 0, 0.25);
 
     & > * {
         margin: 0.2rem;
         font-size: 0.5rem;
         font-weight: 600;
-        color: #767676;
     }
 `;
 
@@ -158,8 +159,11 @@ export const AddButton = styled.button<{ marginTop?: string }>`
     margin-top: ${(props) => props.marginTop};
 `;
 
-export const Button = styled.button<{ margin?: string }>`
-    background-color: #209cee;
+export const Button = styled.button<{
+    margin?: string;
+    cancel?: boolean;
+}>`
+    background-color: ${(props) => (props.cancel ? "#93a0ad" : "#209cee")};
     color: #ffffff;
     border: none;
     border-radius: 0.2rem;
