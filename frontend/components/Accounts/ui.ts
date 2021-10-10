@@ -92,6 +92,7 @@ export const Text = styled.span<TextProps>`
 export const FormGroupHeader = styled.h3`
     font-style: normal;
     font-weight: 600;
+    font-size: 1.5rem;
 `;
 
 export const FormGroupGrid = styled.div`
@@ -134,7 +135,7 @@ export const Tag = styled.div<{ blue?: boolean }>`
     height: 1rem;
     margin-top: 0.35rem;
     ${({ blue }) => `background-color: ${blue ? "#adcced" : "#e7e7e7"};`}
-    ${({ blue }) => `color: ${blue ? "#344a61" : "#767676"};`}
+    ${({ blue }) => `color: ${blue ? "#455f7a" : "#767676"};`}
     display: flex;
     align-items: center;
     justify-content: center;

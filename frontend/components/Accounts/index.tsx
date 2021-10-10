@@ -196,7 +196,12 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                     </FormGroupGrid>
                                 </>
                             )}
-                            <Button margin="1.5rem 0 0 0">Save</Button>
+                            <Button
+                                margin="1.5rem 0 0 0"
+                                style={{ fontSize: "1.2rem" }}
+                            >
+                                Save
+                            </Button>
                         </Form>
                     </Formik>
                 </div>
