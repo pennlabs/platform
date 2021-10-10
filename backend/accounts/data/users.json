@@ -64,7 +64,7 @@
                 "graduation_year": 2021
             },
             "email": {"verified": false, "multiple": true},
-            "phone": {"verified": true}
+            "phone": {"verified": true, "invalid": true}
         },
         {
             "group": ["student", "employee"],
@@ -98,7 +98,7 @@
             "first_name": "Jacelyn",
             "last_name": "Juckett",
             "email": {"verified": true},
-            "phone": {"verified": true}
+            "phone": {"verified": true, "invalid": true}
         },
         {
             "group": ["faculty", "staff", "alum"],

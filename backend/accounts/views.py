@@ -116,10 +116,8 @@ class DevLoginView(View):
         try:
             user = get_user_model().objects.get(pennid=choice)
         except User.DoesNotExist:
-            user = get_user_model().objects.get(pennid=1)
-        affiliations = ""
-        for group in user.groups.all():
-            affiliations += group.name + ";"
+            user = get_user_model().objects.filter().first()   
+        affiliations = list(map(lambda user: user.name, user.groups.all()))
         shibboleth_attributes = {
             "username": user.username,
             "first_name": user.first_name,
@@ -130,7 +128,7 @@ class DevLoginView(View):
             remote_user=user.pennid, shibboleth_attributes=shibboleth_attributes
         )
         auth.login(request, user)
-        return redirect(request.GET.get("next", "/"))
+        return redirect(request.GET.get("next", "/accounts/me"))
 
 
 class DevLogoutView(View):

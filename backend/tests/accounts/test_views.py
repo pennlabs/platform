@@ -121,9 +121,7 @@ class DevLoginViewTestCase(TestCase):
 
     def test_login_invalid_choice(self):
         self.client.post(reverse("accounts:login"), data={"userChoice": 24})
-        expected_user_pennid = 1
-        actual_user_pennid = int(self.client.session["_auth_user_id"])
-        self.assertTrue(expected_user_pennid, actual_user_pennid)
+        self.assertTrue("_auth_user_id" in self.client.session)
 
 
 @override_settings(IS_DEV_LOGIN=True)
