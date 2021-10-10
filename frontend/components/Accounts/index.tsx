@@ -115,6 +115,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                     col={2}
                                     row={1}
                                     alignItems="start"
+                                    margin
                                 >
                                     <Flex
                                         flexDirection="column"
@@ -130,6 +131,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                         />
                                     </Flex>
                                 </FormGroupItem>
+
                                 <FormGroupItem
                                     col={1}
                                     row={2}
@@ -175,6 +177,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                                 fieldName="student.school"
                                             />
                                         </FormGroupItem>
+
                                         <FormGroupItem col={1} row={2}>
                                             <Text weight="400">Major(s)</Text>
                                         </FormGroupItem>
@@ -184,6 +187,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                                 fieldName="student.major"
                                             />
                                         </FormGroupItem>
+
                                         <FormGroupItem col={1} row={3}>
                                             <Text weight="400">Grad Year</Text>
                                         </FormGroupItem>

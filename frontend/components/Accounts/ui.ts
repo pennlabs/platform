@@ -105,6 +105,7 @@ interface FormGroupItemProps {
     col: number;
     row: number;
     alignItems?: string;
+    margin?: boolean;
 }
 
 export const FormGroupItem = styled.div<FormGroupItemProps>`
@@ -112,6 +113,7 @@ export const FormGroupItem = styled.div<FormGroupItemProps>`
     grid-row: ${(props) => props.row};
     display: flex;
     align-items: ${(props) => (props.alignItems ? props.alignItems : "center")};
+    margin-bottom: ${(props) => (props.margin ? ".8rem" : "0")};
 `;
 
 export const FormInput = styled.input<{ height?: string; error?: boolean }>`
