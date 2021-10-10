@@ -44,7 +44,7 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         # Add initial attributes on first log in
         if created:
             email = self.get_email(remote_user)
-            if email is None:
+            if email is None or email == "":
                 email = f"{shibboleth_attributes['username']}@upenn.edu"
             user.set_unusable_password()
             user.save()
