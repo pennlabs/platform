@@ -139,7 +139,8 @@ export const Tag = styled.div<{ blue?: boolean }>`
     align-items: center;
     justify-content: center;
     border-radius: 0.1rem;
-    box-shadow: 0 0.05rem 0.05rem rgba(0, 0, 0, 0.25);
+    ${({ blue }) =>
+        blue ? "" : "box-shadow: 0 0.05rem 0.05rem rgba(0, 0, 0, 0.25);"}
 
     & > * {
         margin: 0.2rem;
