@@ -45,7 +45,7 @@ const VerificationForm = (props: VerificationFormProps) => {
     return (
         <ReactCodeInput
             name="verification"
-            type="number"
+            type="tel"
             fields={6}
             onChange={handleInputChange}
             ref={codeInput}
