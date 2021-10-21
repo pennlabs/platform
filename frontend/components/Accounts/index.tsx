@@ -22,10 +22,17 @@ import ContactInput from "./Forms/ContactInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
 
+const currentYear = new Date().getFullYear();
+
 const FormSchema = Yup.object({
     first_name: Yup.string().required("Required"),
     student: Yup.object({
-        graduation_year: Yup.number().positive().integer().nullable(),
+        graduation_year: Yup.number()
+            .positive()
+            .integer()
+            .nullable()
+            .min(currentYear)
+            .max(currentYear + 10),
     }),
 });
 
