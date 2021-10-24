@@ -215,9 +215,7 @@ export const EditInput = ({ onConfirm, value, onChange, onCancel }) => (
         <Button type="button" onClick={onConfirm}>
             Confirm
         </Button>
-        <Button type="button" cancel onClick={onCancel}>
-            X
-        </Button>
+        <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
     </Flex>
 );
 
