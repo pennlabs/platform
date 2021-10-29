@@ -116,7 +116,7 @@ class DevLoginView(View):
         try:
             user = get_user_model().objects.get(pennid=choice)
         except User.DoesNotExist:
-            user = get_user_model().objects.filter().first()   
+            user = get_user_model().objects.filter().first()
         affiliations = list(map(lambda user: user.name, user.groups.all()))
         shibboleth_attributes = {
             "username": user.username,

@@ -1,12 +1,10 @@
 import json
 import random
-import uuid
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.management import BaseCommand
 
-from accounts.models import Email, Major, PhoneNumber, School, Student, User
+from accounts.models import Email, Major, PhoneNumber, School, User
 
 
 with open("accounts/data/users.json") as f:
@@ -46,8 +44,8 @@ class Command(BaseCommand):
                 member_group = Group.objects.get(name="member")
                 user_obj.groups.add(member_group)
                 for group in user["group"]:
-                    group_obj = Group.objects.filter(name=group).first()       
-                    if group_obj is not None:             
+                    group_obj = Group.objects.filter(name=group).first()
+                    if group_obj is not None:
                         user_obj.groups.add(group_obj)
 
                 if "student" in user:
@@ -113,7 +111,7 @@ class Command(BaseCommand):
                         number = ""
                         for _ in range(10):
                             number += str(random.randint(0, 9))
-                    
+
                     phone = PhoneNumber(
                         user=User.objects.all().get(username=username),
                         value=number,

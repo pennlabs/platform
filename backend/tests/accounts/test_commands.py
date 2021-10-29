@@ -15,11 +15,11 @@ class UpdateMajorsTestCase(TestCase):
 class PopulateUsersTestCase(TestCase):
     def test_populate_users(self):
         call_command("populate_users")
-        self.assertTrue(len(get_user_model().objects.all()) > 0)
-        self.assertTrue(len(Major.objects.all()) > 0)
-        self.assertTrue(len(Student.objects.all()) > 0)
+        self.assertTrue(get_user_model().objects.all().count() > 0)
+        self.assertTrue(Major.objects.all().count() > 0)
+        self.assertTrue(Student.objects.all().count() > 0)
 
     def test_populate_twice(self):
         call_command("populate_users")
         call_command("populate_users")
-        self.assertEqual(len(get_user_model().objects.all()), 10)
+        self.assertEqual(get_user_model().objects.all().count(), 10)
