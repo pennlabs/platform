@@ -171,7 +171,7 @@ export const ExistingInput = ({
             {isVerified && <Indicator src="/greentick.png" />}
             <span>{text}</span>
             {isPrimary && (
-                <Tag blue>
+                <Tag variant="primary">
                     <span>PRIMARY</span>
                 </Tag>
             )}

@@ -207,10 +207,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                     </FormGroupGrid>
                                 </>
                             )}
-                            <Button
-                                margin="1.5rem 0 0 0"
-                                style={{ fontSize: "1.2rem" }}
-                            >
+                            <Button marginTop="1.7rem" fontSize="1.2rem">
                                 Save
                             </Button>
                         </Form>

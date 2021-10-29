@@ -137,17 +137,20 @@ export const Indicator = styled.img<{ paddingTop?: string; width?: string }>`
     }
 `;
 
-export const Tag = styled.div<{ blue?: boolean }>`
+const TagVariants = {
+    default: { col: "#767676", bg: "#e7e7e7" },
+    primary: { col: "#455f7a", bg: "#adcced" },
+};
+
+export const Tag = styled.div<{ variant?: keyof typeof TagVariants }>`
     height: 1rem;
     margin-top: 0.35rem;
-    ${({ blue }) => `background-color: ${blue ? "#adcced" : "#e7e7e7"};`}
-    ${({ blue }) => `color: ${blue ? "#455f7a" : "#767676"};`}
+    background-color: ${({ variant = "default" }) => TagVariants[variant].bg};
+    color: ${({ variant = "default" }) => TagVariants[variant].col};
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 0.1rem;
-    ${({ blue }) =>
-        blue ? "" : "box-shadow: 0 0.05rem 0.05rem rgba(0, 0, 0, 0.25);"}
 
     & > * {
         margin: 0.2rem;
@@ -169,16 +172,20 @@ export const AddButton = styled.button<{ marginTop?: string }>`
 
 export const Button = styled.button<{
     margin?: string;
-    cancel?: boolean;
+    backgroundColor?: string;
+    marginTop?: string;
+    fontSize?: string;
 }>`
-    background-color: ${(props) => (props.cancel ? "#93a0ad" : "#209cee")};
+    background-color: ${(props) => props.backgroundColor || "#209cee"};
     color: #ffffff;
     border: none;
     border-radius: 0.2rem;
     cursor: pointer;
+    font-size: ${(props) => props.fontSize};
     font-weight: 600;
     padding: 0.5rem 0.7rem 0.5rem 0.7rem;
     margin: ${(props) => props.margin};
+    margin-top: ${(props) => props.marginTop};
 `;
 
 export const selectStyles = {
