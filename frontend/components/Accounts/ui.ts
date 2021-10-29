@@ -92,6 +92,7 @@ export const Text = styled.span<TextProps>`
 export const FormGroupHeader = styled.h3`
     font-style: normal;
     font-weight: 600;
+    font-size: 1.5rem;
 `;
 
 export const FormGroupGrid = styled.div`
@@ -104,6 +105,7 @@ interface FormGroupItemProps {
     col: number;
     row: number;
     alignItems?: string;
+    margin?: boolean;
 }
 
 export const FormGroupItem = styled.div<FormGroupItemProps>`
@@ -111,6 +113,7 @@ export const FormGroupItem = styled.div<FormGroupItemProps>`
     grid-row: ${(props) => props.row};
     display: flex;
     align-items: ${(props) => (props.alignItems ? props.alignItems : "center")};
+    margin-bottom: ${(props) => (props.margin ? ".8rem" : "0")};
 `;
 
 export const FormInput = styled.input<{ height?: string; error?: boolean }>`
@@ -124,16 +127,26 @@ export const FormInput = styled.input<{ height?: string; error?: boolean }>`
     padding-left: 0.3rem;
 `;
 
-export const Indicator = styled.img<{ paddingTop?: string }>`
-    width: 1rem;
+export const Indicator = styled.img<{ paddingTop?: string; width?: string }>`
+    width: ${(props) => props.width ?? "1rem"};
     padding-top: ${(props) => props.paddingTop};
     cursor: pointer;
+
+    &:hover {
+        opacity: 0.5;
+    }
 `;
 
-export const Tag = styled.div`
+const TagVariants = {
+    default: { col: "#767676", bg: "#e7e7e7" },
+    primary: { col: "#455f7a", bg: "#adcced" },
+};
+
+export const Tag = styled.div<{ variant?: keyof typeof TagVariants }>`
     height: 1rem;
     margin-top: 0.35rem;
-    background-color: #e7e7e7;
+    background-color: ${({ variant = "default" }) => TagVariants[variant].bg};
+    color: ${({ variant = "default" }) => TagVariants[variant].col};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -143,7 +156,6 @@ export const Tag = styled.div`
         margin: 0.2rem;
         font-size: 0.5rem;
         font-weight: 600;
-        color: #767676;
     }
 `;
 
@@ -158,15 +170,22 @@ export const AddButton = styled.button<{ marginTop?: string }>`
     margin-top: ${(props) => props.marginTop};
 `;
 
-export const Button = styled.button<{ margin?: string }>`
-    background-color: #209cee;
+export const Button = styled.button<{
+    margin?: string;
+    backgroundColor?: string;
+    marginTop?: string;
+    fontSize?: string;
+}>`
+    background-color: ${(props) => props.backgroundColor || "#209cee"};
     color: #ffffff;
     border: none;
     border-radius: 0.2rem;
     cursor: pointer;
+    font-size: ${(props) => props.fontSize};
     font-weight: 600;
     padding: 0.5rem 0.7rem 0.5rem 0.7rem;
     margin: ${(props) => props.margin};
+    margin-top: ${(props) => props.marginTop};
 `;
 
 export const selectStyles = {
