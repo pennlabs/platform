@@ -14,6 +14,8 @@
     </style>
 </head>
 <body>
+    {% load static %}
+    {{ user_data|json_script:"user_data" }}
     <div class=center-div">
         <div class="col-md-4; center-div" style="margin-top: 5%; width: 30%">
         <h1>Platform Dev Login</h1>
@@ -23,7 +25,7 @@
                 <div class="form-group">
                     <select class="form-control" id="userChoice" name="userChoice">
                         {% for user in user_data %}
-                        <option value="{{user.user.pennid}}">{{user.user.first_name}} {{user.user.last_name}}</option>
+                        <option value="{{user.pennid}}">{{user.first_name}} {{user.last_name}}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -34,75 +36,10 @@
         <div class="center-div" style="width: 80%; margin-top: 2%">
             <hr>
             <br><h3 style="text-align: center">User Details</h3>
-            <div>
-                <table class="table table-striped center-div">
-                <thead style="border:black">
-                    <tr>
-                        <th>Name</th>
-                        <th>Preferred Name</th>
-                        <th>Groups</th>
-                        <th>Email(s)</th>
-                        <th>Email Verified</th>
-                        <th>Phone #(s)</th>
-                        <th>Phone Verified</th>
-                        <th>Major(s)</th>
-                        <th>School(s)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in user_data %}
-                        <tr>
-                            <td>{{user.user.first_name}} {{user.user.last_name}}</td>
-                            <td>
-                                {% if user.user.first_name == user.user.preferred_name %}
-                                    Same
-                                {% else %}
-                                    {{ user.user.preferred_name }}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% for group in user.user.groups.all %}
-                                    {{ group.name }},
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for email in user.user.emails.all %}
-                                    {{ email.value }},
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for email in user.user.emails.all %}
-                                    {{ email.verified }},
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for phone in user.user.phone_numbers.all %}
-                                    {{ phone.value }},
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for phone in user.user.phone_numbers.all %}
-                                    {{ phone.verified }},
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for degree in user.majors %}
-                                    {{ degree }},
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for school in user.schools %}
-                                    {{ school }},
-                                {% endfor %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            </div>
-
+            <div id="datatable"></div> <!-- see devlogin.js -->
         </div>
     </div>
+    <script type="text/javascript", src="{% static 'js/devlogin.js' %}"></script>
 
 </body>
 </html>

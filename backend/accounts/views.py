@@ -88,6 +88,8 @@ class DevLoginView(View):
 
     def get(self, request):
         user_objects = get_user_model().objects.all()
+        serialized_data = UserSerializer(user_objects, many=True).data
+        print(serialized_data[6])
         user_data = []
         for user in user_objects:
             try:
@@ -109,7 +111,7 @@ class DevLoginView(View):
                 )
             except Student.DoesNotExist:
                 user_data.append({"user": user, "majors": ["N/A"], "schools": ["N/A"]})
-        return render(request, "accounts/devlogin.html", {"user_data": user_data})
+        return render(request, "accounts/devlogin.html", {"user_data": serialized_data})
 
     def post(self, request):
         choice = int(request.POST.get("userChoice", ""))

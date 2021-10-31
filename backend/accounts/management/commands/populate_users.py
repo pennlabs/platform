@@ -19,14 +19,14 @@ class Command(BaseCommand):
         for x in ["alum", "employee", "faculty", "member", "staff", "student"]:
             Group.objects.get_or_create(name=x)
         for i, user in enumerate(users):
-            username = (user["first_name"].strip() + user["last_name"].strip()).lower()
+            username = user["first_name"].strip().lower()
             school = (
                 user["student"]["school"][0].lower() + "." if "student" in user else ""
             )
             first_name = user["first_name"]
             last_name = user["last_name"]
             pennid = i + 1000
-            email_address = f"{username}@{school}.upenn.edu"
+            email_address = f"{username}@{school}upenn.edu"
             password = f"password{pennid}"
 
             user_obj, created = User.objects.get_or_create(
@@ -96,6 +96,9 @@ class Command(BaseCommand):
                     )
                     email.save()
                     if "multiple" in email_details:
+                        school = (
+                            user["student"]["school"][0].lower() + "." if "student" in user else ""
+                        )
                         email2 = Email(
                             user=User.objects.all().get(username=username),
                             value=f"{user['last_name'].strip().lower()}@{school}upenn.edu",
