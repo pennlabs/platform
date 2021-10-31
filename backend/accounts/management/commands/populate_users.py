@@ -97,7 +97,9 @@ class Command(BaseCommand):
                     email.save()
                     if "multiple" in email_details:
                         school = (
-                            user["student"]["school"][0].lower() + "." if "student" in user else ""
+                            user["student"]["school"][0].lower() + "."
+                            if "student" in user
+                            else ""
                         )
                         email2 = Email(
                             user=User.objects.all().get(username=username),
