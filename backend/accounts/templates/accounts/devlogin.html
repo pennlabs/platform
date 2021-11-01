@@ -15,7 +15,7 @@
 </head>
 <body>
     {% load static %}
-    {{ user_data|json_script:"user_data" }}
+    {{ user_data|json_script:"user_data" }} <!-- makes user_data accessible in js -->
     <div class=center-div">
         <div class="col-md-4; center-div" style="margin-top: 5%; width: 30%">
         <h1>Platform Dev Login</h1>

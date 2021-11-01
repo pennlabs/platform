@@ -89,28 +89,6 @@ class DevLoginView(View):
     def get(self, request):
         user_objects = get_user_model().objects.all()
         serialized_data = UserSerializer(user_objects, many=True).data
-        print(serialized_data[6])
-        user_data = []
-        for user in user_objects:
-            try:
-                student = Student.objects.get(user=user)
-                user_majors = student.major.all()
-                user_major_list = []
-                for major in user_majors:
-                    user_major_list.append(major.name + " " + major.degree_type)
-                user_schools = student.school.all()
-                user_school_list = []
-                for school in user_schools:
-                    user_school_list.append(school.name)
-                user_data.append(
-                    {
-                        "user": user,
-                        "majors": user_major_list,
-                        "schools": user_school_list,
-                    }
-                )
-            except Student.DoesNotExist:
-                user_data.append({"user": user, "majors": ["N/A"], "schools": ["N/A"]})
         return render(request, "accounts/devlogin.html", {"user_data": serialized_data})
 
     def post(self, request):

@@ -2,7 +2,6 @@ const data = JSON.parse(document.getElementById('user_data').textContent);
 
 const headers = [
     "Name",
-    "Preferred Name",
     "Groups",
     "Email(s)",
     "Email Verified",
@@ -16,8 +15,6 @@ function parseRow(row) {
     let rowData = []
     // name
     rowData.push(row.first_name + " " + row.last_name)
-    // preferred name
-    rowData.push(rowData[0])
     // groups
     rowData.push(row.groups.join(", "))
 
@@ -63,28 +60,27 @@ function parseRow(row) {
 function addTable() {
     let table = document.createElement("table")
 
-let header = table.insertRow(-1)
+    let header = table.insertRow(-1)
 
-for (let i = 0; i < headers.length; i++) {
-    let th = document.createElement("th")
-    th.innerHTML = headers[i]
-    header.appendChild(th)
-}
-
-for (let i = 0; i < data.length; i++) {
-    let rowData = parseRow(data[i])
-
-    let tr = table.insertRow(-1)
-
-    for (let j = 0; j < rowData.length; j++) {
-        let cell = tr.insertCell(-1)
-        cell.innerHTML = rowData[j]
+    for (let i = 0; i < headers.length; i++) {
+        let th = document.createElement("th")
+        th.innerHTML = headers[i]
+        header.appendChild(th)
     }
-}
 
-table.classList.add("table", "table-striped", "center-div")
-let container = document.getElementById("datatable")
-    container.appendChild(table)
+    for (let i = 0; i < data.length; i++) {
+        let rowData = parseRow(data[i])
+        let tr = table.insertRow(-1)
+
+        for (let j = 0; j < rowData.length; j++) {
+            let cell = tr.insertCell(-1)
+            cell.innerHTML = rowData[j]
+        }
+    }
+
+    table.classList.add("table", "table-striped", "center-div")
+    let container = document.getElementById("datatable")
+        container.appendChild(table)
 }
 
 addTable()
