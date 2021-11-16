@@ -55,6 +55,7 @@ const FieldInput = ({
     setShowAdd,
     setVerifyContact,
     setShowModal,
+    onCancel,
 }) => {
     const { addToast } = useToasts();
     const [text, setText] = useState("");
@@ -90,7 +91,14 @@ const FieldInput = ({
         setShowAdd(true);
     };
 
-    return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
+    return (
+        <EditInput
+            value={text}
+            onChange={onChange}
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+        />
+    );
 };
 
 const MoreIndicator = ({
@@ -163,7 +171,7 @@ export const ExistingInput = ({
             {isVerified && <Indicator src="/greentick.png" />}
             <span>{text}</span>
             {isPrimary && (
-                <Tag>
+                <Tag variant="primary">
                     <span>PRIMARY</span>
                 </Tag>
             )}
@@ -172,13 +180,15 @@ export const ExistingInput = ({
                     <span>UNVERIFIED</span>
                 </Tag>
             )}
-            <MoreIndicator
-                isPrimary={isPrimary}
-                isVerified={isVerified}
-                onDelete={() => setModalIsOpen(true)}
-                onMakePrimary={onMakePrimary}
-                onReverify={onReverify}
-            />
+            {!isVerified || onDelete ? (
+                <MoreIndicator
+                    isPrimary={isPrimary}
+                    isVerified={isVerified}
+                    onDelete={() => setModalIsOpen(true)}
+                    onMakePrimary={onMakePrimary}
+                    onReverify={onReverify}
+                />
+            ) : undefined}
             <DeleteModal
                 type={contactType}
                 contact={text}
@@ -199,12 +209,13 @@ export const AddInput = ({ text, onClick, margin }) => (
     </AddButton>
 );
 
-export const EditInput = ({ onConfirm, value, onChange }) => (
+export const EditInput = ({ onConfirm, value, onChange, onCancel }) => (
     <Flex childMargin="0.2rem" width="100%">
         <FormInput height="2rem" value={value} onChange={onChange} />
         <Button type="button" onClick={onConfirm}>
             Confirm
         </Button>
+        <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
     </Flex>
 );
 
@@ -238,14 +249,18 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         }
                         setShowModal(true);
                     }}
-                    onDelete={async () => {
-                        try {
-                            await deleteContact(contactType, id);
-                        } catch (e) {
-                            addToast("Delete contact failed");
-                        }
-                        mutate();
-                    }}
+                    onDelete={
+                        contactType === "email" && infolist.length === 1
+                            ? undefined
+                            : async () => {
+                                  try {
+                                      await deleteContact(contactType, id);
+                                  } catch (e) {
+                                      addToast("Delete contact failed");
+                                  }
+                                  mutate();
+                              }
+                    }
                     onMakePrimary={() => mutate(id, { primary: true })}
                     key={id}
                     isPrimary={primary}
@@ -268,6 +283,7 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                     setShowAdd={setShowAdd}
                     setShowModal={setShowModal}
                     setVerifyContact={setVerifyContact}
+                    onCancel={() => setShowAdd(true)}
                 />
             )}
             <VerificationModal

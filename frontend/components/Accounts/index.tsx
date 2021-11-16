@@ -22,10 +22,17 @@ import ContactInput from "./Forms/ContactInput";
 import { FormikSelectInput } from "./Forms/SelectInput";
 import { ContactType, User } from "../../types";
 
+const currentYear = new Date().getFullYear();
+
 const FormSchema = Yup.object({
     first_name: Yup.string().required("Required"),
     student: Yup.object({
-        graduation_year: Yup.number().positive().integer().nullable(),
+        graduation_year: Yup.number()
+            .positive()
+            .integer()
+            .nullable()
+            .min(currentYear)
+            .max(currentYear + 10),
     }),
 });
 
@@ -115,6 +122,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                     col={2}
                                     row={1}
                                     alignItems="start"
+                                    margin
                                 >
                                     <Flex
                                         flexDirection="column"
@@ -130,6 +138,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                         />
                                     </Flex>
                                 </FormGroupItem>
+
                                 <FormGroupItem
                                     col={1}
                                     row={2}
@@ -175,6 +184,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                                 fieldName="student.school"
                                             />
                                         </FormGroupItem>
+
                                         <FormGroupItem col={1} row={2}>
                                             <Text weight="400">Major(s)</Text>
                                         </FormGroupItem>
@@ -184,6 +194,7 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                                 fieldName="student.major"
                                             />
                                         </FormGroupItem>
+
                                         <FormGroupItem col={1} row={3}>
                                             <Text weight="400">Grad Year</Text>
                                         </FormGroupItem>
@@ -196,7 +207,9 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
                                     </FormGroupGrid>
                                 </>
                             )}
-                            <Button margin="1.5rem 0 0 0">Save</Button>
+                            <Button marginTop="1.7rem" fontSize="1.2rem">
+                                Save
+                            </Button>
                         </Form>
                     </Formik>
                 </div>
