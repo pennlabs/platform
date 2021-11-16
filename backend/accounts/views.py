@@ -27,7 +27,7 @@ from rest_framework.views import APIView, Response
 from rest_framework_api_key.permissions import HasAPIKey
 from sentry_sdk import capture_message
 
-from accounts.models import Major, School, Student, User
+from accounts.models import Major, School, User
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
