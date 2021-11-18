@@ -2,8 +2,8 @@
     "users": [
         {
             "group": ["student"],
-            "first_name": "Liza",
-            "last_name": "Whartonengineer",
+            "first_name": "Engineering",
+            "last_name": "Student",
             "student": {
                 "degree": "B",
                 "major": ["Finance", "Computer Science"],
@@ -15,12 +15,12 @@
         },
         {
             "group": ["student"],
-            "first_name": "Nikki",
-            "last_name": "Engineer",
+            "first_name": "Wharton",
+            "last_name": "Student",
             "student": {
                 "degree": "B",
-                "major": ["Computer Science"],
-                "school": ["SEAS"],
+                "major": ["Finance"],
+                "school": ["Wharton"],
                 "graduation_year": 2024
             },
             "email": {"verified": true},
@@ -28,12 +28,12 @@
         },
         {
             "group": ["student"],
-            "first_name": "Jammie",
-            "last_name": "Engineermaster",
+            "first_name": "College",
+            "last_name": "Student",
             "student": {
-                "degree": "M",
-                "major": ["Electrical Engineering"],
-                "school": ["SEAS"],
+                "degree": "B",
+                "major": ["Mathematics"],
+                "school": ["College"],
                 "graduation_year": 2023
             },
             "email": {"verified": false},
@@ -41,12 +41,12 @@
         },
         {
             "group": ["student", "employee"],
-            "first_name": "Sandie",
-            "last_name": "Whartondoctrate",
+            "first_name": "Nursing",
+            "last_name": "Student",
             "student": {
-                "degree": "PhD",
-                "major": ["Accounting"],
-                "school": ["Wharton"],
+                "degree": "B",
+                "major": ["Nursing"],
+                "school": ["Nursing"],
                 "graduation_year": 2025
             },
             "email": {"verified": false},
