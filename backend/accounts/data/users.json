@@ -1,118 +1,218 @@
 {
-    "users": [
-        {
-            "group": ["student"],
-            "first_name": "Engineering",
-            "last_name": "Student",
-            "student": {
-                "degree": "B",
-                "major": ["Finance", "Computer Science"],
-                "school": ["Wharton", "SEAS"],
-                "graduation_year": 2022
-            },
-            "email": {"verified": true},
-            "phone": {"verified": true}
-        },
-        {
-            "group": ["student"],
-            "first_name": "Wharton",
-            "last_name": "Student",
-            "student": {
-                "degree": "B",
-                "major": ["Finance"],
-                "school": ["Wharton"],
-                "graduation_year": 2024
-            },
-            "email": {"verified": true},
-            "phone": {"verified": true}
-        },
-        {
-            "group": ["student"],
-            "first_name": "College",
-            "last_name": "Student",
-            "student": {
-                "degree": "B",
-                "major": ["Mathematics"],
-                "school": ["College"],
-                "graduation_year": 2023
-            },
-            "email": {"verified": false},
-            "phone": {"verified": true}
-        },
-        {
-            "group": ["student", "employee"],
-            "first_name": "Nursing",
-            "last_name": "Student",
-            "student": {
-                "degree": "B",
-                "major": ["Nursing"],
-                "school": ["Nursing"],
-                "graduation_year": 2025
-            },
-            "email": {"verified": false},
-            "phone": {"verified": false}
-        },
-        {
-            "group": ["student"],
-            "first_name": "Victor",
-            "last_name": "Mathematician",
-            "preferred_name": "Vicky",
-            "student": {
-                "degree": "Submat",
-                "major": ["Mathematics"],
-                "school": ["College"],
-                "graduation_year": 2021
-            },
-            "email": {"verified": false, "multiple": true},
-            "phone": {"verified": true, "invalid": true}
-        },
-        {
-            "group": ["student", "employee"],
-            "first_name": "Nurse",
-            "last_name": "Mattie",
-            "student": {
-                "degree": "B",
-                "major": ["Nursing"],
-                "school": ["Nursing"],
-                "graduation_year": 2022
-            },
-            "email": {"verified": false},
-            "phone": {"verified": false}
-        },
-        {
-            "group": ["student"],
-            "first_name": "Wharton",
-            "last_name": "Coney",
-            "preferred_name": "Claus",
-            "student": {
-                "degree": "P",
-                "major": ["Finance"],
-                "school": ["Wharton"],
-                "graduation_year": 2023
-            },
-            "email": {"verified": true, "multiple": true},
-            "phone": {"verified": true}
-        },
-        {
-            "group": ["faculty", "alum"],
-            "first_name": "Professor",
-            "last_name": "Juckett",
-            "email": {"verified": true},
-            "phone": {"verified": true, "invalid": true}
-        },
-        {
-            "group": ["faculty", "staff", "alum"],
-            "first_name": "Lecturer",
-            "last_name": "Rolando",
-            "email": {"verified": false},
-            "phone": {"verified": true}
-        },
-        {
-            "group": ["faculty", "staff"],
-            "first_name": "Professor",
-            "last_name": "Moss",
-            "email": {"verified": true},
-            "phone": {"verified": true}
-        }
-    ]
+  "users": [
+    {
+      "group": [
+        "student"
+      ],
+      "first_name": "Engineering",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Finance",
+          "Computer Science"
+        ],
+        "school": [
+          "Wharton",
+          "SEAS"
+        ],
+        "graduation_year": 2022
+      },
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "student"
+      ],
+      "first_name": "Wharton",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Finance"
+        ],
+        "school": [
+          "Wharton"
+        ],
+        "graduation_year": 2024
+      },
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "student"
+      ],
+      "first_name": "College",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Mathematics"
+        ],
+        "school": [
+          "College"
+        ],
+        "graduation_year": 2023
+      },
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "student",
+        "employee"
+      ],
+      "first_name": "Nursing",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Nursing"
+        ],
+        "school": [
+          "Nursing"
+        ],
+        "graduation_year": 2025
+      },
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": false
+      }
+    },
+    {
+      "group": [
+        "student"
+      ],
+      "first_name": "Victor",
+      "last_name": "Mathematician",
+      "preferred_name": "Vicky",
+      "student": {
+        "degree": "Submat",
+        "major": [
+          "Mathematics"
+        ],
+        "school": [
+          "College"
+        ],
+        "graduation_year": 2021
+      },
+      "email": {
+        "verified": false,
+        "multiple": true
+      },
+      "phone": {
+        "verified": true,
+        "invalid": true
+      }
+    },
+    {
+      "group": [
+        "student",
+        "employee"
+      ],
+      "first_name": "Nurse",
+      "last_name": "Mattie",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Nursing"
+        ],
+        "school": [
+          "Nursing"
+        ],
+        "graduation_year": 2022
+      },
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": false
+      }
+    },
+    {
+      "group": [
+        "student"
+      ],
+      "first_name": "Wharton",
+      "last_name": "Coney",
+      "preferred_name": "Claus",
+      "student": {
+        "degree": "P",
+        "major": [
+          "Finance"
+        ],
+        "school": [
+          "Wharton"
+        ],
+        "graduation_year": 2023
+      },
+      "email": {
+        "verified": true,
+        "multiple": true
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "faculty",
+        "alum"
+      ],
+      "first_name": "Professor",
+      "last_name": "Juckett",
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true,
+        "invalid": true
+      }
+    },
+    {
+      "group": [
+        "faculty",
+        "staff",
+        "alum"
+      ],
+      "first_name": "Lecturer",
+      "last_name": "Rolando",
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "faculty",
+        "staff"
+      ],
+      "first_name": "Professor",
+      "last_name": "Moss",
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true
+      }
+    }
+  ]
 }
