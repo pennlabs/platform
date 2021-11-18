@@ -2,6 +2,7 @@
   "users": [
     {
       "group": [
+        "member",
         "student"
       ],
       "first_name": "Engineering",
@@ -27,6 +28,7 @@
     },
     {
       "group": [
+        "member",
         "student"
       ],
       "first_name": "Wharton",
@@ -50,6 +52,7 @@
     },
     {
       "group": [
+        "member",
         "student"
       ],
       "first_name": "College",
@@ -73,6 +76,7 @@
     },
     {
       "group": [
+        "member",
         "student",
         "employee"
       ],
@@ -97,6 +101,7 @@
     },
     {
       "group": [
+        "member",
         "student"
       ],
       "first_name": "Victor",
@@ -123,6 +128,7 @@
     },
     {
       "group": [
+        "member",
         "student",
         "employee"
       ],
@@ -147,6 +153,7 @@
     },
     {
       "group": [
+        "member",
         "student"
       ],
       "first_name": "Wharton",
@@ -172,6 +179,7 @@
     },
     {
       "group": [
+        "member",
         "faculty",
         "alum"
       ],
@@ -187,6 +195,7 @@
     },
     {
       "group": [
+        "member",
         "faculty",
         "staff",
         "alum"
@@ -202,6 +211,7 @@
     },
     {
       "group": [
+        "member",
         "faculty",
         "staff"
       ],
