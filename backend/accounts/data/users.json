@@ -10,12 +10,12 @@
       "student": {
         "degree": "B",
         "major": [
-          "Finance",
-          "Computer Science"
+          "Finance, BS",
+          "Computer Science, BSE"
         ],
         "school": [
-          "Wharton",
-          "SEAS"
+          "The Wharton School",
+          "School of Engineering and Applied Science"
         ],
         "graduation_year": 2022
       },
@@ -36,10 +36,10 @@
       "student": {
         "degree": "B",
         "major": [
-          "Finance"
+          "Finance, BS"
         ],
         "school": [
-          "Wharton"
+          "The Wharton School"
         ],
         "graduation_year": 2024
       },
@@ -55,15 +55,15 @@
         "member",
         "student"
       ],
-      "first_name": "College",
+      "first_name": "Mathematician",
       "last_name": "Student",
       "student": {
         "degree": "B",
         "major": [
-          "Mathematics"
+          "Mathematics: General Mathematics, BA"
         ],
         "school": [
-          "College"
+          "School of Arts & Sciences"
         ],
         "graduation_year": 2023
       },
@@ -85,10 +85,10 @@
       "student": {
         "degree": "B",
         "major": [
-          "Nursing"
+          "Nursing, BSN"
         ],
         "school": [
-          "Nursing"
+          "School of Nursing"
         ],
         "graduation_year": 2025
       },
@@ -109,10 +109,10 @@
       "student": {
         "degree": "M",
         "major": [
-          "Mathematics"
+          "Mathematics, MA"
         ],
         "school": [
-          "College"
+          "School of Arts & Sciences"
         ],
         "graduation_year": 2021
       },
@@ -136,10 +136,10 @@
       "student": {
         "degree": "M",
         "major": [
-          "Finance"
+          "Finance, MBA"
         ],
         "school": [
-          "Wharton"
+          "The Wharton School"
         ],
         "graduation_year": 2022
       },

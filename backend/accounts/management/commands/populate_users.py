@@ -2,7 +2,7 @@ import json
 import random
 
 from django.contrib.auth.models import Group
-from django.core.management import BaseCommand
+from django.core.management import BaseCommand, call_command
 
 from accounts.models import Email, Major, PhoneNumber, School, User
 
@@ -16,15 +16,24 @@ class Command(BaseCommand):
         parser.add_argument("--force", action="store_true", help="Forces repopulation")
 
     def handle(self, *args, **options):
+        call_command("update_academics")
+
         for x in ["alum", "employee", "faculty", "member", "staff", "student"]:
             Group.objects.get_or_create(name=x)
         for i, user in enumerate(users):
             username = (
                 user["first_name"].strip().lower() + user["last_name"].strip().lower()
             )
-            school = (
-                user["student"]["school"][0].lower() + "." if "student" in user else ""
-            )
+            school = ""
+            if "student" in user:
+                # converts school name to school short form
+                dict_ = {
+                    "The Wharton School": "wharton",
+                    "School of Engineering and Applied Science": "seas",
+                    "School of Arts & Sciences": "sas",
+                    "School of Nursing": "nursing"
+                }
+                school = dict_[user["student"]["school"][0]].lower() + "."
             first_name = user["first_name"]
             last_name = user["last_name"]
             pennid = i + 1000
@@ -59,34 +68,10 @@ class Command(BaseCommand):
                         major = Major.objects.filter(name=major_name).first()
                         if major is not None:
                             student.major.add(major)
-                        else:
-                            major1 = Major(name=major_name)
-                            if (
-                                student_details["degree"] == "B"
-                                or student_details["degree"] == "Submat"
-                            ):
-                                major1.degree_type = major1.DEGREE_BACHELOR
-                            elif student_details["degree"] == "P":
-                                major1.degree_type = major1.DEGREE_PROFESSIONAL
-                            elif student_details["degree"] == "PhD":
-                                major1.degree_type = major1.DEGREE_PHD
-                            elif student_details["degree"] == "M":
-                                major1.degree_type = major1.DEGREE_MASTER
-                            major1.save()
-                            student.major.add(major1)
-                        if student_details["degree"] == "Submat":
-                            major2 = Major(name="Physics")
-                            major2.degree_type = major2.DEGREE_MASTER
-                            major2.save()
-                            student.major.add(major2)
-                        for school_name in student_details["school"]:
-                            schools = School.objects.filter(name=school_name)
-                            if len(schools) != 0:
-                                student.school.add(schools[0])
-                            else:
-                                school = School(name=school_name)
-                                school.save()
-                                student.school.add(school)
+                    for school_name in student_details["school"]:
+                        school_obj = School.objects.filter(name=school_name).first()
+                        if school_obj is not None:
+                            student.school.add(school_obj)
                     student.save()
                 if "email" in user:
                     email_details = user["email"]
@@ -98,11 +83,6 @@ class Command(BaseCommand):
                     )
                     email.save()
                     if "multiple" in email_details:
-                        school = (
-                            user["student"]["school"][0].lower() + "."
-                            if "student" in user
-                            else ""
-                        )
                         email2 = Email(
                             user=User.objects.all().get(username=username),
                             value=f"{user['last_name'].strip().lower()}@{school}upenn.edu",
