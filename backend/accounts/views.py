@@ -87,7 +87,7 @@ class DevLoginView(View):
     """
 
     def get(self, request):
-        user_objects = get_user_model().objects.all()
+        user_objects = get_user_model().objects.filter(~Q(username="admin"))
         serialized_data = UserSerializer(user_objects, many=True).data
         return render(request, "accounts/devlogin.html", {"user_data": serialized_data})
 
@@ -96,8 +96,8 @@ class DevLoginView(View):
         try:
             user = get_user_model().objects.get(pennid=choice)
         except User.DoesNotExist:
-            user = get_user_model().objects.filter().first()
-        affiliations = list(map(lambda user: user.name, user.groups.all()))
+            user = get_user_model().objects.filter(~Q(username="admin")).first()
+        affiliations = user.groups.all().values_list("name", flat=True)
         shibboleth_attributes = {
             "username": user.username,
             "first_name": user.first_name,
@@ -108,7 +108,7 @@ class DevLoginView(View):
             remote_user=user.pennid, shibboleth_attributes=shibboleth_attributes
         )
         auth.login(request, user)
-        return redirect(request.GET.get("next", "/accounts/me"))
+        return redirect(request.GET.get("next", "/accounts/me/"))
 
 
 class DevLogoutView(View):
