@@ -31,7 +31,7 @@ class Command(BaseCommand):
                     "The Wharton School": "wharton",
                     "School of Engineering and Applied Science": "seas",
                     "School of Arts & Sciences": "sas",
-                    "School of Nursing": "nursing"
+                    "School of Nursing": "nursing",
                 }
                 school = dict_[user["student"]["school"][0]].lower() + "."
             first_name = user["first_name"]
