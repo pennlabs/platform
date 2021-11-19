@@ -104,11 +104,10 @@
         "member",
         "student"
       ],
-      "first_name": "Victor",
-      "last_name": "Mathematician",
-      "preferred_name": "Vicky",
+      "first_name": "Masters",
+      "last_name": "Student",
       "student": {
-        "degree": "Submat",
+        "degree": "M",
         "major": [
           "Mathematics"
         ],
@@ -132,15 +131,15 @@
         "student",
         "employee"
       ],
-      "first_name": "Nurse",
-      "last_name": "Mattie",
+      "first_name": "MBA",
+      "last_name": "Student",
       "student": {
-        "degree": "B",
+        "degree": "M",
         "major": [
-          "Nursing"
+          "Finance"
         ],
         "school": [
-          "Nursing"
+          "Wharton"
         ],
         "graduation_year": 2022
       },
@@ -154,21 +153,11 @@
     {
       "group": [
         "member",
-        "student"
+        "employee",
+        "staff"
       ],
-      "first_name": "Wharton",
-      "last_name": "Coney",
-      "preferred_name": "Claus",
-      "student": {
-        "degree": "P",
-        "major": [
-          "Finance"
-        ],
-        "school": [
-          "Wharton"
-        ],
-        "graduation_year": 2023
-      },
+      "first_name": "Staff",
+      "last_name": "Member",
       "email": {
         "verified": true,
         "multiple": true
@@ -184,7 +173,7 @@
         "alum"
       ],
       "first_name": "Professor",
-      "last_name": "Juckett",
+      "last_name": "McProfessor",
       "email": {
         "verified": true
       },
@@ -197,11 +186,10 @@
       "group": [
         "member",
         "faculty",
-        "staff",
         "alum"
       ],
       "first_name": "Lecturer",
-      "last_name": "Rolando",
+      "last_name": "Person",
       "email": {
         "verified": false
       },
@@ -212,11 +200,10 @@
     {
       "group": [
         "member",
-        "faculty",
-        "staff"
+        "alum"
       ],
-      "first_name": "Professor",
-      "last_name": "Moss",
+      "first_name": "Alumni",
+      "last_name": "GraduatedPerson",
       "email": {
         "verified": true
       },
