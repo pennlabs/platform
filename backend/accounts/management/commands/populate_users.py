@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 first_name=first_name,
                 last_name=last_name,
             )
-            user.set_unusable_password()
+            user_obj.set_unusable_password()
 
             if created:
                 if "preferred_name" in user:
