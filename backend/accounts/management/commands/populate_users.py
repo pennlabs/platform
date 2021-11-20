@@ -21,9 +21,7 @@ class Command(BaseCommand):
         for x in ["alum", "employee", "faculty", "member", "staff", "student"]:
             Group.objects.get_or_create(name=x)
         for i, user in enumerate(users):
-            username = (
-                user["first_name"].strip().lower() + user["last_name"].strip().lower()
-            )
+            username = user["first_name"].strip().lower()
             school = ""
             if "student" in user:
                 # converts school name to school short form
