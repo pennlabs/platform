@@ -38,15 +38,14 @@ class Command(BaseCommand):
             last_name = user["last_name"]
             pennid = i + 1000
             email_address = f"{username}@{school}upenn.edu"
-            password = f"password{pennid}"
 
             user_obj, created = User.objects.get_or_create(
                 pennid=pennid,
                 username=username,
                 first_name=first_name,
                 last_name=last_name,
-                password=password,
             )
+            user.set_unusable_password()
 
             if created:
                 if "preferred_name" in user:
