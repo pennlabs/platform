@@ -34,4 +34,4 @@ EMAIL_HOST_USER = os.getenv("SMTP_USERNAME")
 EMAIL_HOST_PASSWORD = os.getenv("SMTP_PASSWORD")
 EMAIL_USE_TLS = True
 
-IS_DEV_LOGIN = bool(os.environ.get("DEV_LOGIN", "False"))
+IS_DEV_LOGIN = os.environ.get("DEV_LOGIN", "False") in ["True", "TRUE", "true"]
