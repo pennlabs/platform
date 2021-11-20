@@ -1,13 +1,17 @@
 import calendar
 import datetime
 import json
+import sys
+from importlib import reload
 from urllib.parse import quote
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.test import Client, TestCase
-from django.urls import reverse
+from django.core.management import call_command
+from django.test import Client, TestCase, override_settings
+from django.urls import clear_url_caches, reverse
 from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
@@ -25,9 +29,23 @@ from accounts.serializers import (
 )
 
 
+def reload_urlconf():
+    """
+    reloads the urlconfs after settings variables are updated
+    """
+    urlconf = settings.ROOT_URLCONF
+    acc_urls = "accounts.urls"
+    if urlconf in sys.modules and acc_urls in sys.modules:
+        clear_url_caches()
+        reload(sys.modules[urlconf])
+        reload(sys.modules[acc_urls])
+
+
+@override_settings(IS_DEV_LOGIN=False)
 class LoginViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+        reload_urlconf()
 
     def test_invalid_shibboleth_response(self):
         response = self.client.get(reverse("accounts:login"))
@@ -56,9 +74,11 @@ class LoginViewTestCase(TestCase):
         self.assertEqual(user.last_name, "User-Hyphenated")
 
 
+@override_settings(IS_DEV_LOGIN=False)
 class LogoutViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+        reload_urlconf()
 
     def test_logged_in_user(self):
         get_user_model().objects.create_user(
@@ -80,6 +100,53 @@ class LogoutViewTestCase(TestCase):
         self.assertRedirects(response, sample_response, fetch_redirect_response=False)
 
 
+@override_settings(IS_DEV_LOGIN=True)
+class DevLoginViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        reload_urlconf()
+        call_command("populate_users")
+
+    def test_get_login_page(self):
+        response = self.client.get(reverse("accounts:login"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_login_valid_choice(self):
+        self.client.post(reverse("accounts:login"), data={"userChoice": 1})
+        # sample_response = reverse("application:homepage")
+        expected_user_pennid = 1
+        actual_user_pennid = int(self.client.session["_auth_user_id"])
+        self.assertTrue(expected_user_pennid, actual_user_pennid)
+        # self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+    def test_login_invalid_choice(self):
+        self.client.post(reverse("accounts:login"), data={"userChoice": 24})
+        self.assertTrue("_auth_user_id" in self.client.session)
+
+
+@override_settings(IS_DEV_LOGIN=True)
+class DevLogoutViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        reload_urlconf()
+
+    def test_logout_user(self):
+        get_user_model().objects.create_user(
+            pennid=1, username="user", password="secret"
+        )
+        self.client.login(username="user", password="secret")
+        response = self.client.get(reverse("accounts:logout"))
+        self.assertNotIn("_auth_user_id", self.client.session)
+        sample_response = reverse("accounts:login")
+        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+    def test_guest_user(self):
+        response = self.client.get(reverse("accounts:logout"))
+        sample_response = reverse("accounts:login")
+        self.assertRedirects(response, sample_response, fetch_redirect_response=False)
+
+
+@override_settings(IS_DEV_LOGIN=False)
 class UUIDIntrospectTokenViewTestCase(TestCase):
     """
     Not exhaustive since most testing is done in django-oauth-toolkit itself. Code borrowed from
@@ -87,6 +154,7 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
     """
 
     def setUp(self):
+        reload_urlconf()
         self.Application = get_application_model()
         self.AccessToken = get_access_token_model()
         self.UserModel = get_user_model()
@@ -183,8 +251,10 @@ class UUIDIntrospectTokenViewTestCase(TestCase):
         self.assertDictEqual(content, {"active": False})
 
 
+@override_settings(IS_DEV_LOGIN=False)
 class UserSearchTestCase(TestCase):
     def setUp(self):
+        reload_urlconf()
         self.user1 = User.objects.create(
             pennid=1, username="test1", first_name="Test", last_name="Userabc"
         )
@@ -395,35 +465,20 @@ class PhoneNumberViewTestCase(TestCase):
         )
 
         self.number1 = PhoneNumber.objects.create(
-            user=self.user,
-            value="+12150001111",
-            primary=False,
-            verified=False,
+            user=self.user, value="+12150001111", primary=False, verified=False
         )
         self.number2 = PhoneNumber.objects.create(
-            user=self.user,
-            value="+12058869999",
-            primary=True,
-            verified=True,
+            user=self.user, value="+12058869999", primary=True, verified=True
         )
         self.number3 = PhoneNumber.objects.create(
-            user=self.user,
-            value="+16170031234",
-            primary=False,
-            verified=True,
+            user=self.user, value="+16170031234", primary=False, verified=True
         )
 
         self.user2 = User.objects.create(
-            pennid=2,
-            username="test2",
-            first_name="first2",
-            last_name="last2",
+            pennid=2, username="test2", first_name="first2", last_name="last2"
         )
         self.number4 = PhoneNumber.objects.create(
-            user=self.user2,
-            value="+12158989000",
-            primary=True,
-            verified=True,
+            user=self.user2, value="+12158989000", primary=True, verified=True
         )
 
         self.client = APIClient()
@@ -506,22 +561,13 @@ class EmailViewTestCase(TestCase):
             pennid=1, username="test1", first_name="first1", last_name="last1"
         )
         self.email1 = Email.objects.create(
-            user=self.user,
-            value="example@test.com",
-            primary=True,
-            verified=True,
+            user=self.user, value="example@test.com", primary=True, verified=True
         )
         self.email2 = Email.objects.create(
-            user=self.user,
-            value="example2@test.com",
-            primary=False,
-            verified=False,
+            user=self.user, value="example2@test.com", primary=False, verified=False
         )
         self.email3 = Email.objects.create(
-            user=self.user,
-            value="example3@test.com",
-            primary=False,
-            verified=True,
+            user=self.user, value="example3@test.com", primary=False, verified=True
         )
         self.user2 = User.objects.create(
             pennid=2, username="test2", first_name="first2", last_name="last2"

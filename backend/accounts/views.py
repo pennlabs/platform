@@ -3,13 +3,14 @@ import json
 from json.decoder import JSONDecodeError
 
 from django.contrib import auth
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -77,6 +78,47 @@ class LogoutView(View):
         return redirect(
             "/Shibboleth.sso/Logout?return=https://idp.pennkey.upenn.edu/logout"
         )
+
+
+class DevLoginView(View):
+    """
+    Log in a test user.
+    Does not use Shibboleth
+    """
+
+    def get(self, request):
+        user_objects = get_user_model().objects.filter(~Q(username="admin"))
+        serialized_data = UserSerializer(user_objects, many=True).data
+        return render(request, "accounts/devlogin.html", {"user_data": serialized_data})
+
+    def post(self, request):
+        choice = int(request.POST.get("userChoice", ""))
+        try:
+            user = get_user_model().objects.get(pennid=choice)
+        except User.DoesNotExist:
+            user = get_user_model().objects.filter(~Q(username="admin")).first()
+        affiliations = user.groups.all().values_list("name", flat=True)
+        shibboleth_attributes = {
+            "username": user.username,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "affiliation": affiliations,
+        }
+        user = auth.authenticate(
+            remote_user=user.pennid, shibboleth_attributes=shibboleth_attributes
+        )
+        auth.login(request, user)
+        return redirect(request.GET.get("next", "/accounts/me/"))
+
+
+class DevLogoutView(View):
+    """
+    Log out a test user from Platform
+    """
+
+    def get(self, request):
+        auth.logout(request)
+        return redirect("accounts:login")
 
 
 @method_decorator(csrf_exempt, name="dispatch")

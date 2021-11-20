@@ -187,9 +187,7 @@ class UserSerializerTestCase(TestCase):
         self.assertEqual(self.serializer_preferred_name.data["last_name"], "Last2")
 
     def test_update_preferred_valid_name(self):
-        data = {
-            "first_name": "new_preferred",
-        }
+        data = {"first_name": "new_preferred"}
         serializer = UserSerializer(self.user, data=data, partial=True)
 
         self.assertTrue(serializer.is_valid())
@@ -198,9 +196,7 @@ class UserSerializerTestCase(TestCase):
         self.assertEqual(self.user.first_name, "First")
 
     def test_preferred_same_as_first(self):
-        data = {
-            "first_name": "First2",
-        }
+        data = {"first_name": "First2"}
         serializer = UserSerializer(self.user_preferred_name, data=data, partial=True)
 
         self.assertTrue(serializer.is_valid())
@@ -316,15 +312,11 @@ class PhoneNumberSerializerTestCase(TestCase):
         )
 
         self.number2 = PhoneNumber.objects.create(
-            user=self.user,
-            value="+12058869999",
-            primary=True,
+            user=self.user, value="+12058869999", primary=True
         )
 
         self.number3 = PhoneNumber.objects.create(
-            user=self.user,
-            value="+16170031234",
-            primary=False,
+            user=self.user, value="+16170031234", primary=False
         )
 
     def test_create(self):
@@ -361,9 +353,7 @@ class PhoneNumberSerializerTestCase(TestCase):
             serializer.is_valid(raise_exception=True)
 
     def test_update_verified(self):
-        data = {
-            "verification_code": "123456",
-        }
+        data = {"verification_code": "123456"}
         serializer = PhoneNumberSerializer(
             self.number1, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -373,9 +363,7 @@ class PhoneNumberSerializerTestCase(TestCase):
         self.assertTrue(self.number1.primary)
 
     def test_update_unverified(self):
-        data = {
-            "verification_code": "000123",
-        }
+        data = {"verification_code": "000123"}
         serializer = PhoneNumberSerializer(
             self.number1, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -391,9 +379,7 @@ class PhoneNumberSerializerTestCase(TestCase):
         self.number3.verified = True
         self.number3.save()
 
-        data = {
-            "primary": True,
-        }
+        data = {"primary": True}
         serializer = PhoneNumberSerializer(
             self.number3, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -407,9 +393,7 @@ class PhoneNumberSerializerTestCase(TestCase):
         self.assertFalse(self.number2.primary)
 
     def test_attempt_unverified_make_primary(self):
-        data = {
-            "primary": True,
-        }
+        data = {"primary": True}
         serializer = PhoneNumberSerializer(
             self.number3, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -435,9 +419,7 @@ class PhoneNumberSerializerTestCase(TestCase):
             datetime.timedelta(0, 0, 0, 0, User.VERIFICATION_EXPIRATION_MINUTES + 1)
         )
         phone_number.verification_code = "000000"
-        data = {
-            "verification_code": "000000",
-        }
+        data = {"verification_code": "000000"}
         serializer = PhoneNumberSerializer(
             phone_number, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -489,10 +471,7 @@ class EmailSerializerTestCase(TestCase):
         self.assertNotEqual(email.verification_code, "000000")
 
     def test_update_verified(self):
-        data = {
-            "value": "example2@test.com",
-            "verification_code": "123456",
-        }
+        data = {"value": "example2@test.com", "verification_code": "123456"}
         serializer = EmailSerializer(
             self.email2, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -502,10 +481,7 @@ class EmailSerializerTestCase(TestCase):
         self.assertTrue(self.email2.primary)
 
     def test_update_unverified(self):
-        data = {
-            "value": "example2@test.com",
-            "verification_code": "000123",
-        }
+        data = {"value": "example2@test.com", "verification_code": "000123"}
         serializer = EmailSerializer(
             self.email2, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -521,10 +497,7 @@ class EmailSerializerTestCase(TestCase):
         self.email2.verified = True
         self.email2.save()
 
-        data = {
-            "value": "example2@test.com",
-            "primary": True,
-        }
+        data = {"value": "example2@test.com", "primary": True}
         serializer = EmailSerializer(
             self.email2, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -539,10 +512,7 @@ class EmailSerializerTestCase(TestCase):
         self.assertFalse(self.email1.primary)
 
     def test_attempt_unverified_make_primary(self):
-        data = {
-            "value": "example2@test.com",
-            "primary": True,
-        }
+        data = {"value": "example2@test.com", "primary": True}
         serializer = EmailSerializer(
             self.email2, data=data, context={"request": FakeRequest(self.user)}
         )
@@ -568,10 +538,7 @@ class EmailSerializerTestCase(TestCase):
             datetime.timedelta(0, 0, 0, 0, User.VERIFICATION_EXPIRATION_MINUTES + 1)
         )
         email.verification_code = "000000"
-        data = {
-            "value": "test@example.com",
-            "verification_code": "000000",
-        }
+        data = {"value": "test@example.com", "verification_code": "000000"}
         serializer = EmailSerializer(
             email, data=data, context={"request": FakeRequest(self.user)}
         )
