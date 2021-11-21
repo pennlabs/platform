@@ -45,6 +45,21 @@ applications:
         value: 80
       - name: DOMAIN
         value: platform.pennlabs.org
+  - name: dev
+    image: pennlabs/platform-dev
+    secret: platform-dev
+    port: 8080
+    ingress:
+      hosts:
+        - host: platform-dev.pennlabs.org
+          paths: ["/"]
+    extraEnv:
+      - name: DOMAIN
+        value: platform-dev.pennlabs.org
+      - name: DJANGO_SETTINGS_MODULE
+        value: Platform.settings.production
+      - name: DEV_LOGIN
+        value: True
 
 cronjobs:
   - name: clear-expired-tokens
