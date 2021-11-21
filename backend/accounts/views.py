@@ -87,7 +87,9 @@ class DevLoginView(View):
     """
 
     def get(self, request):
-        user_objects = get_user_model().objects.filter(~Q(username="admin")).order_by('pennid')
+        user_objects = (
+            get_user_model().objects.filter(~Q(username="admin")).order_by("pennid")
+        )
         serialized_data = UserSerializer(user_objects, many=True).data
         return render(request, "accounts/devlogin.html", {"user_data": serialized_data})
 
