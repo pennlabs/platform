@@ -104,14 +104,7 @@ const FieldInput = ({
         setShowAdd(true);
     };
 
-    return (
-        <EditInput
-            value={text}
-            onChange={onChange}
-            onConfirm={onConfirm}
-            onCancel={onCancel}
-        />
-    );
+    return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
 };
 
 interface ContactEventProps {
@@ -252,11 +245,9 @@ export const EditInput = ({
         <Button type="button" onClick={onConfirm}>
             Confirm
         </Button>
-        <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
+        <Indicator src="/x-circle.svg" width="1.3rem" />
     </Flex>
 );
-
-// TODO: fix up layout so it's clearer what's primary, verified, unverified
 
 interface ContactInputProps {
     route: string;
@@ -300,18 +291,14 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         }
                         setShowModal(true);
                     }}
-                    onDelete={
-                        contactType === "email" && infolist.length === 1
-                            ? undefined
-                            : async () => {
-                                  try {
-                                      await deleteContact(contactType, id);
-                                  } catch (e) {
-                                      addToast("Delete contact failed");
-                                  }
-                                  mutate();
-                              }
-                    }
+                    onDelete={async () => {
+                        try {
+                            await deleteContact(contactType, id);
+                        } catch (e) {
+                            addToast("Delete contact failed");
+                        }
+                        mutate();
+                    }}
                     onMakePrimary={() => mutate(id, { primary: true })}
                     key={id}
                     isPrimary={primary}
@@ -334,7 +321,6 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                     setShowAdd={setShowAdd}
                     setShowModal={setShowModal}
                     setVerifyContact={setVerifyContact}
-                    onCancel={() => setShowAdd(true)}
                 />
             )}
             <VerificationModal
