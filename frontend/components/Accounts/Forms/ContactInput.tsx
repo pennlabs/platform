@@ -61,6 +61,7 @@ interface FieldInputProps {
     setShowAdd: Dispatch<boolean>;
     setVerifyContact: Dispatch<VerifyContactState>;
     setShowModal: Dispatch<boolean>;
+    onCancel: () => void;
 }
 
 const FieldInput = ({
@@ -69,6 +70,7 @@ const FieldInput = ({
     setShowAdd,
     setVerifyContact,
     setShowModal,
+    onCancel,
 }: FieldInputProps) => {
     const { addToast } = useToasts();
     const [text, setText] = useState("");
@@ -104,7 +106,14 @@ const FieldInput = ({
         setShowAdd(true);
     };
 
-    return <EditInput value={text} onChange={onChange} onConfirm={onConfirm} />;
+    return (
+        <EditInput
+            value={text}
+            onChange={onChange}
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+        />
+    );
 };
 
 interface ContactEventProps {
@@ -235,17 +244,19 @@ export const EditInput = ({
     onConfirm,
     value,
     onChange,
+    onCancel,
 }: {
     onConfirm: () => void;
     value: string;
     onChange: ChangeEventHandler<HTMLInputElement>;
+    onCancel: () => void;
 }) => (
     <Flex childMargin="0.2rem" width="100%">
         <FormInput height="2rem" value={value} onChange={onChange} />
         <Button type="button" onClick={onConfirm}>
             Confirm
         </Button>
-        <Indicator src="/x-circle.svg" width="1.3rem" />
+        <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
     </Flex>
 );
 
@@ -291,14 +302,18 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         }
                         setShowModal(true);
                     }}
-                    onDelete={async () => {
-                        try {
-                            await deleteContact(contactType, id);
-                        } catch (e) {
-                            addToast("Delete contact failed");
-                        }
-                        mutate();
-                    }}
+                    onDelete={
+                        contactType === "email" && infolist.length === 1
+                            ? undefined
+                            : async () => {
+                                  try {
+                                      await deleteContact(contactType, id);
+                                  } catch (e) {
+                                      addToast("Delete contact failed");
+                                  }
+                                  mutate();
+                              }
+                    }
                     onMakePrimary={() => mutate(id, { primary: true })}
                     key={id}
                     isPrimary={primary}
@@ -321,6 +336,7 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                     setShowAdd={setShowAdd}
                     setShowModal={setShowModal}
                     setVerifyContact={setVerifyContact}
+                    onCancel={() => setShowAdd(true)}
                 />
             )}
             <VerificationModal
