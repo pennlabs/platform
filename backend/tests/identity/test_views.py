@@ -18,7 +18,9 @@ class AttestTestCase(TestCase):
         self.client = Client()
         self.Application = get_application_model()
         self.UserModel = get_user_model()
-        self.test_user = self.UserModel.objects.create_user(pennid=2, username="bar_user")
+        self.test_user = self.UserModel.objects.create_user(
+            pennid=2, username="bar_user"
+        )
 
         self.application = self.Application(
             name="Test Application",
@@ -31,7 +33,9 @@ class AttestTestCase(TestCase):
 
     def test_valid_attest(self):
         app = self.application
-        auth_encoded = base64.b64encode(f"{app.client_id}:{app.client_secret}".encode("utf-8"))
+        auth_encoded = base64.b64encode(
+            f"{app.client_id}:{app.client_secret}".encode("utf-8")
+        )
         auth_headers = {
             "HTTP_AUTHORIZATION": f"Basic {auth_encoded.decode('utf-8')}",
         }
@@ -101,7 +105,8 @@ class RefreshTestCase(TestCase):
     def test_valid_refresh(self):
         now = time.time()
         token = jwt.JWT(
-            header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "use": "refresh", "iat": now}
+            header={"alg": SIGNING_ALG},
+            claims={"sub": self.urn, "use": "refresh", "iat": now},
         )
         token.make_signed_token(self.key)
         auth_headers = {
@@ -121,7 +126,8 @@ class RefreshTestCase(TestCase):
     def test_refresh_with_access(self):
         now = time.time()
         token = jwt.JWT(
-            header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "use": "access", "iat": now}
+            header={"alg": SIGNING_ALG},
+            claims={"sub": self.urn, "use": "access", "iat": now},
         )
         token.make_signed_token(self.key)
         auth_headers = {
@@ -135,7 +141,9 @@ class RefreshTestCase(TestCase):
 
     def test_refresh_no_use(self):
         now = time.time()
-        token = jwt.JWT(header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "iat": now})
+        token = jwt.JWT(
+            header={"alg": SIGNING_ALG}, claims={"sub": self.urn, "iat": now}
+        )
         token.make_signed_token(self.key)
         auth_headers = {
             "HTTP_AUTHORIZATION": f"Bearer {token.serialize()}",

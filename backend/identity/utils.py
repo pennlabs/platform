@@ -36,6 +36,8 @@ def mint_refresh_jwt(key: jwk.JWK, urn: str) -> jwt.JWT:
     - no exp claim because refresh JWTs do not expire
     """
     now = time.time()
-    token = jwt.JWT(header={"alg": SIGNING_ALG}, claims={"sub": urn, "use": "refresh", "iat": now})
+    token = jwt.JWT(
+        header={"alg": SIGNING_ALG}, claims={"sub": urn, "use": "refresh", "iat": now}
+    )
     token.make_signed_token(key)
     return token

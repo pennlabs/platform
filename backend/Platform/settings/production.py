@@ -3,6 +3,7 @@ import os
 import sentry_sdk
 from django.core.exceptions import ImproperlyConfigured
 from sentry_sdk.integrations.django import DjangoIntegration
+
 from Platform.settings.base import *  # noqa
 from Platform.settings.base import DOMAIN
 

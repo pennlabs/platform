@@ -6,7 +6,12 @@ from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
-from identity.utils import ID_PRIVATE_KEY, SIGNING_ALG, mint_access_jwt, mint_refresh_jwt
+from identity.utils import (
+    ID_PRIVATE_KEY,
+    SIGNING_ALG,
+    mint_access_jwt,
+    mint_refresh_jwt,
+)
 from jwcrypto import jwt
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
@@ -37,7 +42,8 @@ class AttestView(OAuthLibMixin, View):
         )
         if not authenticated:
             return JsonResponse(
-                data={"detail": "Missing or invalid credentials."}, status=HTTPStatus.UNAUTHORIZED
+                data={"detail": "Missing or invalid credentials."},
+                status=HTTPStatus.UNAUTHORIZED,
             )
 
         # pulls out name as recorded in DOT application database
@@ -62,7 +68,11 @@ class JwksInfoView(View):
 
     # building out JWKS view at init time so we don't have to recalculate it for each request
     def __init__(self, **kwargs):
-        data = {"keys": [{"alg": SIGNING_ALG, "use": "sig", "kid": ID_PRIVATE_KEY.thumbprint()}]}
+        data = {
+            "keys": [
+                {"alg": SIGNING_ALG, "use": "sig", "kid": ID_PRIVATE_KEY.thumbprint()}
+            ]
+        }
         data["keys"][0].update(json.loads(ID_PRIVATE_KEY.export_public()))
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
@@ -108,5 +118,6 @@ class RefreshJWTView(View):
             return JsonResponse(data={"access": new_access_jwt.serialize()})
         except Exception as e:
             return JsonResponse(
-                data={"detail": f"Invalid JWT: {e}"}, status=HTTPStatus.BAD_REQUEST,
+                data={"detail": f"Invalid JWT: {e}"},
+                status=HTTPStatus.BAD_REQUEST,
             )
