@@ -31,7 +31,6 @@ uritemplate = "*"
 shortener = "*"
 django-runtime-options = "*"
 jwcrypto = "*"
-six = "*"
 django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
 django-email-tools = "*"
 twilio = "*"
