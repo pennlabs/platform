@@ -1,0 +1,215 @@
+{
+  "users": [
+    {
+      "group": [
+        "member",
+        "student"
+      ],
+      "first_name": "Engineering",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Finance, BS",
+          "Computer Science, BSE"
+        ],
+        "school": [
+          "The Wharton School",
+          "School of Engineering and Applied Science"
+        ],
+        "graduation_year": 2022
+      },
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "member",
+        "student"
+      ],
+      "first_name": "Wharton",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Finance, BS"
+        ],
+        "school": [
+          "The Wharton School"
+        ],
+        "graduation_year": 2024
+      },
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "member",
+        "student"
+      ],
+      "first_name": "Mathematician",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Mathematics: General Mathematics, BA"
+        ],
+        "school": [
+          "School of Arts & Sciences"
+        ],
+        "graduation_year": 2023
+      },
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "member",
+        "student",
+        "employee"
+      ],
+      "first_name": "Nursing",
+      "last_name": "Student",
+      "student": {
+        "degree": "B",
+        "major": [
+          "Nursing, BSN"
+        ],
+        "school": [
+          "School of Nursing"
+        ],
+        "graduation_year": 2025
+      },
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": false
+      }
+    },
+    {
+      "group": [
+        "member",
+        "student"
+      ],
+      "first_name": "Masters",
+      "last_name": "Student",
+      "student": {
+        "degree": "M",
+        "major": [
+          "Mathematics, MA"
+        ],
+        "school": [
+          "School of Arts & Sciences"
+        ],
+        "graduation_year": 2021
+      },
+      "email": {
+        "verified": false,
+        "multiple": true
+      },
+      "phone": {
+        "verified": true,
+        "invalid": true
+      }
+    },
+    {
+      "group": [
+        "member",
+        "student",
+        "employee"
+      ],
+      "first_name": "MBA",
+      "last_name": "Student",
+      "student": {
+        "degree": "M",
+        "major": [
+          "Finance, MBA"
+        ],
+        "school": [
+          "The Wharton School"
+        ],
+        "graduation_year": 2022
+      },
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": false
+      }
+    },
+    {
+      "group": [
+        "member",
+        "employee",
+        "staff"
+      ],
+      "first_name": "Staff",
+      "last_name": "Member",
+      "email": {
+        "verified": true,
+        "multiple": true
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "member",
+        "faculty",
+        "alum"
+      ],
+      "first_name": "Professor",
+      "last_name": "McProfessor",
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true,
+        "invalid": true
+      }
+    },
+    {
+      "group": [
+        "member",
+        "faculty",
+        "alum"
+      ],
+      "first_name": "Lecturer",
+      "last_name": "Person",
+      "email": {
+        "verified": false
+      },
+      "phone": {
+        "verified": true
+      }
+    },
+    {
+      "group": [
+        "member",
+        "alum"
+      ],
+      "first_name": "Alumni",
+      "last_name": "GraduatedPerson",
+      "email": {
+        "verified": true
+      },
+      "phone": {
+        "verified": true
+      }
+    }
+  ]
+}

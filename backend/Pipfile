@@ -1,0 +1,42 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+codecov = "*"
+black = "==21.9b0"
+unittest-xml-reporting = "*"
+flake8 = "*"
+flake8-isort = "*"
+isort = "<5"
+flake8-quotes = "*"
+django-debug-toolbar = "*"
+django-extensions = "*"
+flake8-absolute-import = "*"
+tblib = "*"
+
+[packages]
+dj-database-url = "*"
+djangorestframework = "*"
+djangorestframework-api-key = "*"
+psycopg2 = "*"
+sentry-sdk = "*"
+django-oauth-toolkit = "*"
+django-cors-headers = "*"
+django = "*"
+pyyaml = "*"
+uwsgi = "*"
+uritemplate = "*"
+shortener = "*"
+django-runtime-options = "*"
+jwcrypto = "*"
+six = "*"
+django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
+django-email-tools = "*"
+twilio = "*"
+lxml = "*"
+requests = "*"
+
+[requires]
+python_version = "3"

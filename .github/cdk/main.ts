@@ -1,26 +1,51 @@
-import { Construct } from "constructs";
 import { App, Stack, Workflow } from "cdkactions";
-import { DeployJob, DjangoProject } from "@pennlabs/kraken";
+import { DeployJob, DjangoProject, DockerPublishJob, ReactProject } from "@pennlabs/kraken";
+import { Construct } from "constructs";
 
-export class PlatformStack extends Stack {
-  constructor(scope: Construct, name: string) {
+const app = new App();
+class PlatformStack extends Stack {
+  public constructor(scope: Construct, name: string) {
     super(scope, name);
-    const workflow = new Workflow(this, 'build-and-deploy', {
-      name: 'Build and Deploy',
-      on: 'push',
+
+    const workflow = new Workflow(this, "build-and-deploy", {
+      name: "Build and Deploy",
+      on: "push",
     });
 
-    const platformJob = new DjangoProject(workflow, {
-      projectName: 'Platform',
-      imageName: 'platform',
+    const backend = new DjangoProject(workflow, {
+      projectName: "Platform",
+      path: "backend",
+      imageName: "platform-backend",
     });
 
-    new DeployJob(workflow, {}, {
-      needs: [platformJob.publishJobId]
+    const publishPlatformDev = new DockerPublishJob(workflow, 'platform-dev', {
+      imageName: "platform-dev",
+      path: "backend",
+      dockerfile: "Dockerfile.dev"
+    },
+      {
+        needs: "django-check"
+      });
+
+    const frontend = new ReactProject(workflow, {
+      path: "frontend",
+      imageName: "platform-frontend",
     });
+
+    new DeployJob(
+      workflow,
+      {},
+      {
+        needs: [
+          backend.publishJobId,
+          frontend.publishJobId,
+          publishPlatformDev.id,
+        ],
+      }
+    );
+
   }
 }
 
-const app = new App();
-new PlatformStack(app, 'platform');
+new PlatformStack(app, 'platform')
 app.synth();
