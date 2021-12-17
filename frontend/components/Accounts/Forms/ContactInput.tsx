@@ -49,14 +49,14 @@ const DropdownItem = styled.div`
     }
 `;
 
-const FieldInput = ({
+const FieldInput = function ({
     mutate,
     contactType,
     setShowAdd,
     setVerifyContact,
     setShowModal,
     onCancel,
-}) => {
+}) {
     const { addToast } = useToasts();
     const [text, setText] = useState("");
 
@@ -101,61 +101,59 @@ const FieldInput = ({
     );
 };
 
-const MoreIndicator = ({
+const MoreIndicator = function ({
     onDelete,
     onMakePrimary,
     onReverify,
     isVerified,
     isPrimary,
-}) => {
+}) {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
-        <>
-            <Span position="relative">
-                <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
-                <Dropdown ref={ref as any} isVisible={isVisible}>
-                    {!isPrimary && isVerified && (
-                        <DropdownItem
-                            onClick={() => {
-                                onMakePrimary();
-                                setIsVisible(false);
-                            }}
-                        >
-                            <Text weight="400" size="0.7rem">
-                                Set primary
-                            </Text>
-                        </DropdownItem>
-                    )}
+        <Span position="relative">
+            <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
+            <Dropdown ref={ref as any} isVisible={isVisible}>
+                {!isPrimary && isVerified && (
                     <DropdownItem
                         onClick={() => {
-                            onDelete();
+                            onMakePrimary();
                             setIsVisible(false);
                         }}
                     >
                         <Text weight="400" size="0.7rem">
-                            Remove
+                            Set primary
                         </Text>
                     </DropdownItem>
-                    {!isVerified && (
-                        <DropdownItem
-                            onClick={() => {
-                                onReverify();
-                                setIsVisible(false);
-                            }}
-                        >
-                            <Text weight="400" size="0.7rem">
-                                Verify
-                            </Text>
-                        </DropdownItem>
-                    )}
-                </Dropdown>
-            </Span>
-        </>
+                )}
+                <DropdownItem
+                    onClick={() => {
+                        onDelete();
+                        setIsVisible(false);
+                    }}
+                >
+                    <Text weight="400" size="0.7rem">
+                        Remove
+                    </Text>
+                </DropdownItem>
+                {!isVerified && (
+                    <DropdownItem
+                        onClick={() => {
+                            onReverify();
+                            setIsVisible(false);
+                        }}
+                    >
+                        <Text weight="400" size="0.7rem">
+                            Verify
+                        </Text>
+                    </DropdownItem>
+                )}
+            </Dropdown>
+        </Span>
     );
 };
 
-export const ExistingInput = ({
+export const ExistingInput = function ({
     contactType,
     text,
     onDelete,
@@ -163,7 +161,7 @@ export const ExistingInput = ({
     onReverify,
     isPrimary,
     isVerified,
-}) => {
+}) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     return (
@@ -203,23 +201,27 @@ export const ExistingInput = ({
     );
 };
 
-export const AddInput = ({ text, onClick, margin }) => (
-    <AddButton onClick={onClick} marginTop={margin}>
-        {text}
-    </AddButton>
-);
+export const AddInput = function ({ text, onClick, margin }) {
+    return (
+        <AddButton onClick={onClick} marginTop={margin}>
+            {text}
+        </AddButton>
+    );
+};
 
-export const EditInput = ({ onConfirm, value, onChange, onCancel }) => (
-    <Flex childMargin="0.2rem" width="100%">
-        <FormInput height="2rem" value={value} onChange={onChange} />
-        <Button type="button" onClick={onConfirm}>
-            Confirm
-        </Button>
-        <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
-    </Flex>
-);
+export const EditInput = function ({ onConfirm, value, onChange, onCancel }) {
+    return (
+        <Flex childMargin="0.2rem" width="100%">
+            <FormInput height="2rem" value={value} onChange={onChange} />
+            <Button type="button" onClick={onConfirm}>
+                Confirm
+            </Button>
+            <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
+        </Flex>
+    );
+};
 
-const ContactInput = ({ route, addText, initialData, contactType }) => {
+const ContactInput = function ({ route, addText, initialData, contactType }) {
     const { addToast } = useToasts();
     const { data, mutate } = useResourceList<ContactInfo>(
         route,

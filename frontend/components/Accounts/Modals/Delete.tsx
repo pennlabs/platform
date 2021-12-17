@@ -10,7 +10,7 @@ interface DeleteModalProps {
     closeFunc: () => void;
 }
 
-const DeleteModal = (props: DeleteModalProps) => {
+const DeleteModal = function (props: DeleteModalProps) {
     const { show, closeFunc, type, contact, onDelete } = props;
     const prettyType = type === ContactType.Email ? "email" : "phone number";
     return (
