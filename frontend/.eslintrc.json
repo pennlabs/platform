@@ -6,7 +6,8 @@
     "extends": [
         "airbnb",
         "react-app",
-        "prettier"
+        "prettier",
+        "prettier/react"
     ],
     "env": {
         "browser": true

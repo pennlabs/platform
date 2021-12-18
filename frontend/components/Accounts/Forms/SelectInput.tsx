@@ -27,7 +27,6 @@ export const FormikSelectInput = function ({ route, fieldName }) {
                 const values = field.value || [];
                 return (
                     <Select
-                        defaultOptions
                         isMulti
                         styles={selectStyles}
                         options={options}
