@@ -9,11 +9,13 @@ interface AccountPageProps {
     user: User;
 }
 
-const AccountPage = ({ user }: AccountPageProps) => (
-    <ToastProvider placement="bottom-center" autoDismiss={true}>
-        <Accounts user={user} />
-    </ToastProvider>
-);
+const AccountPage = function ({ user }: AccountPageProps) {
+    return (
+        <ToastProvider placement="bottom-center" autoDismiss={true}>
+            <Accounts user={user} />
+        </ToastProvider>
+    );
+};
 
 async function getServerSidePropsInner(_context: GetServerSidePropsContext) {
     return { props: {} };

@@ -47,7 +47,7 @@ const selectFields = (form: User) => {
     };
 };
 
-const Accounts = ({ user: initialUser }: { user: User }) => {
+const Accounts = function ({ user: initialUser }: { user: User }) {
     const { addToast } = useToasts();
     const { data: userPartial, mutate } = useResource<User>("/accounts/me/", {
         initialData: initialUser,

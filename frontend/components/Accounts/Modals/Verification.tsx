@@ -25,7 +25,7 @@ interface CodeInputRef extends ReactCodeInput {
     state: CodeInputRefState;
 }
 
-const VerificationForm = (props: VerificationFormProps) => {
+const VerificationForm = function (props: VerificationFormProps) {
     const { addToast } = useToasts();
     const { type, id, closeFunc, mutate } = props;
     const codeInput = useRef<CodeInputRef>(null);
@@ -62,7 +62,7 @@ interface VerificationModalProps {
     closeFunc: () => void;
     mutate: mutateResourceListFunction<ContactInfo>;
 }
-const VerificationModal = (props: VerificationModalProps) => {
+const VerificationModal = function (props: VerificationModalProps) {
     const { show, closeFunc, type, contact, id, mutate } = props;
     const prettyType = type === ContactType.Email ? "Email" : "Phone Number";
     return (
