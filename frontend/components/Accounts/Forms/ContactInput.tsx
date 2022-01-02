@@ -126,11 +126,12 @@ interface ContactEventProps {
 
 const MoreIndicator = ({
     onDelete,
+    preventDeletion,
     onMakePrimary,
     onReverify,
     isVerified,
     isPrimary,
-}: ContactEventProps) => {
+}: ContactEventProps & { preventDeletion: boolean }) => {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
@@ -150,16 +151,18 @@ const MoreIndicator = ({
                             </Text>
                         </DropdownItem>
                     )}
-                    <DropdownItem
-                        onClick={() => {
-                            onDelete();
-                            setIsVisible(false);
-                        }}
-                    >
-                        <Text weight="400" size="0.7rem">
-                            Remove
-                        </Text>
-                    </DropdownItem>
+                    {preventDeletion || (
+                        <DropdownItem
+                            onClick={() => {
+                                onDelete();
+                                setIsVisible(false);
+                            }}
+                        >
+                            <Text weight="400" size="0.7rem">
+                                Remove
+                            </Text>
+                        </DropdownItem>
+                    )}
                     {!isVerified && (
                         <DropdownItem
                             onClick={() => {
@@ -186,8 +189,15 @@ export const ExistingInput = ({
     onReverify,
     isPrimary,
     isVerified,
-}: ContactEventProps & { contactType: ContactType; text: string }) => {
+    preventDeletion,
+}: ContactEventProps & {
+    contactType: ContactType;
+    text: string;
+    preventDeletion: boolean;
+}) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const showMoreIndicator = !preventDeletion || !isVerified;
 
     return (
         <Flex childMargin="0.2rem">
@@ -203,11 +213,12 @@ export const ExistingInput = ({
                     <span>UNVERIFIED</span>
                 </Tag>
             )}
-            {!isVerified || onDelete ? (
+            {showMoreIndicator ? (
                 <MoreIndicator
                     isPrimary={isPrimary}
                     isVerified={isVerified}
                     onDelete={() => setModalIsOpen(true)}
+                    preventDeletion={preventDeletion}
                     onMakePrimary={onMakePrimary}
                     onReverify={onReverify}
                 />
@@ -292,6 +303,9 @@ const ContactInput = ({
                 <ExistingInput
                     contactType={contactType}
                     text={value}
+                    preventDeletion={
+                        infolist.length === 1 && contactType === "email"
+                    }
                     onReverify={async () => {
                         try {
                             setVerifyContact({ id, contact: value });
@@ -302,18 +316,14 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         }
                         setShowModal(true);
                     }}
-                    onDelete={
-                        contactType === "email" && infolist.length === 1
-                            ? () => {}
-                            : async () => {
-                                  try {
-                                      await deleteContact(contactType, id);
-                                  } catch (e) {
-                                      addToast("Delete contact failed");
-                                  }
-                                  mutate();
-                              }
-                    }
+                    onDelete={async () => {
+                        try {
+                            await deleteContact(contactType, id);
+                        } catch (e) {
+                            addToast("Delete contact failed");
+                        }
+                        mutate();
+                    }}
                     onMakePrimary={() => mutate(id, { primary: true })}
                     key={id}
                     isPrimary={primary}
