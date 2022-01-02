@@ -127,14 +127,16 @@ export const FormInput = styled.input<{ height?: string; error?: boolean }>`
     padding-left: 0.3rem;
 `;
 
-export const Indicator = styled.img<{ paddingTop?: string; width?: string }>`
+export const Indicator = styled.img<{
+    paddingTop?: string;
+    width?: string;
+    clickable?: boolean;
+}>`
     width: ${(props) => props.width ?? "1rem"};
     padding-top: ${(props) => props.paddingTop};
-    cursor: pointer;
+    cursor: ${(props) => (props.clickable ? "pointer" : "default")};
 
-    &:hover {
-        opacity: 0.5;
-    }
+    ${(props) => (props.clickable ? "&:hover { opacity: 0.5; }" : "")}
 `;
 
 const TagVariants = {

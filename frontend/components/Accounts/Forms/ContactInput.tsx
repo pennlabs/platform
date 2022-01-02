@@ -137,7 +137,11 @@ const MoreIndicator = ({
     return (
         <>
             <Span position="relative">
-                <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
+                <Indicator
+                    src="/more.svg"
+                    clickable
+                    onClick={() => setIsVisible(true)}
+                />
                 <Dropdown ref={ref as any} isVisible={isVisible}>
                     {!isPrimary && isVerified && (
                         <DropdownItem
