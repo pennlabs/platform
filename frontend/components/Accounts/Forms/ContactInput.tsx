@@ -304,7 +304,7 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                     }}
                     onDelete={
                         contactType === "email" && infolist.length === 1
-                            ? undefined
+                            ? () => {}
                             : async () => {
                                   try {
                                       await deleteContact(contactType, id);
