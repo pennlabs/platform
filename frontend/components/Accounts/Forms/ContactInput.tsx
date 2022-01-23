@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { ChangeEventHandler, FormEvent, Dispatch, useState } from "react";
 import styled from "styled-components";
 import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
 import parsePhoneNumber from "libphonenumber-js";
+import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
 
 import {
     AddButton,
@@ -49,6 +50,20 @@ const DropdownItem = styled.div`
     }
 `;
 
+type VerifyContactState = {
+    id: number;
+    contact: string;
+};
+
+interface FieldInputProps {
+    mutate: mutateResourceListFunction<ContactInfo>;
+    contactType: ContactType;
+    setShowAdd: Dispatch<boolean>;
+    setVerifyContact: Dispatch<VerifyContactState>;
+    setShowModal: Dispatch<boolean>;
+    onCancel: () => void;
+}
+
 const FieldInput = ({
     mutate,
     contactType,
@@ -56,12 +71,12 @@ const FieldInput = ({
     setVerifyContact,
     setShowModal,
     onCancel,
-}) => {
+}: FieldInputProps) => {
     const { addToast } = useToasts();
     const [text, setText] = useState("");
 
-    const onChange = (e) => {
-        setText(e.target.value);
+    const onChange = (e: FormEvent<HTMLInputElement>) => {
+        setText(e.currentTarget.value);
     };
 
     const onConfirm = async () => {
@@ -72,7 +87,7 @@ const FieldInput = ({
 
             if (contactType === ContactType.PhoneNumber) {
                 const phone = parsePhoneNumber(text, "US");
-                payload = phone ? phone.number : "";
+                payload = phone ? phone.number.toString() : "";
             } else {
                 payload = text;
             }
@@ -101,19 +116,32 @@ const FieldInput = ({
     );
 };
 
+interface ContactEventProps {
+    onDelete: () => void;
+    onMakePrimary: () => void;
+    onReverify: () => void;
+    isVerified: boolean;
+    isPrimary: boolean;
+}
+
 const MoreIndicator = ({
     onDelete,
+    preventDeletion,
     onMakePrimary,
     onReverify,
     isVerified,
     isPrimary,
-}) => {
+}: ContactEventProps & { preventDeletion: boolean }) => {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
         <>
             <Span position="relative">
-                <Indicator src="/more.svg" onClick={() => setIsVisible(true)} />
+                <Indicator
+                    src="/more.svg"
+                    clickable
+                    onClick={() => setIsVisible(true)}
+                />
                 <Dropdown ref={ref as any} isVisible={isVisible}>
                     {!isPrimary && isVerified && (
                         <DropdownItem
@@ -127,16 +155,18 @@ const MoreIndicator = ({
                             </Text>
                         </DropdownItem>
                     )}
-                    <DropdownItem
-                        onClick={() => {
-                            onDelete();
-                            setIsVisible(false);
-                        }}
-                    >
-                        <Text weight="400" size="0.7rem">
-                            Remove
-                        </Text>
-                    </DropdownItem>
+                    {preventDeletion || (
+                        <DropdownItem
+                            onClick={() => {
+                                onDelete();
+                                setIsVisible(false);
+                            }}
+                        >
+                            <Text weight="400" size="0.7rem">
+                                Remove
+                            </Text>
+                        </DropdownItem>
+                    )}
                     {!isVerified && (
                         <DropdownItem
                             onClick={() => {
@@ -163,8 +193,15 @@ export const ExistingInput = ({
     onReverify,
     isPrimary,
     isVerified,
+    preventDeletion,
+}: ContactEventProps & {
+    contactType: ContactType;
+    text: string;
+    preventDeletion: boolean;
 }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const showMoreIndicator = !preventDeletion || !isVerified;
 
     return (
         <Flex childMargin="0.2rem">
@@ -180,11 +217,12 @@ export const ExistingInput = ({
                     <span>UNVERIFIED</span>
                 </Tag>
             )}
-            {!isVerified || onDelete ? (
+            {showMoreIndicator ? (
                 <MoreIndicator
                     isPrimary={isPrimary}
                     isVerified={isVerified}
                     onDelete={() => setModalIsOpen(true)}
+                    preventDeletion={preventDeletion}
                     onMakePrimary={onMakePrimary}
                     onReverify={onReverify}
                 />
@@ -203,13 +241,31 @@ export const ExistingInput = ({
     );
 };
 
-export const AddInput = ({ text, onClick, margin }) => (
+export const AddInput = ({
+    text,
+    onClick,
+    margin,
+}: {
+    text: string;
+    onClick: () => void;
+    margin: string | undefined;
+}) => (
     <AddButton onClick={onClick} marginTop={margin}>
         {text}
     </AddButton>
 );
 
-export const EditInput = ({ onConfirm, value, onChange, onCancel }) => (
+export const EditInput = ({
+    onConfirm,
+    value,
+    onChange,
+    onCancel,
+}: {
+    onConfirm: () => void;
+    value: string;
+    onChange: ChangeEventHandler<HTMLInputElement>;
+    onCancel: () => void;
+}) => (
     <Flex childMargin="0.2rem" width="100%">
         <FormInput height="2rem" value={value} onChange={onChange} />
         <Button type="button" onClick={onConfirm}>
@@ -219,7 +275,19 @@ export const EditInput = ({ onConfirm, value, onChange, onCancel }) => (
     </Flex>
 );
 
-const ContactInput = ({ route, addText, initialData, contactType }) => {
+interface ContactInputProps {
+    route: string;
+    addText: string;
+    initialData: ContactInfo[];
+    contactType: ContactType;
+}
+
+const ContactInput = ({
+    route,
+    addText,
+    initialData,
+    contactType,
+}: ContactInputProps) => {
     const { addToast } = useToasts();
     const { data, mutate } = useResourceList<ContactInfo>(
         route,
@@ -239,6 +307,9 @@ const ContactInput = ({ route, addText, initialData, contactType }) => {
                 <ExistingInput
                     contactType={contactType}
                     text={value}
+                    preventDeletion={
+                        infolist.length === 1 && contactType === "email"
+                    }
                     onReverify={async () => {
                         try {
                             setVerifyContact({ id, contact: value });
@@ -249,18 +320,14 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         }
                         setShowModal(true);
                     }}
-                    onDelete={
-                        contactType === "email" && infolist.length === 1
-                            ? undefined
-                            : async () => {
-                                  try {
-                                      await deleteContact(contactType, id);
-                                  } catch (e) {
-                                      addToast("Delete contact failed");
-                                  }
-                                  mutate();
-                              }
-                    }
+                    onDelete={async () => {
+                        try {
+                            await deleteContact(contactType, id);
+                        } catch (e) {
+                            addToast("Delete contact failed");
+                        }
+                        mutate();
+                    }}
                     onMakePrimary={() => mutate(id, { primary: true })}
                     key={id}
                     isPrimary={primary}
@@ -270,7 +337,7 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
             {showAdd && (
                 <AddInput
                     text={addText}
-                    margin={infolist.length === 0 && "0.6rem"}
+                    margin={infolist.length === 0 ? "0.6rem" : undefined}
                     onClick={() => {
                         setShowAdd(false);
                     }}

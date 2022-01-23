@@ -1,0 +1,23 @@
+.container {
+  height: 50px;
+  width: 300px;
+  margin-top: 10px;
+}
+
+.character {
+  line-height: 50px;
+  font-size: 36px;
+  color: black;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  margin-left: 8px;
+}
+
+.character:first-child {
+  margin-left: 0;
+}
+
+.character--selected {
+  border: 1px solid #b0b0b0;
+}

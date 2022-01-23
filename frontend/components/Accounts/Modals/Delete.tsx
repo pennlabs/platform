@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal, Button } from "react-bulma-components";
 import { ContactType } from "../../../types";
 

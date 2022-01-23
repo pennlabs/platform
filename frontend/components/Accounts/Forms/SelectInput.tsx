@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import Select from "react-select";
+import Select, { ActionMeta } from "react-select";
 import { useResourceList } from "@pennlabs/rest-hooks";
 import { useField, FieldArray } from "formik";
 import { selectStyles } from "../ui";
@@ -9,10 +9,21 @@ interface SelectOption {
     name: string;
 }
 
-const toSelectOptions = (options) =>
-    options.map((obj) => ({ value: obj.name, label: obj.name }));
+interface FormOption {
+    value: string;
+    label: string;
+}
 
-export const FormikSelectInput = ({ route, fieldName }) => {
+const toSelectOptions = (options: SelectOption[]) =>
+    options.map((obj): FormOption => ({ value: obj.name, label: obj.name }));
+
+export const FormikSelectInput = ({
+    route,
+    fieldName,
+}: {
+    route: string;
+    fieldName: string;
+}) => {
     const { data: rawData } = useResourceList<SelectOption>(
         route,
         (id) => `${route}${id}/`
@@ -32,18 +43,18 @@ export const FormikSelectInput = ({ route, fieldName }) => {
                         styles={selectStyles}
                         options={options}
                         value={toSelectOptions(values)}
-                        onChange={(_, action) => {
+                        onChange={(_, action: ActionMeta<FormOption>) => {
                             if (action.action === "select-option") {
                                 push(
                                     data.filter(
-                                        (obj) =>
-                                            obj.name === action.option.value
+                                        (obj: SelectOption) =>
+                                            obj.name === action.option?.value
                                     )[0]
                                 );
                             } else if (action.action === "remove-value") {
                                 remove(
                                     values.findIndex(
-                                        (obj) =>
+                                        (obj: SelectOption) =>
                                             obj.name ===
                                             action.removedValue.value
                                     )

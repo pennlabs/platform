@@ -2,7 +2,12 @@ import { useField } from "formik";
 
 import { FormInput } from "../ui";
 
-export const FormikInput = ({ fieldName, ...props }) => {
+export const FormikInput = ({
+    fieldName,
+    ...props
+}: { fieldName: string } & React.ComponentPropsWithoutRef<
+    typeof FormInput
+>) => {
     const [field, meta] = useField(fieldName);
 
     return (

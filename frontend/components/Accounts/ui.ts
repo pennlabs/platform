@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { CSSObject } from "styled-components";
 
 interface FlexProps {
     margin?: string;
@@ -127,14 +127,16 @@ export const FormInput = styled.input<{ height?: string; error?: boolean }>`
     padding-left: 0.3rem;
 `;
 
-export const Indicator = styled.img<{ paddingTop?: string; width?: string }>`
+export const Indicator = styled.img<{
+    paddingTop?: string;
+    width?: string;
+    clickable?: boolean;
+}>`
     width: ${(props) => props.width ?? "1rem"};
     padding-top: ${(props) => props.paddingTop};
-    cursor: pointer;
+    cursor: ${(props) => (props.clickable ? "pointer" : "default")};
 
-    &:hover {
-        opacity: 0.5;
-    }
+    ${(props) => (props.clickable ? "&:hover { opacity: 0.5; }" : "")}
 `;
 
 const TagVariants = {
@@ -189,7 +191,7 @@ export const Button = styled.button<{
 `;
 
 export const selectStyles = {
-    container: (base) => ({
+    container: (base: CSSObject) => ({
         ...base,
         width: "100%",
         padding: "0.5rem 0 0.5rem 0",

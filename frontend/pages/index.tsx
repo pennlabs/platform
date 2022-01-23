@@ -1,4 +1,3 @@
-import React from "react";
 import { GetServerSidePropsContext } from "next";
 import { ToastProvider } from "react-toast-notifications";
 import { User } from "../types";
