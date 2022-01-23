@@ -1,8 +1,9 @@
-import { useRef } from "react";
-import ReactCodeInput from "react-code-input";
+import VerificationInput from "react-verification-input";
 import { useToasts } from "react-toast-notifications";
 import { Modal } from "react-bulma-components";
+
 import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
+import styles from "../../../styles/Verification.module.css";
 import { verifyContact } from "../../../data-fetching/accounts";
 import { ContactType, ContactInfo } from "../../../types";
 import { logException } from "../../../utils/sentry";
@@ -15,20 +16,9 @@ interface VerificationFormProps {
     mutate: mutateResourceListFunction<ContactInfo>;
 }
 
-interface CodeInputRefState {
-    input: string[];
-}
-
-interface CodeInputRef extends ReactCodeInput {
-    textInput: HTMLInputElement[];
-    value: string;
-    state: CodeInputRefState;
-}
-
 const VerificationForm = (props: VerificationFormProps) => {
     const { addToast } = useToasts();
     const { type, id, closeFunc, mutate } = props;
-    const codeInput = useRef<CodeInputRef>(null);
     const handleInputChange = async (value: string) => {
         if (value.length === 6) {
             try {
@@ -44,13 +34,16 @@ const VerificationForm = (props: VerificationFormProps) => {
         }
     };
     return (
-        <ReactCodeInput
-            name="verification"
-            type="tel"
-            fields={6}
+        <VerificationInput
+            length={6}
             onChange={handleInputChange}
-            ref={codeInput}
-            inputMode="numeric"
+            validChars="0-9"
+            classNames={{
+                container: styles.container,
+                character: styles.character,
+                characterSelected: styles["character--selected"],
+            }}
+            removeDefaultStyles
         />
     );
 };
