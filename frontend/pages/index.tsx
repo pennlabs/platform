@@ -1,23 +1,23 @@
-import { GetServerSidePropsContext } from "next";
-import { ToastProvider } from "react-toast-notifications";
-import { User } from "../types";
-import Accounts from "../components/Accounts";
-import { withAuth } from "../utils/auth";
+import { GetServerSidePropsContext } from 'next'
+import { ToastProvider } from 'react-toast-notifications'
+import { User } from '../types'
+import Accounts from '../components/Accounts'
+import { withAuth } from '../utils/auth'
 
 interface AccountPageProps {
-    user: User;
+  user: User
 }
 
 const AccountPage = ({ user }: AccountPageProps) => (
-    <ToastProvider placement="bottom-center" autoDismiss={true}>
-        <Accounts user={user} />
-    </ToastProvider>
-);
+  <ToastProvider placement="bottom-center" autoDismiss={true}>
+    <Accounts user={user} />
+  </ToastProvider>
+)
 
 async function getServerSidePropsInner(_context: GetServerSidePropsContext) {
-    return { props: {} };
+  return { props: {} }
 }
 
-export const getServerSideProps = withAuth(getServerSidePropsInner);
+export const getServerSideProps = withAuth(getServerSidePropsInner)
 
-export default AccountPage;
+export default AccountPage
