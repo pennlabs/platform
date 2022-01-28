@@ -12,6 +12,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("options/", include("options.urls", namespace="options")),
     path("identity/", include("identity.urls", namespace="identity")),
+    path("s/", include("shortener.urls", namespace="shortener")),
     path(
         "openapi/",
         get_schema_view(title="Platform Documentation", public=True),
