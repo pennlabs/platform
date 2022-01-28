@@ -2,7 +2,7 @@ import { useResource } from '@pennlabs/rest-hooks'
 import * as _ from 'lodash'
 import * as Yup from 'yup'
 
-import { Heading, Tabs } from 'react-bulma-components'
+import { Columns, Heading, Tabs } from 'react-bulma-components'
 import { useState } from 'react'
 import { Flex, Nav, MainContainer, CenterContainer, Logo } from './ui'
 import { User } from '../../types'
@@ -78,7 +78,20 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
           {tab === 'general' && (
             <>
               <div className="has-text-grey mb-4">
-                {user.pennid} - {user.first_name} {user.last_name}
+                <Columns>
+                  <Columns.Column>
+                    Full Name:
+                    <span className="has-text-grey-dark has-text-weight-bold ml-2">
+                      {user.first_name} {user.last_name}
+                    </span>
+                  </Columns.Column>
+                  <Columns.Column>
+                    Penn ID:
+                    <span className="has-text-grey-dark has-text-weight-bold ml-2">
+                      {user.pennid}
+                    </span>
+                  </Columns.Column>
+                </Columns>
               </div>
               <GenericInfoForm mutate={mutate} initialData={user} />
             </>
