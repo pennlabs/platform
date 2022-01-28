@@ -15,6 +15,7 @@ applications:
               "/accounts",
               "/assets",
               "/identity",
+              "s",
               "/options",
               "/openapi",
               "/documentation",
