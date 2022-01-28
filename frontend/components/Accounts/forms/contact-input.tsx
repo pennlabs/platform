@@ -1,4 +1,12 @@
-import { ChangeEventHandler, FormEvent, Dispatch, useState } from 'react'
+import {
+  ChangeEventHandler,
+  FormEvent,
+  Dispatch,
+  useState,
+  MutableRefObject,
+  useEffect,
+  useRef,
+} from 'react'
 import styled from 'styled-components'
 import { useResourceList } from '@pennlabs/rest-hooks'
 import parsePhoneNumber from 'libphonenumber-js'
@@ -79,6 +87,10 @@ const FieldInput = ({
   }
 
   const onConfirm = async () => {
+    if (!text.trim().length) {
+      toast.error('Please enter a value!')
+      return
+    }
     let res
 
     try {
@@ -86,6 +98,10 @@ const FieldInput = ({
 
       if (contactType === ContactType.PhoneNumber) {
         const phone = parsePhoneNumber(text, 'US')
+        if (!phone) {
+          toast.error('Invalid phone number')
+          return
+        }
         payload = phone ? phone.number.toString() : ''
       } else {
         payload = text
@@ -258,15 +274,36 @@ export const EditInput = ({
   value: string
   onChange: ChangeEventHandler<HTMLInputElement>
   onCancel: () => void
-}) => (
-  <Flex childMargin="0.2rem" width="100%">
-    <FormInput height="2rem" value={value} onChange={onChange} />
-    <Button type="button" onClick={onConfirm}>
-      Confirm
-    </Button>
-    <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
-  </Flex>
-)
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    inputRef.current!.focus()
+  }, [])
+  return (
+    <Flex childMargin="0.2rem" width="100%">
+      <FormInput
+        height="2rem"
+        value={value}
+        onChange={onChange}
+        onKeyPress={(evt) => {
+          const event = evt || window.event
+          if (event.key === 'Enter') {
+            onConfirm()
+          }
+        }}
+        // TODO: maybe make this cancel when clicking outside...
+        // onBlur={() => {
+        //   setTimeout(onCancel, 100)
+        // }}
+        ref={inputRef}
+      />
+      <Button type="button" onClick={onConfirm}>
+        Confirm
+      </Button>
+      <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
+    </Flex>
+  )
+}
 
 interface ContactInputProps {
   route: string

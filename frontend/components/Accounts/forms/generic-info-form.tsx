@@ -71,7 +71,7 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
   const onSubmit = async (formData: Partial<User>) => {
     const { first_name, student } = formData
     // once we have error handling we can actually make this work...
-    console.log(formData)
+    // console.log(formData)
     await toast.promise(
       mutate({
         first_name,

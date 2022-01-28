@@ -1,4 +1,4 @@
-import { Columns } from 'react-bulma-components'
+import { Columns, Heading } from 'react-bulma-components'
 import { ContactType, User } from '../../../types'
 import { Flex } from '../ui'
 import ContactInput from './contact-input'
@@ -11,8 +11,11 @@ const ContactInfoForm = (props: ContactInfoProps) => {
   const { initialData: user } = props
   return (
     <div>
-      <Columns>
+      <Columns breakpoint="desktop">
         <Columns.Column>
+          <Heading size={5} mb={3}>
+            Emails
+          </Heading>
           <Flex
             flexDirection="column"
             alignItems="start"
@@ -23,11 +26,14 @@ const ContactInfoForm = (props: ContactInfoProps) => {
               route="/accounts/me/email/"
               initialData={user.emails}
               addText="Add an email"
-              contactType={ContactType.PhoneNumber}
+              contactType={ContactType.Email}
             />
           </Flex>
         </Columns.Column>
         <Columns.Column>
+          <Heading size={5} mb={3}>
+            Phone Numbers
+          </Heading>
           <Flex
             flexDirection="column"
             alignItems="start"
