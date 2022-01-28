@@ -1,10 +1,10 @@
 import { ChangeEventHandler, FormEvent, Dispatch, useState } from 'react'
 import styled from 'styled-components'
-import { useToasts } from 'react-toast-notifications'
 import { useResourceList } from '@pennlabs/rest-hooks'
 import parsePhoneNumber from 'libphonenumber-js'
 import { mutateResourceListFunction } from '@pennlabs/rest-hooks/dist/types'
 
+import toast from 'react-hot-toast'
 import {
   AddButton,
   Flex,
@@ -15,8 +15,8 @@ import {
   Text,
   Span,
 } from '../ui'
-import VerificationModal from '../Modals/Verification'
-import DeleteModal from '../Modals/Delete'
+import VerificationModal from '../modals/verification'
+import DeleteModal from '../modals/delete'
 import { useOnClickOutside } from '../../useOnClickOutside'
 import { ContactInfo, ContactType } from '../../../types'
 import {
@@ -72,7 +72,6 @@ const FieldInput = ({
   setShowModal,
   onCancel,
 }: FieldInputProps) => {
-  const { addToast } = useToasts()
   const [text, setText] = useState('')
 
   const onChange = (e: FormEvent<HTMLInputElement>) => {
@@ -94,7 +93,7 @@ const FieldInput = ({
 
       res = await createContact(contactType, payload)
     } catch (e) {
-      addToast('Failed to create contact')
+      toast.error('Failed to create contact')
       return
     }
 
@@ -282,7 +281,6 @@ const ContactInput = ({
   initialData,
   contactType,
 }: ContactInputProps) => {
-  const { addToast } = useToasts()
   const { data, mutate } = useResourceList<ContactInfo>(
     route,
     (id) => `${route}${id}/`,
@@ -307,8 +305,11 @@ const ContactInput = ({
               setVerifyContact({ id, contact: value })
               await reverifyContact(contactType, id)
             } catch (e) {
-              addToast(`Did not resend verification message - check your
-${contactType === ContactType.Email ? 'email' : 'phone messages'} again.`)
+              toast.error(
+                `Did not resend verification message - check your ${
+                  contactType === ContactType.Email ? 'email' : 'phone messages'
+                } again.`
+              )
             }
             setShowModal(true)
           }}
@@ -316,7 +317,7 @@ ${contactType === ContactType.Email ? 'email' : 'phone messages'} again.`)
             try {
               await deleteContact(contactType, id)
             } catch (e) {
-              addToast('Delete contact failed')
+              toast.error('Delete contact failed')
             }
             mutate()
           }}

@@ -1,27 +1,13 @@
-import { Form, Formik } from 'formik'
-import { Heading } from 'react-bulma-components'
-import { useToasts } from 'react-toast-notifications'
 import { useResource } from '@pennlabs/rest-hooks'
 import * as _ from 'lodash'
 import * as Yup from 'yup'
 
-import {
-  Button,
-  Flex,
-  Nav,
-  MainContainer,
-  CenterContainer,
-  Logo,
-  FormGroupGrid,
-  FormGroupItem,
-  Text,
-  Break,
-  FormGroupHeader,
-} from './ui'
-import { FormikInput } from './Forms/Input'
-import ContactInput from './Forms/ContactInput'
-import { FormikSelectInput } from './Forms/SelectInput'
-import { ContactType, User } from '../../types'
+import { Heading, Tabs } from 'react-bulma-components'
+import { useState } from 'react'
+import { Flex, Nav, MainContainer, CenterContainer, Logo } from './ui'
+import { User } from '../../types'
+import GenericInfoForm from './forms/generic-info-form'
+import ContactInfoForm from './forms/contact-info-form'
 
 const currentYear = new Date().getFullYear()
 
@@ -48,12 +34,15 @@ const selectFields = (form: User) => {
   }
 }
 
+type Tab = 'general' | 'contact'
+
 const Accounts = ({ user: initialUser }: { user: User }) => {
-  const { addToast } = useToasts()
   const { data: userPartial, mutate } = useResource<User>('/accounts/me/', {
     initialData: initialUser,
   })
   const user = userPartial!
+
+  const [tab, setTab] = useState<Tab>('general')
 
   return (
     <MainContainer>
@@ -72,125 +61,29 @@ const Accounts = ({ user: initialUser }: { user: User }) => {
       <CenterContainer>
         <div>
           <Heading>{`Welcome, ${user.first_name}`}</Heading>
-          <Formik
-            initialValues={user}
-            validationSchema={FormSchema}
-            onSubmit={async (values, actions) => {
-              await mutate(selectFields(values))
-              addToast('Success!')
-              actions.setSubmitting(false)
-            }}
-          >
-            <Form style={{ paddingBottom: '3rem' }}>
-              <FormGroupGrid>
-                <FormGroupItem col={1} row={1}>
-                  <Text weight="400">Name</Text>
-                </FormGroupItem>
-                <FormGroupItem col={2} row={1}>
-                  <Text weight="300">
-                    {`${user.first_name} ${user.last_name}`}
-                  </Text>
-                </FormGroupItem>
-                <FormGroupItem col={1} row={2}>
-                  <Text weight="400">Pennkey</Text>
-                </FormGroupItem>
-                <FormGroupItem col={2} row={2}>
-                  <Text weight="300">{user.username}</Text>
-                </FormGroupItem>
-                <FormGroupItem col={1} row={3}>
-                  <Text weight="400">Display Name</Text>
-                </FormGroupItem>
-                <FormGroupItem col={2} row={3}>
-                  <FormikInput fieldName="first_name" type="text" />
-                </FormGroupItem>
-              </FormGroupGrid>
-              <Break />
-              <FormGroupHeader>Contact</FormGroupHeader>
-              <FormGroupGrid>
-                <FormGroupItem col={1} row={1} alignItems="start">
-                  <Text weight="400" marginTop="0.5rem">
-                    Email
-                  </Text>
-                </FormGroupItem>
-                <FormGroupItem col={2} row={1} alignItems="start" margin>
-                  <Flex
-                    flexDirection="column"
-                    alignItems="start"
-                    childMargin="0.2rem"
-                    width="100%"
-                  >
-                    <ContactInput
-                      route="/accounts/me/email/"
-                      initialData={user.emails}
-                      addText="Add another email address"
-                      contactType={ContactType.Email}
-                    />
-                  </Flex>
-                </FormGroupItem>
-
-                <FormGroupItem col={1} row={2} alignItems="start">
-                  <Text weight="400" marginTop="0.5rem">
-                    Phone Number
-                  </Text>
-                </FormGroupItem>
-                <FormGroupItem col={2} row={2} alignItems="start">
-                  <Flex
-                    flexDirection="column"
-                    alignItems="start"
-                    childMargin="0.2rem"
-                    width="100%"
-                  >
-                    <ContactInput
-                      route="/accounts/me/phonenumber/"
-                      initialData={user.phone_numbers}
-                      addText="Add a phone number"
-                      contactType={ContactType.PhoneNumber}
-                    />
-                  </Flex>
-                </FormGroupItem>
-              </FormGroupGrid>
-              {user.groups.includes('student') && (
-                <>
-                  <Break />
-                  <FormGroupHeader>Academics</FormGroupHeader>
-                  <FormGroupGrid>
-                    <FormGroupItem col={1} row={1}>
-                      <Text weight="400">School(s)</Text>
-                    </FormGroupItem>
-                    <FormGroupItem col={2} row={1}>
-                      <FormikSelectInput
-                        route="/accounts/schools/"
-                        fieldName="student.school"
-                      />
-                    </FormGroupItem>
-
-                    <FormGroupItem col={1} row={2}>
-                      <Text weight="400">Major(s)</Text>
-                    </FormGroupItem>
-                    <FormGroupItem col={2} row={2}>
-                      <FormikSelectInput
-                        route="/accounts/majors/"
-                        fieldName="student.major"
-                      />
-                    </FormGroupItem>
-
-                    <FormGroupItem col={1} row={3}>
-                      <Text weight="400">Grad Year</Text>
-                    </FormGroupItem>
-                    <FormGroupItem col={2} row={3}>
-                      <FormikInput
-                        fieldName="student.graduation_year"
-                        type="text"
-                      />
-                    </FormGroupItem>
-                  </FormGroupGrid>
-                </>
-              )}
-              <Button marginTop="1.7rem" fontSize="1.2rem">
-                Save
-              </Button>
-            </Form>
-          </Formik>
+          <Tabs size="medium">
+            <Tabs.Tab
+              onClick={() => setTab('general')}
+              active={tab === 'general'}
+            >
+              General
+            </Tabs.Tab>
+            <Tabs.Tab
+              onClick={() => setTab('contact')}
+              active={tab === 'contact'}
+            >
+              Contact Info
+            </Tabs.Tab>
+          </Tabs>
+          {tab === 'general' && (
+            <>
+              <div className="has-text-grey mb-4">
+                {user.pennid} - {user.first_name} {user.last_name}
+              </div>
+              <GenericInfoForm mutate={mutate} initialData={user} />
+            </>
+          )}
+          {tab === 'contact' && <ContactInfoForm initialData={user} />}
         </div>
       </CenterContainer>
     </MainContainer>

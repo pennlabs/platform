@@ -11,8 +11,9 @@
   },
   "rules": {
     "import/extensions": 0,
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
     "no-shadow": "off",
+    "no-use-before-define": 0,
     "import/prefer-default-export": 0,
     "react/jsx-filename-extension": 0,
     "react/prop-types": 0,

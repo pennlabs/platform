@@ -1,8 +1,8 @@
 import VerificationInput from 'react-verification-input'
-import { useToasts } from 'react-toast-notifications'
 import { Modal } from 'react-bulma-components'
 
 import { mutateResourceListFunction } from '@pennlabs/rest-hooks/dist/types'
+import toast from 'react-hot-toast'
 import styles from '../../../styles/Verification.module.css'
 import { verifyContact } from '../../../data-fetching/accounts'
 import { ContactType, ContactInfo } from '../../../types'
@@ -17,7 +17,6 @@ interface VerificationFormProps {
 }
 
 const VerificationForm = (props: VerificationFormProps) => {
-  const { addToast } = useToasts()
   const { type, id, closeFunc, mutate } = props
   const handleInputChange = async (value: string) => {
     if (value.length === 6) {
@@ -25,10 +24,10 @@ const VerificationForm = (props: VerificationFormProps) => {
         await verifyContact(type, id, value)
         closeFunc()
         mutate()
-        addToast('Verification success!')
+        toast.success('Verification success!')
       } catch (e: any) {
         // TODO: read up on error handling
-        addToast('Verification failed')
+        toast.error('Verification failed')
         logException(e)
       }
     }

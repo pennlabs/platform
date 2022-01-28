@@ -1,7 +1,8 @@
 import { GetServerSidePropsContext } from 'next'
-import { ToastProvider } from 'react-toast-notifications'
+import { Toaster } from 'react-hot-toast'
+
 import { User } from '../types'
-import Accounts from '../components/Accounts'
+import Accounts from '../components/accounts'
 import { withAuth } from '../utils/auth'
 
 interface AccountPageProps {
@@ -9,9 +10,10 @@ interface AccountPageProps {
 }
 
 const AccountPage = ({ user }: AccountPageProps) => (
-  <ToastProvider placement="bottom-center" autoDismiss={true}>
+  <>
+    <Toaster position="bottom-center" />
     <Accounts user={user} />
-  </ToastProvider>
+  </>
 )
 
 async function getServerSidePropsInner(_context: GetServerSidePropsContext) {
