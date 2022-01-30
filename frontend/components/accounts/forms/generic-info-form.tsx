@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { mutateResourceFunction } from "@pennlabs/rest-hooks/dist/types";
 import _ from "lodash";
 import { HTMLInputTypeAttribute, RefObject, useMemo } from "react";
@@ -75,6 +74,8 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
     const [minGradYear, maxGradYear] = useMemo(getGradYearLimits, []);
 
     const onSubmit = async (formData: Partial<User>) => {
+        /* eslint-disable camelcase */
+        // because graduation year and first name and such lol
         const { first_name, student } = _.cloneDeep(formData);
         if (student && !student.graduation_year) {
             student.graduation_year = null;
@@ -91,6 +92,7 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
                 error: "Something went wrong...",
             }
         );
+        /* eslint-enable */
         reset(await mutate());
     };
 
