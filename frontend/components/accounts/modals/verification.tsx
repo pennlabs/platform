@@ -26,7 +26,7 @@ const VerificationForm = (props: VerificationFormProps) => {
                 mutate();
                 toast.success("Verification success!");
             } catch (e: any) {
-                // TODO: read up on error handling
+                // TODO: We can error handle this eventually...
                 toast.error("Verification failed");
                 logException(e);
             }

@@ -1,5 +1,5 @@
 import { useResourceList } from "@pennlabs/rest-hooks";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Form } from "react-bulma-components";
 import { Control, Controller, FieldPath } from "react-hook-form";
 import Select from "react-select";
@@ -28,8 +28,16 @@ const MultiSelectInput = (props: MultiSelectProps<User>) => {
         (id) => `${route}${id}/`
     );
 
-    const data = useMemo(() => rawData || [], [rawData]);
-    const selectOptions = useMemo(() => toSelectOptions(data), [data]);
+    const optionsData = useMemo(() => rawData || [], [rawData]);
+    const selectOptions = useMemo(
+        () => toSelectOptions(optionsData),
+        [optionsData]
+    );
+
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        if (rawData) setLoading(false);
+    }, [rawData]);
 
     return (
         <Controller
@@ -56,12 +64,14 @@ const MultiSelectInput = (props: MultiSelectProps<User>) => {
                                 if (evt === undefined) return;
                                 field.onChange(
                                     evt.map(({ value }) =>
-                                        data.find(({ id }) => id === value)
+                                        optionsData.find(
+                                            ({ id }) => id === value
+                                        )
                                     )
                                 );
                             }}
                             options={selectOptions}
-                            isDisabled={disabled}
+                            isDisabled={disabled || loading}
                         />
                         <Form.Help color="danger">
                             {error ? error.message : ""}

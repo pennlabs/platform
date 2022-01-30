@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { mutateResourceFunction } from "@pennlabs/rest-hooks/dist/types";
+import _ from "lodash";
 import { HTMLInputTypeAttribute, RefObject, useMemo } from "react";
 import { Button, Form } from "react-bulma-components";
 import {
@@ -74,17 +75,15 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
     const [minGradYear, maxGradYear] = useMemo(getGradYearLimits, []);
 
     const onSubmit = async (formData: Partial<User>) => {
-        const { first_name, student } = formData;
-        // once we have error handling we can actually make this work...
-        // console.log(formData)
+        const { first_name, student } = _.cloneDeep(formData);
+        if (student && !student.graduation_year) {
+            student.graduation_year = null;
+        }
+        // TODO: once we have error handling this will work...
         await toast.promise(
             mutate({
                 first_name,
-                student: student || {
-                    graduation_year: null,
-                    major: [],
-                    school: [],
-                },
+                student,
             }),
             {
                 loading: "Saving...",
