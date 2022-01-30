@@ -13,7 +13,7 @@ interface AccountPageProps {
 const AccountPage = ({ user }: AccountPageProps) => (
     <>
         <Head>
-            <title>PennLabs Account Management</title>
+            <title>Penn Labs Account Management</title>
             <link rel="icon" href="/favicon.ico" />
             <meta
                 name="description"
