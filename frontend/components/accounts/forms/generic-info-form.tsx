@@ -1,8 +1,14 @@
 /* eslint-disable camelcase */
 import { mutateResourceFunction } from '@pennlabs/rest-hooks/dist/types'
-import { HTMLInputTypeAttribute, useMemo } from 'react'
+import { HTMLInputTypeAttribute, RefObject, useMemo } from 'react'
 import { Button, Form } from 'react-bulma-components'
-import { Control, Controller, useForm, useFormState } from 'react-hook-form'
+import {
+  Control,
+  Controller,
+  FieldPath,
+  useForm,
+  useFormState,
+} from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { User } from '../../../types'
 import MultiSelectInput from './multi-select'
@@ -12,13 +18,13 @@ export interface GenericInfoProps {
   initialData?: User
 }
 
-interface TextInputProps {
-  control: Control
+interface TextInputProps<T> {
+  control: Control<T>
   disabled?: boolean
-  name: string
+  name: FieldPath<User>
   displayName: string
   type?: HTMLInputTypeAttribute
-  rules: any
+  rules?: any
 }
 
 const TextInput = ({
@@ -28,7 +34,7 @@ const TextInput = ({
   displayName,
   type = 'text',
   rules = { required: { value: true, message: 'Required field!' } },
-}: TextInputProps) => (
+}: TextInputProps<User>) => (
   <Form.Field>
     <Form.Label>{displayName}</Form.Label>
     <Controller
@@ -36,10 +42,9 @@ const TextInput = ({
       render={({ field, fieldState: { error } }) => (
         <>
           <Form.Input
-            {...field}
-            ref={null}
-            // @ts-ignore
-            domRef={field.ref}
+            {...{ ...field, ref: null }}
+            // react-hook-form RefCallBack is not thorough so we gotta cast
+            domRef={field.ref as any as RefObject<'input'>}
             type={type}
             color={error ? 'danger' : 'black'}
             disabled={disabled}
@@ -59,7 +64,7 @@ const getGradYearLimits = () => {
 }
 
 const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
-  const { handleSubmit, control, reset } = useForm({
+  const { handleSubmit, control, reset } = useForm<User>({
     defaultValues: initialData,
   })
 
@@ -89,7 +94,6 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <TextInput
-        // @ts-ignore
         control={control}
         name="first_name"
         displayName="Display Name"
@@ -101,7 +105,6 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
             <Form.Label>Majors</Form.Label>
             <MultiSelectInput
               route="/accounts/majors/"
-              // @ts-ignore
               control={control}
               name="student.major"
               disabled={isSubmitting}
@@ -111,14 +114,12 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
             <Form.Label>Schools</Form.Label>
             <MultiSelectInput
               route="/accounts/schools/"
-              // @ts-ignore
               control={control}
               name="student.school"
               disabled={isSubmitting}
             />
           </Form.Field>
           <TextInput
-            // @ts-ignore
             control={control}
             name="student.graduation_year"
             displayName="Graduation Year"

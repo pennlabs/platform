@@ -1,25 +1,27 @@
 import { useResourceList } from '@pennlabs/rest-hooks'
 import React, { useMemo } from 'react'
 import { Form } from 'react-bulma-components'
-import { Control, Controller } from 'react-hook-form'
+import { Control, Controller, FieldPath } from 'react-hook-form'
 import Select from 'react-select'
+
+import { User } from '../../../types'
 
 interface DataOption {
   id: number
   name: string
 }
 
-export interface MultiSelectProps {
-  control: Control
+export interface MultiSelectProps<T> {
+  control: Control<T>
   route: string
-  name: string
+  name: FieldPath<User>
   disabled?: boolean
 }
 
 const toSelectOptions = (options: DataOption[]) =>
   options.map((obj) => ({ value: obj.id, label: obj.name }))
 
-const MultiSelectInput = (props: MultiSelectProps) => {
+const MultiSelectInput = (props: MultiSelectProps<User>) => {
   const { control, name, route, disabled } = props
   const { data: rawData } = useResourceList<DataOption>(
     route,
@@ -34,18 +36,22 @@ const MultiSelectInput = (props: MultiSelectProps) => {
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => {
-        const fieldValue = field.value || []
+        const fieldValue = (field.value as DataOption[]) || []
         return (
           <>
             <Select
               instanceId={`select-${name}`}
               isMulti
               {...field}
-              // @ts-ignore
-              value={fieldValue.map(({ id }) =>
-                selectOptions.find(({ value }) => value === id)
+              value={fieldValue.map(
+                ({ id, name }) =>
+                  selectOptions.find(({ value }) => value === id) || {
+                    label: name,
+                    value: name,
+                  }
               )}
               onChange={(evt) => {
+                if (evt === undefined) return
                 field.onChange(
                   evt.map(({ value }) => data.find(({ id }) => id === value))
                 )
