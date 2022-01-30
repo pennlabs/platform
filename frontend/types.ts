@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 export interface NamedObject {
     name: string;
     id: number;

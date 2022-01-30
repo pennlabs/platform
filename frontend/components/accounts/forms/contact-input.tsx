@@ -1,10 +1,18 @@
-import { ChangeEventHandler, FormEvent, Dispatch, useState } from "react";
+import {
+    ChangeEventHandler,
+    FormEvent,
+    Dispatch,
+    useState,
+    MutableRefObject,
+    useEffect,
+    useRef,
+} from "react";
 import styled from "styled-components";
-import { useToasts } from "react-toast-notifications";
 import { useResourceList } from "@pennlabs/rest-hooks";
 import parsePhoneNumber from "libphonenumber-js";
 import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
 
+import toast from "react-hot-toast";
 import {
     AddButton,
     Flex,
@@ -15,8 +23,8 @@ import {
     Text,
     Span,
 } from "../ui";
-import VerificationModal from "../Modals/Verification";
-import DeleteModal from "../Modals/Delete";
+import VerificationModal from "../modals/verification";
+import DeleteModal from "../modals/delete";
 import { useOnClickOutside } from "../../useOnClickOutside";
 import { ContactInfo, ContactType } from "../../../types";
 import {
@@ -72,7 +80,6 @@ const FieldInput = ({
     setShowModal,
     onCancel,
 }: FieldInputProps) => {
-    const { addToast } = useToasts();
     const [text, setText] = useState("");
 
     const onChange = (e: FormEvent<HTMLInputElement>) => {
@@ -80,6 +87,10 @@ const FieldInput = ({
     };
 
     const onConfirm = async () => {
+        if (!text.trim().length) {
+            toast.error("Please enter a value!");
+            return;
+        }
         let res;
 
         try {
@@ -87,6 +98,10 @@ const FieldInput = ({
 
             if (contactType === ContactType.PhoneNumber) {
                 const phone = parsePhoneNumber(text, "US");
+                if (!phone) {
+                    toast.error("Invalid phone number");
+                    return;
+                }
                 payload = phone ? phone.number.toString() : "";
             } else {
                 payload = text;
@@ -94,7 +109,7 @@ const FieldInput = ({
 
             res = await createContact(contactType, payload);
         } catch (e) {
-            addToast("Failed to create contact");
+            toast.error("Failed to create contact");
             return;
         }
 
@@ -135,53 +150,51 @@ const MoreIndicator = ({
     const [isVisible, setIsVisible] = useState(false);
     const ref = useOnClickOutside(() => setIsVisible(false), !isVisible);
     return (
-        <>
-            <Span position="relative">
-                <Indicator
-                    src="/more.svg"
-                    clickable
-                    onClick={() => setIsVisible(true)}
-                />
-                <Dropdown ref={ref as any} isVisible={isVisible}>
-                    {!isPrimary && isVerified && (
-                        <DropdownItem
-                            onClick={() => {
-                                onMakePrimary();
-                                setIsVisible(false);
-                            }}
-                        >
-                            <Text weight="400" size="0.7rem">
-                                Set primary
-                            </Text>
-                        </DropdownItem>
-                    )}
-                    {preventDeletion || (
-                        <DropdownItem
-                            onClick={() => {
-                                onDelete();
-                                setIsVisible(false);
-                            }}
-                        >
-                            <Text weight="400" size="0.7rem">
-                                Remove
-                            </Text>
-                        </DropdownItem>
-                    )}
-                    {!isVerified && (
-                        <DropdownItem
-                            onClick={() => {
-                                onReverify();
-                                setIsVisible(false);
-                            }}
-                        >
-                            <Text weight="400" size="0.7rem">
-                                Verify
-                            </Text>
-                        </DropdownItem>
-                    )}
-                </Dropdown>
-            </Span>
-        </>
+        <Span position="relative">
+            <Indicator
+                src="/more.svg"
+                clickable
+                onClick={() => setIsVisible(true)}
+            />
+            <Dropdown ref={ref as any} isVisible={isVisible}>
+                {!isPrimary && isVerified && (
+                    <DropdownItem
+                        onClick={() => {
+                            onMakePrimary();
+                            setIsVisible(false);
+                        }}
+                    >
+                        <Text weight="400" size="0.7rem">
+                            Set primary
+                        </Text>
+                    </DropdownItem>
+                )}
+                {preventDeletion || (
+                    <DropdownItem
+                        onClick={() => {
+                            onDelete();
+                            setIsVisible(false);
+                        }}
+                    >
+                        <Text weight="400" size="0.7rem">
+                            Remove
+                        </Text>
+                    </DropdownItem>
+                )}
+                {!isVerified && (
+                    <DropdownItem
+                        onClick={() => {
+                            onReverify();
+                            setIsVisible(false);
+                        }}
+                    >
+                        <Text weight="400" size="0.7rem">
+                            Verify
+                        </Text>
+                    </DropdownItem>
+                )}
+            </Dropdown>
+        </Span>
     );
 };
 
@@ -265,15 +278,36 @@ export const EditInput = ({
     value: string;
     onChange: ChangeEventHandler<HTMLInputElement>;
     onCancel: () => void;
-}) => (
-    <Flex childMargin="0.2rem" width="100%">
-        <FormInput height="2rem" value={value} onChange={onChange} />
-        <Button type="button" onClick={onConfirm}>
-            Confirm
-        </Button>
-        <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
-    </Flex>
-);
+}) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        inputRef.current!.focus();
+    }, []);
+    return (
+        <Flex childMargin="0.2rem" width="100%">
+            <FormInput
+                height="2rem"
+                value={value}
+                onChange={onChange}
+                onKeyPress={(evt) => {
+                    const event = evt || window.event;
+                    if (event.key === "Enter") {
+                        onConfirm();
+                    }
+                }}
+                // TODO: maybe make this cancel when clicking outside...
+                // onBlur={() => {
+                //   setTimeout(onCancel, 100)
+                // }}
+                ref={inputRef}
+            />
+            <Button type="button" onClick={onConfirm}>
+                Confirm
+            </Button>
+            <Indicator src="/x-circle.svg" width="1.3rem" onClick={onCancel} />
+        </Flex>
+    );
+};
 
 interface ContactInputProps {
     route: string;
@@ -288,7 +322,6 @@ const ContactInput = ({
     initialData,
     contactType,
 }: ContactInputProps) => {
-    const { addToast } = useToasts();
     const { data, mutate } = useResourceList<ContactInfo>(
         route,
         (id) => `${route}${id}/`,
@@ -315,8 +348,13 @@ const ContactInput = ({
                             setVerifyContact({ id, contact: value });
                             await reverifyContact(contactType, id);
                         } catch (e) {
-                            addToast(`Did not resend verification message - check your
-${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
+                            toast.error(
+                                `Did not resend verification message - check your ${
+                                    contactType === ContactType.Email
+                                        ? "email"
+                                        : "phone messages"
+                                } again.`
+                            );
                         }
                         setShowModal(true);
                     }}
@@ -324,7 +362,7 @@ ${contactType === ContactType.Email ? "email" : "phone messages"} again.`);
                         try {
                             await deleteContact(contactType, id);
                         } catch (e) {
-                            addToast("Delete contact failed");
+                            toast.error("Delete contact failed");
                         }
                         mutate();
                     }}

@@ -71,11 +71,6 @@ export const Logo = styled.img`
     height: 1.2rem;
 `;
 
-export const Break = styled.hr`
-    border: 1px solid #d3d3d3;
-    background-color: #d3d3d3;
-`;
-
 interface TextProps {
     weight: string;
     size?: string;
@@ -87,33 +82,6 @@ export const Text = styled.span<TextProps>`
     font-size: ${(props) => (props.size ? props.size : "1rem")};
     margin-top: ${(props) => props.marginTop};
     white-space: nowrap;
-`;
-
-export const FormGroupHeader = styled.h3`
-    font-style: normal;
-    font-weight: 600;
-    font-size: 1.5rem;
-`;
-
-export const FormGroupGrid = styled.div`
-    display: grid;
-    grid-template-columns: 4fr 8fr;
-    grid-auto-rows: minmax(3rem, auto);
-`;
-
-interface FormGroupItemProps {
-    col: number;
-    row: number;
-    alignItems?: string;
-    margin?: boolean;
-}
-
-export const FormGroupItem = styled.div<FormGroupItemProps>`
-    grid-column: ${(props) => props.col};
-    grid-row: ${(props) => props.row};
-    display: flex;
-    align-items: ${(props) => (props.alignItems ? props.alignItems : "center")};
-    margin-bottom: ${(props) => (props.margin ? ".8rem" : "0")};
 `;
 
 export const FormInput = styled.input<{ height?: string; error?: boolean }>`
