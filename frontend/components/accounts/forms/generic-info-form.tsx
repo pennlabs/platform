@@ -104,7 +104,7 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
                 displayName="Display Name"
                 disabled={isSubmitting}
             />
-            {initialData?.student && (
+            {initialData?.groups.includes("student") && (
                 <>
                     <Form.Field>
                         <Form.Label>Majors</Form.Label>
