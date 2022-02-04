@@ -104,7 +104,7 @@ const GenericInfoForm = ({ mutate, initialData }: GenericInfoProps) => {
                 displayName="Display Name"
                 disabled={isSubmitting}
             />
-            {initialData?.student && (
+            {initialData?.student?.graduation_year && (
                 <>
                     <Form.Field>
                         <Form.Label>Majors</Form.Label>
