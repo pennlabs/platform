@@ -4,6 +4,7 @@ from oauth2_provider.views import AuthorizationView, TokenView
 from rest_framework import routers
 
 from accounts.views import (
+    ApplicationViewSet,
     DevLoginView,
     DevLogoutView,
     EmailViewSet,
@@ -22,6 +23,7 @@ from accounts.views import (
 app_name = "accounts"
 
 router = routers.SimpleRouter()
+router.register("application", ApplicationViewSet, basename="application")
 router.register("me/phonenumber", PhoneNumberViewSet, basename="me-phonenumber")
 router.register("me/email", EmailViewSet, basename="me-email")
 router.register("majors", MajorViewSet, basename="majors")

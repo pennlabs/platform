@@ -1,10 +1,35 @@
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from oauth2_provider.models import Application
 from rest_framework import serializers
 
 from accounts.mixins import ManyToManySaveMixin
 from accounts.models import Email, Major, PhoneNumber, School, Student, User
 from accounts.verification import sendEmailVerification, sendSMSVerification
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    # Hardcode grant type (for now) so it's impossible for someone to create a copycat
+    # Penn Labs login flow to collect access tokens on behalf of unsuspecting users.
+    # We may want to relax this if we add more a explicit permission grant prompt
+    # to the authentication flow for non-Labs applications. For now we are just
+    # allowing application registration on behalf of a user's own resources,
+    # via the client credentials grant:
+    # https://oauth.net/2/grant-types/client-credentials/
+    authorization_grant_type = serializers.CharField(
+        default=Application.GRANT_CLIENT_CREDENTIALS
+    )
+    client_type = serializers.CharField(default=Application.CLIENT_CONFIDENTIAL)
+
+    class Meta:
+        model = Application
+        read_only = [
+            "client_id",
+            "client_secret",
+            "authorization_grant_type",
+            "client_type",
+        ]
+        fields = read_only + ["name", "redirect_uris"]
 
 
 class SchoolSerializer(serializers.ModelSerializer):
