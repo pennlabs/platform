@@ -54,9 +54,13 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         if email is None or email == "":
             email = f"{shibboleth_attributes['username']}@upenn.edu"
 
-        Email.objects.update_or_create(
-            user=user, value=email, primary=True, verified=True
-        )
+        old_email = Email.objects.filter(user=user, primary=True).first()
+
+        if old_email and old_email.value != email:
+            old_email.value = email
+            old_email.save()
+        elif not old_email:
+            Email.objects.create(user=user, value=email, primary=True, verified=True)
 
         # Update fields if changed
         for key, value in shibboleth_attributes.items():
