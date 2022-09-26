@@ -42,13 +42,24 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
         )
 
         # Add initial attributes on first log in
+
         if created:
-            email = self.get_email(remote_user)
-            if email is None or email == "":
-                email = f"{shibboleth_attributes['username']}@upenn.edu"
             user.set_unusable_password()
             user.save()
             user = self.configure_user(request, user)
+
+        # Always update email
+
+        email = self.get_email(remote_user)
+        if email is None or email == "":
+            email = f"{shibboleth_attributes['username']}@upenn.edu"
+
+        old_email = Email.objects.filter(user=user, primary=True).first()
+
+        if old_email and old_email.value != email:
+            old_email.value = email
+            old_email.save()
+        elif not old_email:
             Email.objects.create(user=user, value=email, primary=True, verified=True)
 
         # Update fields if changed
