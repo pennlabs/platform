@@ -53,6 +53,9 @@ class User(AbstractUser):
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
+    profile_pic = models.ImageField(
+        upload_to=f"profile_pics", null=True, blank=True
+    )
 
     VERIFICATION_EXPIRATION_MINUTES = 10
 

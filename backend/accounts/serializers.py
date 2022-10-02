@@ -189,6 +189,7 @@ class UserSerializer(serializers.ModelSerializer):
             "student",
             "phone_numbers",
             "emails",
+            "profile_pic",
         )
 
         read_only_fields = (
