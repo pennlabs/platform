@@ -35,7 +35,7 @@ You will need to start both the backend and the frontend to do Platform developm
 
 Running the backend requires [Python 3](https://www.python.org/downloads/).
 
-To run the server, `cd` to the folder where you cloned `penn-clubs`. Then run:
+To run the server, `cd` to the folder where you cloned `platform`. Then run:
 - `cd backend`
 
 Setting up `psycopg2` (this is necessary if you want to be able to modify
@@ -66,11 +66,6 @@ Now, you can run
 ### Frontend
 
 Running the frontend requires [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/getting-started/install).
-
-You will need to set the following environment variables on the frontend:
-- `NEXT_PUBLIC_GOOGLE_API_KEY`
-- `NEXT_PUBLIC_SITE_NAME` (Optional)
-  - Specify `clubs` to show Penn Clubs and `fyh` to show Hub@Penn.
 
 1. Enter the `frontend` directory with a **new terminal window**. Don't kill your backend server!
 2. Install dependencies using `yarn install` in the project directory.
