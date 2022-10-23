@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from Platform.settings.base import *  # noqa
-from Platform.settings.base import DOMAIN
+from Platform.settings.base import DOMAINS
 
 
 DEBUG = False
@@ -14,7 +14,7 @@ DEBUG = False
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Allow production host headers
-ALLOWED_HOSTS = [DOMAIN]
+ALLOWED_HOSTS = DOMAINS
 
 # Make sure SECRET_KEY is set to a secret in production
 SECRET_KEY = os.environ.get("SECRET_KEY", None)
