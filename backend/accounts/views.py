@@ -7,10 +7,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -19,7 +20,7 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from oauth2_provider.views.mixins import ProtectedResourceMixin
-from rest_framework import generics, viewsets
+from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
@@ -37,6 +38,37 @@ from accounts.serializers import (
     UserSerializer,
 )
 from accounts.verification import sendEmailVerification, sendSMSVerification
+
+
+def upload_endpoint_helper(request, cls, keyword, field, save=True, **kwargs):
+    """
+    Given a Model class with lookup arguments or a Model object, save the uploaded image
+    to the image field specified in the argument.
+    The save parameter can be used to control whether the Model is actually saved to
+    the database. This parameter only applies if you pass in a Model object.
+    Returns a response that can be given to the end user.
+    """
+    if isinstance(cls, type):
+        obj = get_object_or_404(cls, **kwargs)
+    else:
+        obj = cls
+    if keyword in request.data and isinstance(request.data[keyword], UploadedFile):
+        getattr(obj, field).delete(save=False)
+        setattr(obj, field, request.data[keyword])
+        if save:
+            obj._change_reason = f"Update '{field}' image field"
+            obj.save()
+    else:
+        return Response(
+            {"detail": "No image file was uploaded!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    return Response(
+        {
+            "detail": f"{obj.__class__.__name__} image uploaded!",
+            "url": getattr(obj, field).url,
+        }
+    )
 
 
 class LoginView(View):
@@ -245,6 +277,64 @@ class UserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class ProfilePicViewSet(viewsets.ViewSet):
+    """
+    post:
+    Replace the profile picture of the logged in user with a new photo.
+    """
+
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+
+    @action(detail=False, methods=["post"])
+    def upload(self, request, *args, **kwargs):
+        """
+        Upload a profile picture.
+        ---
+        requestBody:
+            content:
+                multipart/form-data:
+                    schema:
+                        type: object
+                        properties:
+                            profile_pic:
+                                type: object
+                                format: binary
+        responses:
+            "200":
+                description: Returned if the file was successfully uploaded.
+                content: &upload_resp
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                detail:
+                                    type: string
+                                    description: The status of the file upload.
+                                url:
+                                    type: string
+                                    nullable: true
+                                    description: >
+                                        The URL of the newly uploaded file.
+                                        Only exists if the file was
+                                        successfully uploaded.
+            "400":
+                description: Returned if there was an error while uploading the file.
+                content: *upload_resp
+        ---
+        """
+        user = self.request.user
+
+        resp = upload_endpoint_helper(
+            request, user, "profile_pic", "profile_pic", save=False
+        )
+        if status.is_success(resp.status_code):
+            print(user.pk, user.profile_pic)
+            user.save(update_fields=["profile_pic"])
+        return resp
 
 
 class PhoneNumberViewSet(viewsets.ModelViewSet):

@@ -203,3 +203,7 @@ EMAIL_TOOLS = {
     "FROM_EMAIL": "Penn Labs <accounts@pennlabs.org>",
     "TEMPLATE_DIRECTORY": os.path.join(BASE_DIR, "Platform", "templates", "emails"),
 }
+
+# Media Upload Settings
+MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
+MEDIA_URL = "/media/"
