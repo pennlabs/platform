@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "options.apps.OptionsConfig",
     "accounts.apps.AccountsConfig",
     "identity.apps.IdentityConfig",
+    "storages",
 ]
 
 
@@ -205,5 +206,15 @@ EMAIL_TOOLS = {
 }
 
 # Media Upload Settings
-MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
+MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "mediafiles")
 MEDIA_URL = "/media/"
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_ACCESS_SECRET_ID = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = "penn.platform"
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_S3_REGION_NAME = "us-east-1"
+AWS_S3_FILE_OVERWRITE = True
+AWS_S3_VERIFY = True
+AWS_QUERYSTRING_AUTH = False
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"

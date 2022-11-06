@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -7,6 +8,15 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
+
+
+def get_user_file_name(instance, fname):
+    """
+    Returns a filepath unique to each username.
+    """
+    return os.path.join(
+        "images", "{}.{}".format(instance.username, fname.rsplit(".", 1)[-1])
+    )
 
 
 class School(models.Model):
@@ -53,7 +63,7 @@ class User(AbstractUser):
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
-    profile_pic = models.ImageField(upload_to="images", blank=True, null=True)
+    profile_pic = models.ImageField(upload_to=get_user_file_name, blank=True, null=True)
 
     VERIFICATION_EXPIRATION_MINUTES = 10
 
