@@ -447,6 +447,12 @@ class ProfilePicViewTestCase(TestCase):
         )
         self.assertIn(resp.status_code, [200, 201], resp.content)
 
+        # ensure image url is set
+        resp = self.client.get(reverse("accounts:me"))
+        self.assertIn(resp.status_code, [200, 204], resp.content)
+        data = json.loads(resp.content.decode("utf-8"))
+        self.assertTrue(data["profile_pic"])
+
     def test_profile_pic_upload_non_image(self):
         # non-image upload should fail
         self.client.force_authenticate(user=self.user)
@@ -460,6 +466,12 @@ class ProfilePicViewTestCase(TestCase):
             },
         )
         self.assertIn(resp.status_code, [400, 403], resp.content)
+
+        # ensure image url is NOT set
+        resp = self.client.get(reverse("accounts:me"))
+        self.assertIn(resp.status_code, [200, 204], resp.content)
+        data = json.loads(resp.content.decode("utf-8"))
+        self.assertFalse(data["profile_pic"])
 
 
 class MajorViewTestCase(TestCase):
