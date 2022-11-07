@@ -1,6 +1,7 @@
 import calendar
 import datetime
 import json
+import os
 import sys
 from importlib import reload
 from urllib.parse import quote
@@ -411,6 +412,54 @@ class UserViewTestCase(TestCase):
         response = self.client.patch(reverse("accounts:me"), update_data, format="json")
 
         self.assertEqual(response.status_code, 200)
+
+
+class ProfilePicViewTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+
+        self.client = APIClient()
+        self.serializer = UserSerializer(self.user)
+
+    def test_profile_pic_upload_empty(self):
+        # empty image throws an error
+        resp = self.client.post(reverse("accounts:me-pfp-upload"))
+        self.assertIn(resp.status_code, [400, 403], resp.content)
+
+    def test_profile_pic_upload_success(self):
+        # successful image upload
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(os.getcwd(), "tests", "accounts", "test_pfp.jpg"),
+                    "rb",
+                )
+            },
+        )
+        self.assertIn(resp.status_code, [200, 201], resp.content)
+
+    def test_profile_pic_upload_non_image(self):
+        # non-image upload should fail
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(os.getcwd(), "README.md"),
+                    "rb",
+                )
+            },
+        )
+        self.assertIn(resp.status_code, [400, 403], resp.content)
 
 
 class MajorViewTestCase(TestCase):
