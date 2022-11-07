@@ -52,7 +52,11 @@ def upload_endpoint_helper(request, cls, keyword, field, save=True, **kwargs):
         obj = get_object_or_404(cls, **kwargs)
     else:
         obj = cls
-    if keyword in request.data and isinstance(request.data[keyword], UploadedFile):
+    if (
+        keyword in request.data
+        and isinstance(request.data[keyword], UploadedFile)
+        and "image" in request.data[keyword].content_type
+    ):
         getattr(obj, field).delete(save=False)
         setattr(obj, field, request.data[keyword])
         if save:
