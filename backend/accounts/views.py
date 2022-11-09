@@ -11,7 +11,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -40,28 +40,19 @@ from accounts.serializers import (
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
-def upload_endpoint_helper(request, cls, keyword, field, save=True, **kwargs):
+def image_upload_helper(request, cls, keyword, field):
     """
-    Given a Model class with lookup arguments or a Model object, save the uploaded image
-    to the image field specified in the argument.
-    The save parameter can be used to control whether the Model is actually saved to
-    the database. This parameter only applies if you pass in a Model object.
+    Given a Model object, save the uploaded image to the image field specified
+    in the argument.
     Returns a response that can be given to the end user.
     """
-    if isinstance(cls, type):
-        obj = get_object_or_404(cls, **kwargs)
-    else:
-        obj = cls
     if (
         keyword in request.data
         and isinstance(request.data[keyword], UploadedFile)
         and "image" in request.data[keyword].content_type
     ):
-        getattr(obj, field).delete(save=False)
-        setattr(obj, field, request.data[keyword])
-        if save:
-            obj._change_reason = f"Update '{field}' image field"
-            obj.save()
+        getattr(cls, field).delete(save=False)
+        setattr(cls, field, request.data[keyword])
     else:
         return Response(
             {"detail": "No image file was uploaded!"},
@@ -69,8 +60,8 @@ def upload_endpoint_helper(request, cls, keyword, field, save=True, **kwargs):
         )
     return Response(
         {
-            "detail": f"{obj.__class__.__name__} image uploaded!",
-            "url": getattr(obj, field).url,
+            "detail": f"{cls.__class__.__name__} image uploaded!",
+            "url": getattr(cls, field).url,
         }
     )
 
@@ -332,11 +323,8 @@ class ProfilePicViewSet(viewsets.ViewSet):
         """
         user = self.request.user
 
-        resp = upload_endpoint_helper(
-            request, user, "profile_pic", "profile_pic", save=False
-        )
+        resp = image_upload_helper(request, user, "profile_pic", "profile_pic")
         if status.is_success(resp.status_code):
-            print(user.pk, user.profile_pic)
             user.save(update_fields=["profile_pic"])
         return resp
 
