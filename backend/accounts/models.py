@@ -10,13 +10,15 @@ from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-def get_user_file_name(instance, fname):
+def get_user_image_filepath(instance, fname):
     """
-    Returns a filepath unique to each username.
+    Returns the provided User's profile picture image path. Maintains the
+    file extension of the provided image file if it exists.
     """
-    return os.path.join(
-        "images", "{}.{}".format(instance.username, fname.rsplit(".", 1)[-1])
-    )
+    fcomps = fname.rsplit(".", 1)
+    if len(fcomps) < 2:
+        return os.path.join("images", instance.username)
+    return os.path.join("images", f"{instance.username}.{fcomps[-1]}")
 
 
 class School(models.Model):
@@ -63,7 +65,9 @@ class User(AbstractUser):
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
-    profile_pic = models.ImageField(upload_to=get_user_file_name, blank=True, null=True)
+    profile_pic = models.ImageField(
+        upload_to=get_user_image_filepath, blank=True, null=True
+    )
 
     VERIFICATION_EXPIRATION_MINUTES = 10
 
