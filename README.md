@@ -18,6 +18,9 @@ DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/NAME
 SECRET_KEY=secret
 DJANGO_SETTINGS_MODULE=Platform.settings.production
 SENTRY_URL=https://pub@sentry.example.com/product
+AWS_ACCESS_KEY_ID
+AWS_ACCESS_SECRET_ID
+AWS_STORAGE_BUCKET_NAME
 ```
 
 1. Run using docker: `docker run -d pennlabs/platform`
