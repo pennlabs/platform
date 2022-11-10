@@ -493,6 +493,20 @@ class ProfilePicViewTestCase(TestCase):
         data = json.loads(resp.content.decode("utf-8"))
         self.assertFalse(data["profile_pic"])
 
+    def test_profile_pic_upload_no_user(self):
+        # uploading without a user should fail
+        self.client.force_authenticate()
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(os.getcwd(), "tests", "accounts", "test_pfp.jpg"),
+                    "rb",
+                )
+            },
+        )
+        self.assertIn(resp.status_code, [400, 403], resp.content)
+
 
 class MajorViewTestCase(TestCase):
     def setUp(self):

@@ -324,13 +324,6 @@ class ProfilePicViewSet(viewsets.ViewSet):
         ---
         """
         user = self.request.user
-
-        if user is None or not isinstance(user, User):
-            return Response(
-                {"detail": "No image file was uploaded!"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
         resp = image_upload_helper(request, user, "profile_pic", "profile_pic")
         if status.is_success(resp.status_code):
             user.save(update_fields=["profile_pic"])
