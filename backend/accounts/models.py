@@ -15,10 +15,8 @@ def get_user_image_filepath(instance, fname):
     Returns the provided User's profile picture image path. Maintains the
     file extension of the provided image file if it exists.
     """
-    fcomps = fname.rsplit(".", 1)
-    if len(fcomps) < 2:
-        return os.path.join("images", instance.username)
-    return os.path.join("images", f"{instance.username}.{fcomps[-1]}")
+    suffix = "." + fname.rsplit(".", 1)[-1] if "." in fname else ""
+    return os.path.join("images", f"{instance.username}{suffix}")
 
 
 class School(models.Model):

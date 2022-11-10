@@ -40,19 +40,21 @@ from accounts.serializers import (
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
-def image_upload_helper(request, cls, keyword, field):
+def image_upload_helper(request, user, keyword, field):
     """
-    Given a Model object, save the uploaded image to the image field specified
-    in the argument.
-    Returns a response that can be given to the end user.
+    Given a User object, save the uploaded image to the image field specified
+    in the argument. Returns a response that can be given to the end user.
+
+    keyword:    the key corresponding to the image file in the request body
+    field:      the name of the User model field to which the file is saved
     """
     if (
         keyword in request.data
         and isinstance(request.data[keyword], UploadedFile)
         and "image" in request.data[keyword].content_type
     ):
-        getattr(cls, field).delete(save=False)
-        setattr(cls, field, request.data[keyword])
+        getattr(user, field).delete(save=False)
+        setattr(user, field, request.data[keyword])
     else:
         return Response(
             {"detail": "No image file was uploaded!"},
@@ -60,8 +62,8 @@ def image_upload_helper(request, cls, keyword, field):
         )
     return Response(
         {
-            "detail": f"{cls.__class__.__name__} image uploaded!",
-            "url": getattr(cls, field).url,
+            "detail": f"{user.__class__.__name__} image uploaded!",
+            "url": getattr(user, field).url,
         }
     )
 
@@ -322,6 +324,12 @@ class ProfilePicViewSet(viewsets.ViewSet):
         ---
         """
         user = self.request.user
+
+        if user is None or not isinstance(user, User):
+            return Response(
+                {"detail": "No image file was uploaded!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         resp = image_upload_helper(request, user, "profile_pic", "profile_pic")
         if status.is_success(resp.status_code):
