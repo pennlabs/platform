@@ -48,18 +48,28 @@ def image_upload_helper(request, user, keyword, field):
     keyword:    the key corresponding to the image file in the request body
     field:      the name of the User model field to which the file is saved
     """
-    if (
-        keyword in request.data
-        and isinstance(request.data[keyword], UploadedFile)
-        and "image" in request.data[keyword].content_type
+    if keyword not in request.data or not isinstance(
+        request.data[keyword], UploadedFile
     ):
-        getattr(user, field).delete(save=False)
-        setattr(user, field, request.data[keyword])
-    else:
         return Response(
             {"detail": "No image file was uploaded!"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+    if "image" not in request.data[keyword].content_type:
+        return Response(
+            {"detail": "You must upload an image file!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if request.data[keyword].size > 500000:
+        return Response(
+            {"detail": "Image files must be smaller than 500 KB!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    getattr(user, field).delete(save=False)
+    setattr(user, field, request.data[keyword])
     return Response(
         {
             "detail": f"{user.__class__.__name__} image uploaded!",

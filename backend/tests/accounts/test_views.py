@@ -428,12 +428,6 @@ class ProfilePicViewTestCase(TestCase):
         self.client = APIClient()
         self.serializer = UserSerializer(self.user)
 
-    def test_profile_pic_upload_empty(self):
-        # empty image throws an error
-        self.client.force_authenticate(user=self.user)
-        resp = self.client.post(reverse("accounts:me-pfp-upload"))
-        self.assertEqual(resp.status_code, 400, resp.content)
-
     def test_profile_pic_upload_success(self):
         # successful image upload
         self.client.force_authenticate(user=self.user)
@@ -454,6 +448,12 @@ class ProfilePicViewTestCase(TestCase):
         data = json.loads(resp.content.decode("utf-8"))
         self.assertTrue(data["profile_pic"])
 
+    def test_profile_pic_upload_empty(self):
+        # empty image throws an error
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(reverse("accounts:me-pfp-upload"))
+        self.assertEqual(resp.status_code, 400, resp.content)
+
     def test_profile_pic_upload_non_image(self):
         # non-image upload should fail
         self.client.force_authenticate(user=self.user)
@@ -462,6 +462,28 @@ class ProfilePicViewTestCase(TestCase):
             {
                 "profile_pic": open(
                     os.path.join(os.getcwd(), "README.md"),
+                    "rb",
+                )
+            },
+        )
+        self.assertEqual(resp.status_code, 400, resp.content)
+
+        # ensure image url is NOT set
+        resp = self.client.get(reverse("accounts:me"))
+        self.assertEqual(resp.status_code, 200, resp.content)
+        data = json.loads(resp.content.decode("utf-8"))
+        self.assertFalse(data["profile_pic"])
+
+    def test_profile_pic_upload_too_large(self):
+        # images larger than 500 KB should fail
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(
+                        os.getcwd(), "tests", "accounts", "test_pfp_large.png"
+                    ),
                     "rb",
                 )
             },
