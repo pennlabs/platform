@@ -1,6 +1,7 @@
 import calendar
 import datetime
 import json
+import os
 import sys
 from importlib import reload
 from urllib.parse import quote
@@ -411,6 +412,123 @@ class UserViewTestCase(TestCase):
         response = self.client.patch(reverse("accounts:me"), update_data, format="json")
 
         self.assertEqual(response.status_code, 200)
+
+
+class ProfilePicViewTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+
+        self.client = APIClient()
+        self.serializer = UserSerializer(self.user)
+
+    def test_profile_pic_upload_success(self):
+        # successful image upload
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(os.getcwd(), "tests", "accounts", "test_pfp.jpg"),
+                    "rb",
+                )
+            },
+        )
+        self.assertEqual(resp.status_code, 200, resp.content)
+
+        # ensure image url is set
+        resp = self.client.get(reverse("accounts:me"))
+        self.assertEqual(resp.status_code, 200, resp.content)
+        data = json.loads(resp.content.decode("utf-8"))
+        self.assertTrue(data["profile_pic"])
+
+    def test_profile_pic_upload_empty(self):
+        # empty image throws an error
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(reverse("accounts:me-pfp-upload"))
+        self.assertEqual(resp.status_code, 400, resp.content)
+
+    def test_profile_pic_upload_non_image(self):
+        # non-image upload should fail
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(os.getcwd(), "README.md"),
+                    "rb",
+                )
+            },
+        )
+        self.assertEqual(resp.status_code, 400, resp.content)
+
+        # ensure image url is NOT set
+        resp = self.client.get(reverse("accounts:me"))
+        self.assertEqual(resp.status_code, 200, resp.content)
+        data = json.loads(resp.content.decode("utf-8"))
+        self.assertFalse(data["profile_pic"])
+
+    def test_profile_pic_upload_too_large(self):
+        # images larger than 500 KB should fail
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(
+                        os.getcwd(), "tests", "accounts", "test_pfp_large.png"
+                    ),
+                    "rb",
+                )
+            },
+        )
+        self.assertEqual(resp.status_code, 400, resp.content)
+
+        # ensure image url is NOT set
+        resp = self.client.get(reverse("accounts:me"))
+        self.assertEqual(resp.status_code, 200, resp.content)
+        data = json.loads(resp.content.decode("utf-8"))
+        self.assertFalse(data["profile_pic"])
+
+    def test_profile_pic_upload_no_auth(self):
+        # not authenticated user should fail with 403
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(os.getcwd(), "tests", "accounts", "test_pfp.jpg"),
+                    "rb",
+                )
+            },
+        )
+        self.assertEqual(resp.status_code, 403, resp.content)
+
+        # ensure image url is NOT set
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.get(reverse("accounts:me"))
+        self.assertEqual(resp.status_code, 200, resp.content)
+        data = json.loads(resp.content.decode("utf-8"))
+        self.assertFalse(data["profile_pic"])
+
+    def test_profile_pic_upload_no_user(self):
+        # uploading without a user should fail with 403
+        self.client.force_authenticate()
+        resp = self.client.post(
+            reverse("accounts:me-pfp-upload"),
+            {
+                "profile_pic": open(
+                    os.path.join(os.getcwd(), "tests", "accounts", "test_pfp.jpg"),
+                    "rb",
+                )
+            },
+        )
+        self.assertEqual(resp.status_code, 403, resp.content)
 
 
 class MajorViewTestCase(TestCase):

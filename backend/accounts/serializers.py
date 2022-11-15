@@ -174,6 +174,7 @@ class UserSerializer(serializers.ModelSerializer):
     student = StudentSerializer()
     emails = EmailSerializer(many=True)
     phone_numbers = PhoneNumberSerializer(many=True)
+    profile_pic = serializers.ImageField(required=False, allow_empty_file=True)
 
     class Meta:
         model = User
@@ -189,6 +190,7 @@ class UserSerializer(serializers.ModelSerializer):
             "student",
             "phone_numbers",
             "emails",
+            "profile_pic",
         )
 
         read_only_fields = (

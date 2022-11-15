@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -7,6 +8,15 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
+
+
+def get_user_image_filepath(instance, fname):
+    """
+    Returns the provided User's profile picture image path. Maintains the
+    file extension of the provided image file if it exists.
+    """
+    suffix = "." + fname.rsplit(".", 1)[-1] if "." in fname else ""
+    return os.path.join("images", f"{instance.username}{suffix}")
 
 
 class School(models.Model):
@@ -53,6 +63,9 @@ class User(AbstractUser):
     pennid = models.IntegerField(primary_key=True)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     preferred_name = models.CharField(max_length=225, blank=True)
+    profile_pic = models.ImageField(
+        upload_to=get_user_image_filepath, blank=True, null=True
+    )
 
     VERIFICATION_EXPIRATION_MINUTES = 10
 

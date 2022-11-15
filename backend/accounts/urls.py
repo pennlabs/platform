@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from oauth2_provider.views import AuthorizationView, TokenView
 from rest_framework import routers
@@ -12,6 +13,7 @@ from accounts.views import (
     MajorViewSet,
     PhoneNumberViewSet,
     ProductAdminView,
+    ProfilePicViewSet,
     SchoolViewSet,
     UserSearchView,
     UserView,
@@ -24,6 +26,7 @@ app_name = "accounts"
 router = routers.SimpleRouter()
 router.register("me/phonenumber", PhoneNumberViewSet, basename="me-phonenumber")
 router.register("me/email", EmailViewSet, basename="me-email")
+router.register("me/pfp", ProfilePicViewSet, basename="me-pfp")
 router.register("majors", MajorViewSet, basename="majors")
 router.register("schools", SchoolViewSet, basename="schools")
 
@@ -42,3 +45,4 @@ urlpatterns = [
 ]
 
 urlpatterns += router.urls
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
