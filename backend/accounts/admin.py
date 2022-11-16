@@ -7,6 +7,13 @@ from django.urls import reverse
 from accounts.models import Email, Major, PhoneNumber, School, Student, User
 
 
+class EmailAdmin(admin.ModelAdmin):
+    list_display = ("email", "user", "is_verified", "is_primary")
+    list_filter = ("is_verified", "is_primary")
+    search_fields = ("email", "user__username", "user__first_name", "user__last_name")
+    readonly_fields = ("user", "email", "is_verified", "is_primary")
+
+
 class StudentAdmin(admin.ModelAdmin):
     readonly_fields = ("user",)
     search_fields = ("user__username", "user__first_name", "user__last_name")
