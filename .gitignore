@@ -25,3 +25,6 @@ db.sqlite3
 
 # Docker
 docker-compose.yml
+
+# Uploaded media files
+backend/accounts/mediafiles

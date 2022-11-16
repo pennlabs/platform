@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "options.apps.OptionsConfig",
     "accounts.apps.AccountsConfig",
     "identity.apps.IdentityConfig",
+    "storages",
 ]
 
 
@@ -203,3 +204,7 @@ EMAIL_TOOLS = {
     "FROM_EMAIL": "Penn Labs <accounts@pennlabs.org>",
     "TEMPLATE_DIRECTORY": os.path.join(BASE_DIR, "Platform", "templates", "emails"),
 }
+
+# Media Upload Settings
+MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "mediafiles")
+MEDIA_URL = "/media/"
