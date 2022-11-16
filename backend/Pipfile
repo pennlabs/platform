@@ -36,6 +36,9 @@ django-email-tools = "*"
 twilio = "*"
 lxml = "*"
 requests = "*"
+pillow = "*"
+boto3 = "*"
+django-storages = "*"
 
 [requires]
 python_version = "3"

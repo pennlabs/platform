@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Case, IntegerField, Q, Value, When
 from django.http import HttpResponseServerError
 from django.http.response import HttpResponse, HttpResponseBadRequest
@@ -19,7 +20,7 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from oauth2_provider.views.mixins import ProtectedResourceMixin
-from rest_framework import generics, viewsets
+from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
@@ -37,6 +38,44 @@ from accounts.serializers import (
     UserSerializer,
 )
 from accounts.verification import sendEmailVerification, sendSMSVerification
+
+
+def image_upload_helper(request, user, keyword, field):
+    """
+    Given a User object, save the uploaded image to the image field specified
+    in the argument. Returns a response that can be given to the end user.
+
+    keyword:    the key corresponding to the image file in the request body
+    field:      the name of the User model field to which the file is saved
+    """
+    if keyword not in request.data or not isinstance(
+        request.data[keyword], UploadedFile
+    ):
+        return Response(
+            {"detail": "No image file was uploaded!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if "image" not in request.data[keyword].content_type:
+        return Response(
+            {"detail": "You must upload an image file!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if request.data[keyword].size > 500000:
+        return Response(
+            {"detail": "Image files must be smaller than 500 KB!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    getattr(user, field).delete(save=False)
+    setattr(user, field, request.data[keyword])
+    return Response(
+        {
+            "detail": f"{user.__class__.__name__} image uploaded!",
+            "url": getattr(user, field).url,
+        }
+    )
 
 
 class LoginView(View):
@@ -245,6 +284,60 @@ class UserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class ProfilePicViewSet(viewsets.ViewSet):
+    """
+    post:
+    Replace the profile picture of the logged in user with a new photo.
+    """
+
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+
+    @action(detail=False, methods=["post"])
+    def upload(self, request, *args, **kwargs):
+        """
+        Upload a profile picture.
+        ---
+        requestBody:
+            content:
+                multipart/form-data:
+                    schema:
+                        type: object
+                        properties:
+                            profile_pic:
+                                type: object
+                                format: binary
+        responses:
+            "200":
+                description: Returned if the file was successfully uploaded.
+                content: &upload_resp
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                detail:
+                                    type: string
+                                    description: The status of the file upload.
+                                url:
+                                    type: string
+                                    nullable: true
+                                    description: >
+                                        The URL of the newly uploaded file.
+                                        Only exists if the file was
+                                        successfully uploaded.
+            "400":
+                description: Returned if there was an error while uploading the file.
+                content: *upload_resp
+        ---
+        """
+        user = self.request.user
+        resp = image_upload_helper(request, user, "profile_pic", "profile_pic")
+        if status.is_success(resp.status_code):
+            user.save(update_fields=["profile_pic"])
+        return resp
 
 
 class PhoneNumberViewSet(viewsets.ModelViewSet):
