@@ -8,8 +8,8 @@ from accounts.models import Email, Major, PhoneNumber, School, Student, User
 
 
 class EmailAdmin(admin.ModelAdmin):
-    search_fields = ("email",)
-    readonly_fields = ("email",)
+    search_fields = ("email__value",)
+    readonly_fields = ("email__value",)
 
 
 class StudentAdmin(admin.ModelAdmin):
