@@ -19,7 +19,7 @@ SECRET_KEY=secret
 DJANGO_SETTINGS_MODULE=Platform.settings.production
 SENTRY_URL=https://pub@sentry.example.com/product
 AWS_ACCESS_KEY_ID
-AWS_ACCESS_SECRET_ID
+AWS_SECRET_ACCESS_KEY
 AWS_STORAGE_BUCKET_NAME
 ```
 
