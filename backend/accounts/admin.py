@@ -74,7 +74,7 @@ admin.site.register(Permission)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(PhoneNumber)
-admin.site.register(Email)
+admin.site.register(Email, EmailAdmin)
 admin.site.register(Major, MajorAdmin)
 admin.site.register(School, SchoolAdmin)
 
