@@ -10,6 +10,8 @@ from accounts.models import Email, Major, PhoneNumber, School, Student, User
 class EmailAdmin(admin.ModelAdmin):
     search_fields = ("value",)
     readonly_fields = ("value",)
+    list_display = ("value", "user", "primary", "verified")
+    list_filter = ("primary", "verified")
 
 
 class StudentAdmin(admin.ModelAdmin):
