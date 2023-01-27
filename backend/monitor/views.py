@@ -14,8 +14,8 @@ PRODUCTS_TO_URL = {
 
 class PullsView(View):
     """
-    Returns a view displaying all PRs that have the feature-branch tag.
-
+    Returns a view displaying all PRs that have the feature-branch tag and
+    their status.
     """
 
     def get(self, request):
@@ -33,8 +33,8 @@ class PullsView(View):
                 if "labels" not in pull:
                     continue
                 for label in pull["labels"]:
+                    # if "name" in label and label["name"].startswith("feature-branch:"):
                     if "name" in label and label["name"] == "dependencies":
-                        # if "name" in label and label["name"].startswith("feature-branch:"):
                         pulls.append(
                             {
                                 "url": f"https://pr-{pull['number']}.{product_url}",
