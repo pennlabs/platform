@@ -12,6 +12,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("options/", include("options.urls", namespace="options")),
     path("identity/", include("identity.urls", namespace="identity")),
+    path("monitor/", include("monitor.urls", namespace="monitor")),
     path("s/", include("shortener.urls", namespace="shortener")),
     path(
         "openapi/",

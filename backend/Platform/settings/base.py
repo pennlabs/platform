@@ -208,3 +208,6 @@ EMAIL_TOOLS = {
 # Media Upload Settings
 MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "mediafiles")
 MEDIA_URL = "/media/"
+
+# GitHub API
+GH_PERSONAL_ACCESS_TOKEN = os.environ.get("GH_PERSONAL_ACCESS_TOKEN")
