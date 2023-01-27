@@ -33,13 +33,11 @@ class PullsView(View):
                 if "labels" not in pull:
                     continue
                 for label in pull["labels"]:
-                    # if "name" in label and label["name"].startswith("feature-branch:"):
-                    if "name" in label and label["name"] == "dependencies":
+                    if "name" in label and label["name"].startswith("feature-branch:"):
                         pulls.append(
                             {
                                 "url": f"https://pr-{pull['number']}.{product_url}",
-                                "status": "STATUS"
-                                # "status": label["name"].split(":")[1]
+                                "status": label["name"].split(":")[1]
                             }
                         )
                         break
