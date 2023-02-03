@@ -1,5 +1,4 @@
 import requests
-
 from django.conf import settings
 from django.http.response import HttpResponse
 from django.views.generic.base import View
@@ -37,7 +36,7 @@ class PullsView(View):
                         pulls.append(
                             {
                                 "url": f"https://pr-{pull['number']}.{product_url}",
-                                "status": label["name"].split(":")[1]
+                                "status": label["name"].split(":")[1],
                             }
                         )
                         break
