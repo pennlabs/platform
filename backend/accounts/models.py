@@ -134,18 +134,40 @@ class PhoneNumber(models.Model):
     def __str__(self):
         return f"{self.user} - {self.value}"
 
+
+class PrivacyResource(models.Model):
+    """
+    Represents a resource utilized by Penn Labs that users reserve
+    the right to withhold.
+    """
+
+    name = models.CharField(max_length=255)
+
+
+@receiver(post_save, sender=PrivacyResource)
+def add_privacy_resource(sender, instance, created, **kwargs):
+    """
+    This post_save hook triggers whenever a new privacy resource is added.
+    Each User will receive a new privacy setting with this resource, enabled
+    to true.
+    """
+    users = User.objects.all()
+    resources = [None] * users.count()
+    for i, user in enumerate(users):
+        resources[i] = PrivacySetting(user=user, resource=instance, enabled=True)
+    # Bulk creating for all User objects
+    PrivacySetting.objects.bulk_create(resources, ignore_conflicts=True)
+
+
 class PrivacySetting(models.Model):
-    ACADEMIC_DEMOGRAPHICS = 1
-    COURSE_INFO = 2
-    RESOURCE_OPTIONS = (
-        (ACADEMIC_DEMOGRAPHICS, "ACADEMIC_DEMOGRAPHICS"),
-        (COURSE_INFO, "COURSE_INFO")
-    )
     user = models.ForeignKey(
         get_user_model(), related_name="privacy_setting", on_delete=models.CASCADE
     )
-    resource = models.CharField(max_length=255, choices=RESOURCE_OPTIONS, default=ACADEMIC_DEMOGRAPHICS)
+    resource = models.ForeignKey(
+        PrivacyResource, related_name="resource", on_delete=models.CASCADE
+    )
     enabled = models.BooleanField(default=True)
+
 
 @receiver(post_save, sender=User)
 def load_privacy_settings(sender, instance, created, **kwargs):
@@ -154,11 +176,10 @@ def load_privacy_settings(sender, instance, created, **kwargs):
     privacy settings for the User
     """
 
-    # In most cases, checking if the setting exists first should save us time iterating
-    # over the for-loop of database queries
+    # In most cases, first checking if settings exists should reduce the number of queries
+    # to the database
     if not PrivacySetting.objects.filter(user=instance).exists():
-        for resource, _ in PrivacySetting.RESOURCE_OPTIONS:
-            PrivacySetting.objects.create(user=instance, resource=resource, enabled=True)
-
-
-
+        for resource in PrivacyResource.objects.all():
+            PrivacySetting.objects.create(
+                user=instance, resource=resource, enabled=True
+            )
