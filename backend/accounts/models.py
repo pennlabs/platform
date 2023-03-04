@@ -133,3 +133,32 @@ class PhoneNumber(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.value}"
+
+class PrivacySetting(models.Model):
+    ACADEMIC_DEMOGRAPHICS = 1
+    COURSE_INFO = 2
+    RESOURCE_OPTIONS = (
+        (ACADEMIC_DEMOGRAPHICS, "ACADEMIC_DEMOGRAPHICS"),
+        (COURSE_INFO, "COURSE_INFO")
+    )
+    user = models.ForeignKey(
+        get_user_model(), related_name="privacy_setting", on_delete=models.CASCADE
+    )
+    resource = models.CharField(max_length=255, choices=RESOURCE_OPTIONS, default=ACADEMIC_DEMOGRAPHICS)
+    enabled = models.BooleanField(default=True)
+
+@receiver(post_save, sender=User)
+def load_privacy_settings(sender, instance, created, **kwargs):
+    """
+    This post_save hook triggers automatically when a User object is saved, and loads in default
+    privacy settings for the User
+    """
+
+    # In most cases, checking if the setting exists first should save us time iterating
+    # over the for-loop of database queries
+    if not PrivacySetting.objects.filter(user=instance).exists():
+        for resource, _ in PrivacySetting.RESOURCE_OPTIONS:
+            PrivacySetting.objects.create(user=instance, resource=resource, enabled=True)
+
+
+
