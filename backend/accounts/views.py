@@ -33,6 +33,7 @@ from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
     PhoneNumberSerializer,
+    PrivacySettingSerializer,
     SchoolSerializer,
     UserSearchSerializer,
     UserSerializer,
@@ -527,3 +528,19 @@ class ProductAdminView(APIView):
                     )
                     user.user_permissions.add(permission)
         return Response({"detail": "success"})
+
+
+class PrivacySettingView(
+    generics.GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin
+):
+    serializer_class = PrivacySettingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.privacy_setting.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
