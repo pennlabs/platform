@@ -18,11 +18,20 @@ from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 from rest_framework_api_key.models import APIKey
 
-from accounts.models import Email, Major, PhoneNumber, School, User
+from accounts.models import (
+    Email,
+    Major,
+    PhoneNumber,
+    PrivacyResource,
+    PrivacySetting,
+    School,
+    User,
+)
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
     PhoneNumberSerializer,
+    PrivacySettingSerializer,
     SchoolSerializer,
     StudentSerializer,
     UserSearchSerializer,
@@ -845,3 +854,80 @@ class ProductAdminViewTestCase(TestCase):
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_staff)
         self.assertTrue(self.user.is_superuser)
+
+
+class PrivacySettingViewTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user_1 = User.objects.create(
+            pennid=1, username="test1", first_name="first1", last_name="last1"
+        )
+        self.user_2 = User.objects.create(
+            pennid=2, username="test2", first_name="first2", last_name="last2"
+        )
+
+        self.resource_1 = PrivacyResource.objects.create(name="ACADEMIC_IDENTITY")
+        self.resource_2 = PrivacyResource.objects.create(name="COLLEGE_HOUSE")
+
+        self.serializer = PrivacySettingSerializer
+
+    def test_postsave_settings_created(self):
+        # Assert that the post save hook created settings for the 2 resources
+        self.assertEqual(4, PrivacySetting.objects.all().count())
+        self.assertEqual(2, self.user_1.privacy_setting.count())
+        self.assertEqual(2, self.user_2.privacy_setting.count())
+
+    def test_authenticated(self):
+        response = self.client.get(reverse("accounts:privacy"))
+        self.assertEqual(403, response.status_code)
+
+    def test_list_settings(self):
+        self.client.force_authenticate(user=self.user_1)
+        response = self.client.get(reverse("accounts:privacy"))
+        # Assert the list is exactly all of user_1's settings with correct fields
+        self.assertEqual(
+            json.loads(response.content),
+            self.serializer(
+                PrivacySetting.objects.filter(user=self.user_1), many=True
+            ).data,
+        )
+        # Assert the list is exactly all of user_2's settings with correct fields
+        self.client.force_authenticate(user=self.user_2)
+        response = self.client.get(reverse("accounts:privacy"))
+        self.assertEqual(
+            json.loads(response.content),
+            self.serializer(
+                PrivacySetting.objects.filter(user=self.user_2), many=True
+            ).data,
+        )
+
+    def test_update_settings(self):
+        # Assert after updating, setting changes to false
+        self.client.force_authenticate(user=self.user_1)
+        update_data_1 = {"enabled": False}
+        test_id_1 = self.user_1.privacy_setting.first().id
+        response = self.client.patch(
+            reverse("accounts:privacy", args=[test_id_1]),
+            data=update_data_1,
+            format="json",
+        )
+        test_setting_1 = PrivacySetting.objects.get(id=test_id_1)
+        self.assertEqual(
+            json.loads(response.content), self.serializer(test_setting_1).data
+        )
+        self.assertFalse(test_setting_1.enabled)
+
+        # Assert after updating, setting remains to true (settings default to true)
+        self.client.force_authenticate(user=self.user_2)
+        update_data_2 = {"enabled": True}
+        test_id_2 = self.user_2.privacy_setting.first().id
+        response = self.client.patch(
+            reverse("accounts:privacy", args=[test_id_2]),
+            data=update_data_2,
+            format="json",
+        )
+        test_setting_2 = PrivacySetting.objects.get(id=test_id_2)
+        self.assertEqual(
+            json.loads(response.content), self.serializer(test_setting_2).data
+        )
+        self.assertTrue(test_setting_2.enabled)
