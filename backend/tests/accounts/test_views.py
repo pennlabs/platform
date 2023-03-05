@@ -883,6 +883,9 @@ class PrivacySettingViewTestCase(TestCase):
             pennid=3, username="test3", first_name="first3", last_name="last3"
         )
         self.assertEqual(2, PrivacySetting.objects.filter(user=user).count())
+        # Assert that saving on a pre-created user does not create new settings
+        user.save()
+        self.assertEqual(2, PrivacySetting.objects.filter(user=user).count())
 
     def test_authenticated(self):
         response = self.client.get(reverse("accounts:privacy"))

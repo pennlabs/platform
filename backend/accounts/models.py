@@ -178,7 +178,7 @@ def load_privacy_settings(sender, instance, created, **kwargs):
 
     # In most cases, first checking if settings exists should reduce the number of queries
     # to the database
-    if not PrivacySetting.objects.filter(user=instance).exists():
+    if not instance.privacy_setting.exists():
         for resource in PrivacyResource.objects.all():
             PrivacySetting.objects.create(
                 user=instance, resource=resource, enabled=True
