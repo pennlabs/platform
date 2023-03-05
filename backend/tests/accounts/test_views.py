@@ -871,11 +871,18 @@ class PrivacySettingViewTestCase(TestCase):
 
         self.serializer = PrivacySettingSerializer
 
-    def test_postsave_settings_created(self):
+    def test_resource_postsave_settings_created(self):
         # Assert that the post save hook created settings for the 2 resources
         self.assertEqual(4, PrivacySetting.objects.all().count())
         self.assertEqual(2, self.user_1.privacy_setting.count())
         self.assertEqual(2, self.user_2.privacy_setting.count())
+
+    def test_user_postsave_settings_created(self):
+        # Assert that after user creation, new settings are made for the user
+        user = User.objects.create(
+            pennid=3, username="test3", first_name="first3", last_name="last3"
+        )
+        self.assertEqual(2, PrivacySetting.objects.filter(user=user).count())
 
     def test_authenticated(self):
         response = self.client.get(reverse("accounts:privacy"))
