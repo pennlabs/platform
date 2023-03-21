@@ -537,7 +537,7 @@ class PrivacySettingView(
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.request.user.privacy_setting.all()
+        return self.request.user.privacy_setting.select_related("resource").all()
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

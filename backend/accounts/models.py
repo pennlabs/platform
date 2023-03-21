@@ -152,11 +152,9 @@ def add_privacy_resource(sender, instance, created, **kwargs):
     to true.
     """
     users = User.objects.all()
-    resources = [None] * users.count()
-    for i, user in enumerate(users):
-        resources[i] = PrivacySetting(user=user, resource=instance, enabled=True)
+    settings = [PrivacySetting(user=user, resource=instance, enabled=True) for user in users]
     # Bulk creating for all User objects
-    PrivacySetting.objects.bulk_create(resources, ignore_conflicts=True)
+    PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)
 
 
 class PrivacySetting(models.Model):
@@ -179,7 +177,6 @@ def load_privacy_settings(sender, instance, created, **kwargs):
     # In most cases, first checking if settings exists should reduce the number of queries
     # to the database
     if not instance.privacy_setting.exists():
-        for resource in PrivacyResource.objects.all():
-            PrivacySetting.objects.create(
-                user=instance, resource=resource, enabled=True
-            )
+        resources = PrivacyResource.objects.all()
+        settings = [PrivacySetting(user=instance, resource=resource, enabled=True) for resource in resources]
+        PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)
