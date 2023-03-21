@@ -152,7 +152,9 @@ def add_privacy_resource(sender, instance, created, **kwargs):
     to true.
     """
     users = User.objects.all()
-    settings = [PrivacySetting(user=user, resource=instance, enabled=True) for user in users]
+    settings = [
+        PrivacySetting(user=user, resource=instance, enabled=True) for user in users
+    ]
     # Bulk creating for all User objects
     PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)
 
@@ -178,5 +180,8 @@ def load_privacy_settings(sender, instance, created, **kwargs):
     # to the database
     if not instance.privacy_setting.exists():
         resources = PrivacyResource.objects.all()
-        settings = [PrivacySetting(user=instance, resource=resource, enabled=True) for resource in resources]
+        settings = [
+            PrivacySetting(user=instance, resource=resource, enabled=True)
+            for resource in resources
+        ]
         PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)
