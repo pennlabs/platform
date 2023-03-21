@@ -20,7 +20,7 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from oauth2_provider.views.mixins import ProtectedResourceMixin
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
@@ -33,6 +33,7 @@ from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
     PhoneNumberSerializer,
+    PrivacySettingSerializer,
     SchoolSerializer,
     UserSearchSerializer,
     UserSerializer,
@@ -527,3 +528,19 @@ class ProductAdminView(APIView):
                     )
                     user.user_permissions.add(permission)
         return Response({"detail": "success"})
+
+
+class PrivacySettingView(
+    generics.GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin
+):
+    serializer_class = PrivacySettingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.privacy_setting.select_related("resource").all()
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)

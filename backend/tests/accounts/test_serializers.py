@@ -6,11 +6,21 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework import serializers
 
-from accounts.models import Email, Major, PhoneNumber, School, User
+from accounts.models import (
+    Email,
+    Major,
+    PhoneNumber,
+    PrivacyResource,
+    PrivacySetting,
+    School,
+    User,
+)
 from accounts.serializers import (
     EmailSerializer,
     MajorSerializer,
     PhoneNumberSerializer,
+    PrivacyResourceSerializer,
+    PrivacySettingSerializer,
     SchoolSerializer,
     StudentSerializer,
     UserSearchSerializer,
@@ -546,3 +556,38 @@ class EmailSerializerTestCase(TestCase):
             with self.assertRaises(serializers.ValidationError):
                 serializer.save()
         self.assertFalse(email.verified)
+
+
+class PrivacyResourceSerializerTestCase(TestCase):
+    def setUp(self):
+        self.resource = PrivacyResource.objects.create(name="ACADEMIC_IDENTITY")
+        self.serializer = PrivacyResourceSerializer(self.resource)
+
+    def test_privacy_resource(self):
+        sample_response = {"name": self.resource.name}
+        self.assertEqual(self.serializer.data, sample_response)
+
+
+class PrivacySettingSerializerTestCase(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+        self.resource = PrivacyResource.objects.create(name="ACADEMIC_IDENTITY")
+        self.setting = PrivacySetting.objects.create(
+            user=self.user, resource=self.resource, enabled=True
+        )
+        self.serializer = PrivacySettingSerializer(self.setting)
+
+    def test_privacy_resource(self):
+        sample_response = {
+            "id": self.setting.id,
+            "resource": PrivacyResourceSerializer(self.resource).data,
+            "enabled": self.setting.enabled,
+        }
+        self.assertEqual(self.serializer.data, sample_response)

@@ -3,7 +3,16 @@ from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
 from accounts.mixins import ManyToManySaveMixin
-from accounts.models import Email, Major, PhoneNumber, School, Student, User
+from accounts.models import (
+    Email,
+    Major,
+    PhoneNumber,
+    PrivacyResource,
+    PrivacySetting,
+    School,
+    Student,
+    User,
+)
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
@@ -220,3 +229,18 @@ class UserSerializer(serializers.ModelSerializer):
             serializer.is_valid(raise_exception=True)
             serializer.save()
         return instance
+
+
+class PrivacyResourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrivacyResource
+        fields = ("name",)
+
+
+class PrivacySettingSerializer(serializers.ModelSerializer):
+    resource = PrivacyResourceSerializer()
+
+    class Meta:
+        model = PrivacySetting
+        fields = ("id", "resource", "enabled")
+        read_only_fields = ("id", "resource")

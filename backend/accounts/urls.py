@@ -12,6 +12,7 @@ from accounts.views import (
     LogoutView,
     MajorViewSet,
     PhoneNumberViewSet,
+    PrivacySettingView,
     ProductAdminView,
     ProfilePicViewSet,
     SchoolViewSet,
@@ -42,6 +43,8 @@ urlpatterns = [
     path("token/", TokenView.as_view(), name="token"),
     path("introspect/", UUIDIntrospectTokenView.as_view(), name="introspect"),
     path("productadmin/", ProductAdminView.as_view(), name="productadmin"),
+    path("privacy/", PrivacySettingView.as_view(), name="privacy"),
+    path("privacy/<int:pk>/", PrivacySettingView.as_view(), name="privacy"),
 ]
 
 urlpatterns += router.urls

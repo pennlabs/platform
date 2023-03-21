@@ -4,7 +4,16 @@ from django.contrib.auth.models import Permission
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from accounts.models import Email, Major, PhoneNumber, School, Student, User
+from accounts.models import (
+    Email,
+    Major,
+    PhoneNumber,
+    PrivacyResource,
+    PrivacySetting,
+    School,
+    Student,
+    User,
+)
 
 
 class EmailAdmin(admin.ModelAdmin):
@@ -77,6 +86,8 @@ admin.site.register(PhoneNumber)
 admin.site.register(Email, EmailAdmin)
 admin.site.register(Major, MajorAdmin)
 admin.site.register(School, SchoolAdmin)
+admin.site.register(PrivacySetting)
+admin.site.register(PrivacyResource)
 
 
 class LabsAdminSite(admin.AdminSite):
