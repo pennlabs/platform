@@ -231,6 +231,38 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+class FindUserSerializer(serializers.ModelSerializer):
+    # SerializerMethodFields are read_only
+    first_name = serializers.CharField(source="get_preferred_name", required=False)
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    student = StudentSerializer()
+    profile_pic = serializers.ImageField(required=False, allow_empty_file=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "uuid",
+            "pennid",
+            "first_name",
+            "last_name",
+            "username",
+            "groups",
+            "student",
+            "profile_pic",
+        )
+
+        read_only_fields = (
+            "uuid",
+            "pennid",
+            "first_name",
+            "last_name",
+            "username",
+            "groups",
+            "student",
+            "profile_pic",
+        )
+
+
 class PrivacyResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrivacyResource

@@ -423,6 +423,45 @@ class UserViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class FindUserViewTestCase(TestCase):
+    def setUp(self):
+        self.user1 = get_user_model().objects.create_user(
+            pennid=1,
+            username="student",
+            password="secret",
+            first_name="First",
+            last_name="Last",
+            email="test@test.com",
+        )
+
+        self.user2 = get_user_model().objects.create_user(
+            pennid=2,
+            username="student2",
+            password="secret2",
+            first_name="First2",
+            last_name="Last2",
+            email="test2@test.com",
+        )
+
+        self.client = APIClient()
+        self.serializer = UserSerializer(self.user1)
+
+    def test_find_user(self):
+        self.client.force_authenticate(user=self.user1)
+        resp = self.client.get(
+            reverse("accounts:user", kwargs={"username": "student2"})
+        )
+        self.assertEqual(resp.status_code, 200, resp.content)
+        self.assertEqual(2, resp.json()["pennid"])
+
+    def test_find_user_not_found(self):
+        self.client.force_authenticate(user=self.user1)
+        resp = self.client.get(
+            reverse("accounts:user", kwargs={"username": "doesnt_exist"})
+        )
+        self.assertEqual(resp.status_code, 404, resp.content)
+
+
 class ProfilePicViewTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
