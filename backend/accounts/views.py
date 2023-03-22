@@ -31,6 +31,7 @@ from sentry_sdk import capture_message
 from accounts.models import Major, School, User
 from accounts.serializers import (
     EmailSerializer,
+    FindUserSerializer,
     MajorSerializer,
     PhoneNumberSerializer,
     PrivacySettingSerializer,
@@ -293,7 +294,7 @@ class FindUserView(generics.RetrieveAPIView):
     Return information about the user associated with the provided username.
     """
 
-    serializer_class = UserSerializer
+    serializer_class = FindUserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
