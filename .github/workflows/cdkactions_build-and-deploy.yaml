@@ -31,11 +31,6 @@ jobs:
           cd backend
           pipenv run coverage run --concurrency=multiprocessing manage.py test --settings=Platform.settings.ci --parallel
           pipenv run coverage combine
-      - name: Upload Code Coverage
-        run: |-
-          ROOT=$(pwd)
-          cd backend
-          pipenv run codecov --root $ROOT --flags backend
     container:
       image: python:3.8-buster
     env:
