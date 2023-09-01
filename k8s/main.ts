@@ -53,7 +53,7 @@ export class MyChart extends PennLabsChart {
       }],
       ingressProps: {
         annotations: {
-          ["ingress.kubernetes.io/protocol"]: "http"
+          ["ingress.kubernetes.io/protocol"]: "https"
         },
       },
       djangoSettingsModule: 'Platform.settings.production',
