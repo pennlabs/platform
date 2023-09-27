@@ -54,7 +54,7 @@ export class MyChart extends PennLabsChart {
       ingressProps: {
         annotations: {
           ["ingress.kubernetes.io/protocol"]: "https",
-          ["traefik.ingress.kubernetes.io/router.middlewares"]: "default-redict-http@kubernetescrd"
+          ["traefik.ingress.kubernetes.io/router.middlewares"]: "default-redirect-http@kubernetescrd"
         },
       },
       djangoSettingsModule: 'Platform.settings.production',
