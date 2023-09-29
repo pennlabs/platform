@@ -9,6 +9,7 @@ admin.site.site_header = "Platform Admin"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("announcements/", include("announcements.urls", namespace="announcements")),
     path("accounts/", include("accounts.urls")),
     path("options/", include("options.urls", namespace="options")),
     path("identity/", include("identity.urls", namespace="identity")),
