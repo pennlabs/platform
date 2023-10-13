@@ -53,7 +53,8 @@ export class MyChart extends PennLabsChart {
       }],
       ingressProps: {
         annotations: {
-          ["ingress.kubernetes.io/protocol"]: "http"
+          ["ingress.kubernetes.io/protocol"]: "https",
+          ["traefik.ingress.kubernetes.io/router.middlewares"]: "default-redirect-http@kubernetescrd"
         },
       },
       djangoSettingsModule: 'Platform.settings.production',
@@ -62,7 +63,7 @@ export class MyChart extends PennLabsChart {
     new ReactApplication(this, 'react', {
       deployment: {
         image: frontendImage,
-        replicas: 2,
+        replicas: 1,
       },
       domain: {
         host: domain,

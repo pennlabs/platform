@@ -133,3 +133,55 @@ class PhoneNumber(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.value}"
+
+
+class PrivacyResource(models.Model):
+    """
+    Represents a resource utilized by Penn Labs that users reserve
+    the right to withhold.
+    """
+
+    name = models.CharField(max_length=255)
+
+
+@receiver(post_save, sender=PrivacyResource)
+def add_privacy_resource(sender, instance, created, **kwargs):
+    """
+    This post_save hook triggers whenever a new privacy resource is added.
+    Each User will receive a new privacy setting with this resource, enabled
+    to true.
+    """
+    users = User.objects.all()
+    settings = [
+        PrivacySetting(user=user, resource=instance, enabled=True) for user in users
+    ]
+    # Bulk creating for all User objects
+    PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)
+
+
+class PrivacySetting(models.Model):
+    user = models.ForeignKey(
+        get_user_model(), related_name="privacy_setting", on_delete=models.CASCADE
+    )
+    resource = models.ForeignKey(
+        PrivacyResource, related_name="resource", on_delete=models.CASCADE
+    )
+    enabled = models.BooleanField(default=True)
+
+
+@receiver(post_save, sender=User)
+def load_privacy_settings(sender, instance, created, **kwargs):
+    """
+    This post_save hook triggers automatically when a User object is saved, and loads in default
+    privacy settings for the User
+    """
+
+    # In most cases, first checking if settings exists should reduce the number of queries
+    # to the database
+    if not instance.privacy_setting.exists():
+        resources = PrivacyResource.objects.all()
+        settings = [
+            PrivacySetting(user=instance, resource=resource, enabled=True)
+            for resource in resources
+        ]
+        PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)

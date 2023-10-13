@@ -3,7 +3,16 @@ from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
 from accounts.mixins import ManyToManySaveMixin
-from accounts.models import Email, Major, PhoneNumber, School, Student, User
+from accounts.models import (
+    Email,
+    Major,
+    PhoneNumber,
+    PrivacyResource,
+    PrivacySetting,
+    School,
+    Student,
+    User,
+)
 from accounts.verification import sendEmailVerification, sendSMSVerification
 
 
@@ -220,3 +229,50 @@ class UserSerializer(serializers.ModelSerializer):
             serializer.is_valid(raise_exception=True)
             serializer.save()
         return instance
+
+
+class FindUserSerializer(serializers.ModelSerializer):
+    # SerializerMethodFields are read_only
+    first_name = serializers.CharField(source="get_preferred_name", required=False)
+    groups = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    student = StudentSerializer()
+    profile_pic = serializers.ImageField(required=False, allow_empty_file=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "uuid",
+            "pennid",
+            "first_name",
+            "last_name",
+            "username",
+            "groups",
+            "student",
+            "profile_pic",
+        )
+
+        read_only_fields = (
+            "uuid",
+            "pennid",
+            "first_name",
+            "last_name",
+            "username",
+            "groups",
+            "student",
+            "profile_pic",
+        )
+
+
+class PrivacyResourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrivacyResource
+        fields = ("name",)
+
+
+class PrivacySettingSerializer(serializers.ModelSerializer):
+    resource = PrivacyResourceSerializer()
+
+    class Meta:
+        model = PrivacySetting
+        fields = ("id", "resource", "enabled")
+        read_only_fields = ("id", "resource")

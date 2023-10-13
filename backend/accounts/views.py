@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Case, IntegerField, Q, Value, When
-from django.http import HttpResponseServerError
+from django.http import Http404, HttpResponseServerError
 from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -20,7 +20,7 @@ from django.views.generic.base import View
 from oauth2_provider.models import get_access_token_model
 from oauth2_provider.views import IntrospectTokenView
 from oauth2_provider.views.mixins import ProtectedResourceMixin
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
@@ -31,8 +31,10 @@ from sentry_sdk import capture_message
 from accounts.models import Major, School, User
 from accounts.serializers import (
     EmailSerializer,
+    FindUserSerializer,
     MajorSerializer,
     PhoneNumberSerializer,
+    PrivacySettingSerializer,
     SchoolSerializer,
     UserSearchSerializer,
     UserSerializer,
@@ -286,6 +288,23 @@ class UserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
+class FindUserView(generics.RetrieveAPIView):
+    """
+    get:
+    Return information about the user associated with the provided username.
+    """
+
+    serializer_class = FindUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        try:
+            user = User.objects.get(username=self.kwargs["username"])
+        except ObjectDoesNotExist:
+            raise Http404
+        return user
+
+
 class ProfilePicViewSet(viewsets.ViewSet):
     """
     post:
@@ -527,3 +546,19 @@ class ProductAdminView(APIView):
                     )
                     user.user_permissions.add(permission)
         return Response({"detail": "success"})
+
+
+class PrivacySettingView(
+    generics.GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin
+):
+    serializer_class = PrivacySettingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.privacy_setting.select_related("resource").all()
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
