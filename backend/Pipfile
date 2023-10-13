@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-black = "==21.9b0"
+black = "==22.3.0"
 unittest-xml-reporting = "*"
 flake8 = "*"
 flake8-isort = "*"
@@ -38,6 +38,8 @@ requests = "*"
 pillow = "*"
 boto3 = "*"
 django-storages = "*"
+coverage = "*"
+zoneinfo = "*"
 
 [requires]
 python_version = "3"
