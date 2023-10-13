@@ -1,12 +1,14 @@
 from announcements.serializers import AnnouncementSerializer
-from rest_framework import generics, mixins, status, viewsets
+from rest_framework import viewsets
 from announcements.models import Announcement
-from rest_framework.response import Response
+from announcements.permissions import IsSuperuser
 
 
-class AnnouncementsView(generics.ListAPIView):
+class AnnouncementsViewSet(viewsets.ModelViewSet):
     serializer_class = AnnouncementSerializer
+    queryset = Announcement.objects.all()
 
-    def list(self, request):
-        announcement_list = Announcement.objects.all()
-        return Response(announcement_list)
+    def get_permissions(self):
+        if self.request.method != "GET":
+            self.permission_classes = [IsSuperuser]
+        return super(AnnouncementsViewSet, self).get_permissions()
