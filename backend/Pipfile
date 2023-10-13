@@ -39,6 +39,7 @@ pillow = "*"
 boto3 = "*"
 django-storages = "*"
 coverage = "*"
+zoneinfo = "*"
 
 [requires]
 python_version = "3"
