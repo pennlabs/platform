@@ -31,6 +31,16 @@ jobs:
           cd backend
           pipenv run coverage run --concurrency=multiprocessing manage.py test --settings=Platform.settings.ci --parallel
           pipenv run coverage combine
+          pipenv run coverage xml
+      - name: Upload Code Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./backend/
+          fail_ci_if_error: true
+          files: coverage.xml
+          name: codecov-umbrella
+          verbose: true
     container:
       image: python:3.8-buster
     env:
