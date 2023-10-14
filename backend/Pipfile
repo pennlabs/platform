@@ -39,7 +39,6 @@ requests = "*"
 pillow = "*"
 boto3 = "*"
 django-storages = "*"
-coverage = "*"
 
 [requires]
 python_version = "3"
