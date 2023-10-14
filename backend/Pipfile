@@ -14,7 +14,6 @@ django-debug-toolbar = "*"
 django-extensions = "*"
 flake8-absolute-import = "*"
 tblib = "*"
-coverage = "*"
 
 [packages]
 dj-database-url = "*"
@@ -39,6 +38,7 @@ requests = "*"
 pillow = "*"
 boto3 = "*"
 django-storages = "*"
+coverage = "*"
 
 [requires]
 python_version = "3"
