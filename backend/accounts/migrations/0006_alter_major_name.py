@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0005_privacyresource_privacysetting'),
+        ("accounts", "0005_privacyresource_privacysetting"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='major',
-            name='name',
+            model_name="major",
+            name="name",
             field=models.CharField(max_length=150),
         ),
     ]
