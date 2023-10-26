@@ -52,9 +52,15 @@ class Announcement(models.Model):
         choices=ANNOUNCEMENT_CHOICES,
         default=ANNOUNCEMENT_NOTICE,
     )
-    audiences = models.ManyToManyField("Audience", related_name="announcements")
+    audiences = models.ManyToManyField("Audience",
+                                       related_name="announcements")
     release_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"[{self.get_announcement_type_display()} for {','.join([audience.name for audience in self.audiences.all()])}] starting at {self.release_time.strftime('%m-%d-%Y %H:%M:%S')} {f'''to {self.end_time.strftime('%m-%d-%Y %H:%M:%S')}''' if self.end_time else ''} | {f'{self.title}: ' if self.title else ''} {self.message}"
+        return f"""[{self.get_announcement_type_display()}
+        for {','.join([audience.name for audience in self.audiences.all()])}]
+        starting at {self.release_time.strftime('%m-%d-%Y %H:%M:%S')}
+        {f'to {self.end_time.strftime("%m-%d-%Y %H:%M:%S")}'
+        if self.end_time else ''}
+        | {f'{self.title}: ' if self.title else ''} {self.message}"""
