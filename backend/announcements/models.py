@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Audience(models.Model):
     """
     Represents a product that an announcement is intended for.
@@ -26,19 +27,18 @@ class Audience(models.Model):
     def __str__(self):
         return self.name
 
+
 class Announcement(models.Model):
     """
     Represents an announcement for any of the Penn Labs services.
     """
 
-    ANNOUNCEMENT_BANNER = 1
-    ANNOUNCEMENT_ISSUE = 2
-    ANNOUNCEMENT_NOTICE = 3
+    ANNOUNCEMENT_NOTICE = "NOTICE"
+    ANNOUNCEMENT_ISSUE = "ISSUE"
 
     ANNOUNCEMENT_CHOICES = [
-        (ANNOUNCEMENT_BANNER, "Banner"),
-        (ANNOUNCEMENT_ISSUE, "Issue"),
         (ANNOUNCEMENT_NOTICE, "Notice"),
+        (ANNOUNCEMENT_ISSUE, "Issue"),
     ]
 
     title = models.CharField(
@@ -47,7 +47,8 @@ class Announcement(models.Model):
         null=True,
     )
     message = models.TextField()
-    announcement_type = models.IntegerField(
+    announcement_type = models.CharField(
+        max_length=20,
         choices=ANNOUNCEMENT_CHOICES,
         default=ANNOUNCEMENT_NOTICE,
     )
