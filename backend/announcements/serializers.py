@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from announcements.models import Announcement, Audience
+from rest_framework import serializers
 
 
 class AudienceSerializer(serializers.ModelSerializer):

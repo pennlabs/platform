@@ -1,7 +1,7 @@
-from announcements.serializers import AnnouncementSerializer
-from rest_framework import viewsets
 from announcements.models import Announcement
 from announcements.permissions import IsSuperuser
+from announcements.serializers import AnnouncementSerializer
+from rest_framework import viewsets
 
 
 class AnnouncementsViewSet(viewsets.ModelViewSet):

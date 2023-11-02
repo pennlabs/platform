@@ -1,6 +1,5 @@
-from django.core.management import BaseCommand
-
 from announcements.models import Audience
+from django.core.management import BaseCommand
 
 
 class Command(BaseCommand):
