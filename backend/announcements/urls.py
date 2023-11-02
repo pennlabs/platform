@@ -4,5 +4,5 @@ from rest_framework import routers
 
 app_name = "announcements"
 router = routers.SimpleRouter()
-router.register("", AnnouncementsViewSet)
+router.register("", AnnouncementsViewSet, basename="announcements")
 urlpatterns = router.urls
