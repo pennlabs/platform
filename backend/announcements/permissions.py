@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class IsSuperuser(permissions.BasePermission):
     """
     Grants permission if the current user is a superuser.
