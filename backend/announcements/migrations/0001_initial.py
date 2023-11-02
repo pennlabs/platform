@@ -4,30 +4,67 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Audience',
+            name="Audience",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('MOBILE', 'Penn Mobile'), ('OHQ', 'OHQ'), ('CLUBS', 'Penn Clubs'), ('COURSE_PLAN', 'Penn Course Plan'), ('COURSE_REVIEW', 'Penn Course Review'), ('COURSE_ALERT', 'Penn Course Alert')], max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        choices=[
+                            ("MOBILE", "Penn Mobile"),
+                            ("OHQ", "OHQ"),
+                            ("CLUBS", "Penn Clubs"),
+                            ("COURSE_PLAN", "Penn Course Plan"),
+                            ("COURSE_REVIEW", "Penn Course Review"),
+                            ("COURSE_ALERT", "Penn Course Alert"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Announcement',
+            name="Announcement",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(blank=True, max_length=255, null=True)),
-                ('message', models.TextField()),
-                ('announcement_type', models.IntegerField(choices=[(1, 'Banner'), (2, 'Issue'), (3, 'Notice')], default=3)),
-                ('release_time', models.DateTimeField(auto_now_add=True)),
-                ('end_time', models.DateTimeField(blank=True, null=True)),
-                ('audiences', models.ManyToManyField(related_name='announcements', to='announcements.audience')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(blank=True, max_length=255, null=True)),
+                ("message", models.TextField()),
+                (
+                    "announcement_type",
+                    models.IntegerField(
+                        choices=[(1, "Banner"), (2, "Issue"), (3, "Notice")], default=3
+                    ),
+                ),
+                ("release_time", models.DateTimeField(auto_now_add=True)),
+                ("end_time", models.DateTimeField(blank=True, null=True)),
+                (
+                    "audiences",
+                    models.ManyToManyField(
+                        related_name="announcements", to="announcements.audience"
+                    ),
+                ),
             ],
         ),
     ]

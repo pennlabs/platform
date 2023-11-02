@@ -52,8 +52,7 @@ class Announcement(models.Model):
         choices=ANNOUNCEMENT_CHOICES,
         default=ANNOUNCEMENT_NOTICE,
     )
-    audiences = models.ManyToManyField("Audience",
-                                       related_name="announcements")
+    audiences = models.ManyToManyField("Audience", related_name="announcements")
     release_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
 

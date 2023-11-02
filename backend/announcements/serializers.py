@@ -9,15 +9,27 @@ class AudienceSerializer(serializers.ModelSerializer):
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
-    audiences = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Audience.objects.all())
+    audiences = serializers.SlugRelatedField(
+        many=True, slug_field="name", queryset=Audience.objects.all()
+    )
 
     class Meta:
         model = Announcement
-        fields = ("id", "title", "message", "announcement_type", "release_time", "end_time", "audiences")
+        fields = (
+            "id",
+            "title",
+            "message",
+            "announcement_type",
+            "release_time",
+            "end_time",
+            "audiences",
+        )
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation["audiences"] = [audience.name for audience in instance.audiences.all()]
+        representation["audiences"] = [
+            audience.name for audience in instance.audiences.all()
+        ]
         return representation
 
     def to_internal_value(self, data):
