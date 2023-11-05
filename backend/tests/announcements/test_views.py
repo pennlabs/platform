@@ -62,11 +62,7 @@ class AnnouncementsPermissionTestCase(TestCase):
             {
                 "title": "Maintenance Alert",
                 "message": "We apologize for any inconvenience caused.",
-                "audiences": [
-                    "CLUBS",
-                    "COURSE_PLAN",
-                    "COURSE_ALERT"
-                ],
+                "audiences": ["CLUBS", "COURSE_PLAN", "COURSE_ALERT"],
             },
         )
         self.assertEqual(response.status_code, 403)
