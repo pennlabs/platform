@@ -6,10 +6,9 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
+from identity.views import SIGNING_ALG
 from jwcrypto import jwk, jwt
 from oauth2_provider.models import get_application_model
-
-from identity.views import SIGNING_ALG
 
 
 class AttestTestCase(TestCase):
