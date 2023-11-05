@@ -32,7 +32,6 @@ def create_email_objects(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("accounts", "0002_auto_20200213_1711"),
     ]

@@ -9,13 +9,18 @@ WORKDIR /app/
 
 # Install dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y python3.7-dev python3-distutils libpq-dev gcc \
-    && wget -qO get-pip.py "https://github.com/pypa/get-pip/raw/0c72a3b4ece313faccb446a96c84770ccedc5ec5/get-pip.py" \
-    && python3.7 get-pip.py \
-    --disable-pip-version-check \
-    --no-cache-dir \
-    && pip3 install pipenv \
-    && rm -f get-pip.py \
+    && apt-get install --no-install-recommends -y python3.11-dev python3-distutils libpq-dev gcc python3.11-venv \
+    && python3.11 -m venv /opt/venv
+
+# Activate virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install pipenv using pip
+RUN pip install --upgrade pip \
+    && pip install pipenv
+
+# Clean up
+RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy config files

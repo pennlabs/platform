@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-black = "==21.9b0"
+black = "==23.10.1"
 unittest-xml-reporting = "*"
 flake8 = "*"
 flake8-isort = "*"
@@ -14,6 +14,7 @@ django-debug-toolbar = "*"
 django-extensions = "*"
 flake8-absolute-import = "*"
 tblib = "*"
+coverage = "*"
 
 [packages]
 dj-database-url = "*"
