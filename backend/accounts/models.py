@@ -35,7 +35,7 @@ class Major(models.Model):
     Represents a major at the University of Pennsylvania.
     """
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
 
     DEGREE_BACHELOR = "BACHELORS"
