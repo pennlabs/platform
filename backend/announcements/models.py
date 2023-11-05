@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Audience(models.Model):
@@ -53,13 +54,18 @@ class Announcement(models.Model):
         default=ANNOUNCEMENT_NOTICE,
     )
     audiences = models.ManyToManyField("Audience", related_name="announcements")
-    release_time = models.DateTimeField(auto_now_add=True)
+    release_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"""[{self.get_announcement_type_display()}
-        for {','.join([audience.name for audience in self.audiences.all()])}]
-        starting at {self.release_time.strftime('%m-%d-%Y %H:%M:%S')}
-        {f'to {self.end_time.strftime("%m-%d-%Y %H:%M:%S")}'
-        if self.end_time else ''}
-        | {f'{self.title}: ' if self.title else ''} {self.message}"""
+        rtime = self.release_time.strftime("%m-%d-%Y %H:%M:%S")
+        etime = (
+            f" to {self.end_time.strftime('%m-%d-%Y %H:%M:%S')}"
+            if self.end_time
+            else ""
+        )
+        aud_str = ",".join([audience.name for audience in self.audiences.all()])
+        title_str = f"{self.title}: " if self.title else ""
+
+        return f"[{self.get_announcement_type_display()} for {aud_str}] \
+starting at {rtime}{etime} | {title_str}{self.message}"

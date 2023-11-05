@@ -20,7 +20,10 @@ class AnnouncementsViewSet(viewsets.ModelViewSet):
         audiences = self.request.query_params.get("audience")
 
         if active == "true":
-            queryset = queryset.filter(Q(end_time__gte=timezone.now()) | Q(end_time__isnull=True))
+            queryset = queryset.filter(
+                Q(release_time__lte=timezone.now())
+                & (Q(end_time__gte=timezone.now()) | Q(end_time__isnull=True))
+            )
 
         if audiences:
             audience_names = audiences.split(",")
