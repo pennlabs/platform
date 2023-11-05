@@ -29,10 +29,10 @@ jobs:
       - name: Test (run in parallel)
         run: |-
           cd backend
-          pipenv run coverage run --concurrency=multiprocessing manage.py test --settings=Platform.settings.ci --parallel
-          pipenv run coverage combine
+          pipenv run python -m coverage run --concurrency=multiprocessing manage.py test --settings=Platform.settings.ci --parallel
+          pipenv run python -m coverage combine
     container:
-      image: python:3.8-buster
+      image: python:3.10-buster
     env:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
     services:
