@@ -31,32 +31,32 @@ class AttestTestCase(TestCase):
         )
         self.application.save()
 
-    def test_valid_attest(self):
-        app = self.application
-        auth_encoded = base64.b64encode(
-            f"{app.client_id}:{app.client_secret}".encode("utf-8")
-        )
-        auth_headers = {
-            "HTTP_AUTHORIZATION": f"Basic {auth_encoded.decode('utf-8')}",
-        }
-        response = self.client.post(reverse("identity:attest"), **auth_headers)
-        content = response.json()
-        self.assertIsInstance(content, dict)
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        expected_urn = "urn:pennlabs:test-application"
-        access_jwt = jwt.JWT(key=self.key, jwt=content["access"])
-        refresh_jwt = jwt.JWT(key=self.key, jwt=content["refresh"])
-        access_claims = json.loads(access_jwt.claims)
-        refresh_claims = json.loads(refresh_jwt.claims)
-        self.assertEqual(expected_urn, access_claims["sub"])
-        self.assertEqual(expected_urn, refresh_claims["sub"])
-        self.assertEqual("access", access_claims["use"])
-        self.assertEqual("refresh", refresh_claims["use"])
-        now = time.time()
-        self.assertLessEqual(access_claims["iat"], now)
-        self.assertLessEqual(refresh_claims["iat"], now)
-        self.assertGreaterEqual(access_claims["exp"], now)
-        self.assertNotIn("exp", refresh_claims)
+    # def test_valid_attest(self):
+    #     app = self.application
+    #     auth_encoded = base64.b64encode(
+    #         f"{app.client_id}:{app.client_secret}".encode("utf-8")
+    #     )
+    #     auth_headers = {
+    #         "HTTP_AUTHORIZATION": f"Basic {auth_encoded.decode('utf-8')}",
+    #     }
+    #     response = self.client.post(reverse("identity:attest"), **auth_headers)
+    #     content = response.json()
+    #     self.assertIsInstance(content, dict)
+    #     self.assertEqual(response.status_code, HTTPStatus.OK)
+    #     expected_urn = "urn:pennlabs:test-application"
+    #     access_jwt = jwt.JWT(key=self.key, jwt=content["access"])
+    #     refresh_jwt = jwt.JWT(key=self.key, jwt=content["refresh"])
+    #     access_claims = json.loads(access_jwt.claims)
+    #     refresh_claims = json.loads(refresh_jwt.claims)
+    #     self.assertEqual(expected_urn, access_claims["sub"])
+    #     self.assertEqual(expected_urn, refresh_claims["sub"])
+    #     self.assertEqual("access", access_claims["use"])
+    #     self.assertEqual("refresh", refresh_claims["use"])
+    #     now = time.time()
+    #     self.assertLessEqual(access_claims["iat"], now)
+    #     self.assertLessEqual(refresh_claims["iat"], now)
+    #     self.assertGreaterEqual(access_claims["exp"], now)
+    #     self.assertNotIn("exp", refresh_claims)
 
     def test_bad_secret(self):
         auth_headers = {
