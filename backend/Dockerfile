@@ -9,18 +9,11 @@ WORKDIR /app/
 
 # Install dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y python3.11-dev python3-distutils libpq-dev gcc python3.11-venv \
-    && python3.11 -m venv /opt/venv
-
-# Activate virtual environment
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Install pipenv using pip
-RUN pip install --upgrade pip \
-    && pip install pipenv
 
 # Clean up
 RUN apt-get clean \
+    && apt-get install --no-install-recommends -y python3.11-dev pipenv python3-distutils libpq-dev gcc \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy config files
@@ -33,7 +26,7 @@ COPY docker/supervisord.conf /etc/supervisor/
 COPY Pipfile* /app/
 
 # Install project dependencies
-RUN pipenv install --system
+RUN pipenv install --deploy --system
 
 # Copy project files
 COPY . /app/
