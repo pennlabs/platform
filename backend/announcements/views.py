@@ -1,5 +1,5 @@
 from announcements.models import Announcement
-from announcements.permissions import IsSuperuser
+from announcements.permissions import AnnouncementPermissions
 from announcements.serializers import AnnouncementSerializer
 from django.db.models import Q
 from django.utils import timezone
@@ -8,22 +8,15 @@ from rest_framework import viewsets
 
 class AnnouncementsViewSet(viewsets.ModelViewSet):
     serializer_class = AnnouncementSerializer
-
-    def get_permissions(self):
-        if self.request.method != "GET":
-            self.permission_classes = [IsSuperuser]
-        return super(AnnouncementsViewSet, self).get_permissions()
+    permission_classes = [AnnouncementPermissions]
 
     def get_queryset(self):
-        queryset = Announcement.objects.all()
-        active = self.request.query_params.get("active")
+        # automatically filter for active announcements
+        queryset = Announcement.objects.filter(
+            Q(release_time__lte=timezone.now())
+            & (Q(end_time__gte=timezone.now()) | Q(end_time__isnull=True))
+        ).prefetch_related("audiences")
         audiences = self.request.query_params.get("audience")
-
-        if active == "true":
-            queryset = queryset.filter(
-                Q(release_time__lte=timezone.now())
-                & (Q(end_time__gte=timezone.now()) | Q(end_time__isnull=True))
-            )
 
         if audiences:
             audience_names = audiences.split(",")

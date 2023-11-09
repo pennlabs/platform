@@ -18,7 +18,7 @@ class AnnouncementsFilterTestCase(TestCase):
                 year=1000, month=12, day=31, tzinfo=timezone.get_current_timezone()
             ),
             end_time=timezone.datetime(
-                year=1001, month=12, day=31, tzinfo=timezone.get_current_timezone()
+                year=3000, month=12, day=31, tzinfo=timezone.get_current_timezone()
             ),
         )
         self.announcement2 = Announcement.objects.create(
@@ -32,17 +32,23 @@ class AnnouncementsFilterTestCase(TestCase):
         self.announcement1.audiences.add(self.audience_clubs)
         self.announcement2.audiences.add(self.audience_ohq)
 
-    def test_get_no_filter(self):
+    def test_get_active(self):
         response = self.client.get("/announcements/")
+        announcement3 = Announcement.objects.create(
+            title="Test message 3",
+            message="This is yet another a test",
+            announcement_type=Announcement.ANNOUNCEMENT_NOTICE,
+            release_time=timezone.datetime(
+                year=1000, month=12, day=31, tzinfo=timezone.get_current_timezone()
+            ),
+            end_time=timezone.datetime(
+                year=1001, month=12, day=31, tzinfo=timezone.get_current_timezone()
+            ),
+        )
+        announcement3.audiences.add(self.audience_ohq)
         self.assertIn(AnnouncementSerializer(self.announcement1).data, response.json())
         self.assertIn(AnnouncementSerializer(self.announcement2).data, response.json())
-
-    def test_filter_active(self):
-        response = self.client.get("/announcements/?active=true")
-        self.assertNotIn(
-            AnnouncementSerializer(self.announcement1).data, response.json()
-        )
-        self.assertIn(AnnouncementSerializer(self.announcement2).data, response.json())
+        self.assertNotIn(AnnouncementSerializer(announcement3).data, response.json())
 
     def test_filter_audience(self):
         response = self.client.get("/announcements/?audience=clubs")
@@ -71,15 +77,8 @@ class AnnouncementsPermissionTestCase(TestCase):
 class AnnouncementsModifyTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        for x in [
-            "MOBILE",
-            "OHQ",
-            "CLUBS",
-            "COURSE_PLAN",
-            "COURSE_REVIEW",
-            "COURSE_ALERT",
-        ]:
-            Audience.objects.get_or_create(name=x)
+        for audience_name, _ in Audience.AUDIENCE_CHOICES:
+            Audience.objects.get_or_create(name=audience_name)
         self.announcement = Announcement.objects.create(
             title="Test message",
             message="This is a test",
@@ -88,7 +87,7 @@ class AnnouncementsModifyTestCase(TestCase):
                 year=1000, month=12, day=31, tzinfo=timezone.get_current_timezone()
             ),
             end_time=timezone.datetime(
-                year=1001, month=12, day=31, tzinfo=timezone.get_current_timezone()
+                year=3000, month=12, day=31, tzinfo=timezone.get_current_timezone()
             ),
         )
         self.user = get_user_model().objects.create(

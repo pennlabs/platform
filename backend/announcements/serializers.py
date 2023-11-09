@@ -38,8 +38,11 @@ class AnnouncementSerializer(serializers.ModelSerializer):
             audience_objs = []
             for audience_name in audiences:
                 audience = Audience.objects.filter(name=audience_name).first()
-                if audience:
-                    audience_objs.append(audience)
+                if not audience:
+                    raise serializers.ValidationError(
+                        {"detail": f"Invalid audience name: {audience_name}"}
+                    )
+                audience_objs.append(audience)
             data["audiences"] = audience_objs
         return super().to_internal_value(data)
 
