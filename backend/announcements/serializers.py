@@ -35,6 +35,10 @@ class AnnouncementSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         audiences = data.get("audiences")
         if isinstance(audiences, list):
+            if not audiences:
+                raise serializers.ValidationError(
+                    {"detail": "You must provide at least one audience"}
+                )
             audience_objs = []
             for audience_name in audiences:
                 audience = Audience.objects.filter(name=audience_name).first()
