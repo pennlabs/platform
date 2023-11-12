@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "options.apps.OptionsConfig",
     "accounts.apps.AccountsConfig",
     "identity.apps.IdentityConfig",
+    "announcements.apps.AnnouncementsConfig",
     "storages",
 ]
 
