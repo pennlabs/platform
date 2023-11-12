@@ -9,9 +9,6 @@ WORKDIR /app/
 
 # Install dependencies
 RUN apt-get update \
-
-# Clean up
-RUN apt-get clean \
     && apt-get install --no-install-recommends -y python3.11-dev pipenv python3-distutils libpq-dev gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

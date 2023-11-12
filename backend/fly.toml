@@ -1,0 +1,25 @@
+# fly.toml app configuration file generated for platform-backend on 2023-10-24T11:35:39-04:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "platform-backend"
+primary_region = "ewr"
+
+[build]
+  # image = "pennlabs/platform-backend:latest"
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+
+[http_service]
+  internal_port = 443
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[statics]]
+  guest_path = "/code/static"
+  url_prefix = "/static/"

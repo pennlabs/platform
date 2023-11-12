@@ -1,5 +1,25 @@
 #!/bin/bash
 
+# Check if the SHIBBOLETH_CERT environment variable is set
+if [ -z "${SHIBBOLETH_CERT}" ]; then
+  echo "The required SHIBBOLETH_CERT environment variable is not set. Exiting."
+  exit 1
+fi
+
+# Check if the SHIBBOLETH_KEY environment variable is set
+if [ -z "${SHIBBOLETH_KEY}" ]; then
+  echo "The required SHIBBOLETH_KEY environment variable is not set. Exiting."
+  exit 1
+fi
+
+# Write the SHIBBOLETH_CERT value to the sp-cert.pem file
+echo "${SHIBBOLETH_CERT}" > /etc/shibboleth/sp-cert.pem
+chmod 644 /etc/shibboleth/sp-cert.pem
+
+# Write the SHIBBOLETH_KEY value to the sp-key.pem file
+echo "${SHIBBOLETH_KEY}" > /etc/shibboleth/sp-key.pem
+chmod 600 /etc/shibboleth/sp-key.pem
+
 # Django Migrate
 /usr/bin/python3 /app/manage.py migrate --noinput
 
