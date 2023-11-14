@@ -179,6 +179,7 @@ OAUTH2_PROVIDER = {
         "introspection": "Introspect token scope",
     },
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
+    "PKCE_REQUIRED": False,
 }
 
 # Custom User Model
