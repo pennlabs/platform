@@ -22,7 +22,6 @@ export class MyChart extends PennLabsChart {
       port: 443,
       deployment: {
         image: backendImage,
-        tag: "daf9ff9b7ba9cd8026b90955bb35e156b63b7742",
         secret,
         secretMounts: [
           {
@@ -76,7 +75,6 @@ export class MyChart extends PennLabsChart {
       port: 8080,
       deployment: {
         image: devImage,
-        tag: "daf9ff9b7ba9cd8026b90955bb35e156b63b7742",
         secret: devSecret,
         env: [{
           name: "DEV_LOGIN",
