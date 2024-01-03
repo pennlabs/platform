@@ -169,6 +169,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # CORS Settings
 
 CORS_ALLOW_ALL_ORIGINS = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# CSRF Settings
+CSRF_TRUSTED_ORIGINS = [f"https://*.{domain}" for domain in DOMAINS]
+
 
 # OAuth2 Settings
 
