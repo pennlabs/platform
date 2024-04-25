@@ -5,7 +5,7 @@ from jwcrypto import jwk, jwt
 
 
 SIGNING_ALG = "RS256"
-EXPIRY_TIME = 15 * 60  # 15 minutes
+EXPIRY_TIME = 60 * 60  # 60 minutes
 ID_PRIVATE_KEY = jwk.JWK.from_pem(settings.IDENTITY_RSA_PRIVATE_KEY.encode("utf-8"))
 
 
