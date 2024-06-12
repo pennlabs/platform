@@ -30,6 +30,7 @@ from sentry_sdk import capture_message
 
 from accounts.models import Major, School, User
 from accounts.serializers import (
+    ApplicationSerializer,
     EmailSerializer,
     FindUserSerializer,
     MajorSerializer,
@@ -162,6 +163,24 @@ class DevLogoutView(View):
     def get(self, request):
         auth.logout(request)
         return redirect("accounts:login")
+
+
+class ApplicationViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for managing Applications, through which users can register
+    confidential client credentials to access API resources on their behalf
+    (e.g. for external developers writing automated scripts that access authenticated
+    Penn Labs routes, logged into their own Penn Labs account).
+    See ApplicationSerializer for an explanation of why we are not currently allowing
+    applications of other grant types (other than `client-credentials`).
+    """
+
+    serializer_class = ApplicationSerializer
+    lookup_field = "client_id"
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.oauth2_provider_application.all()
 
 
 @method_decorator(csrf_exempt, name="dispatch")
