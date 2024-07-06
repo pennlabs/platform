@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.contrib import auth
 from django.contrib.auth import get_user_model
@@ -109,15 +109,21 @@ class BackendTestCase(TestCase):
         self.assertEqual(len(Student.objects.filter(user=user)), 1)
 
     @patch("accounts.backends.requests.get")
-    def test_get_email_exists(self, mock_response):
-        mock_response.return_value.json.return_value = {
+    def test_get_email_exists(self, mock_get):
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
             "result_data": [{"email": "test@example.com"}]
         }
+        mock_get.return_value = mock_response
         backend = ShibbolethRemoteUserBackend()
         self.assertEqual(backend.get_email(1), "test@example.com")
 
     @patch("accounts.backends.requests.get")
-    def test_get_email_no_exists(self, mock_response):
-        mock_response.return_value.json.return_value = {"result_data": []}
+    def test_get_email_no_exists(self, mock_get):
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"result_data": []}
+        mock_get.return_value = mock_response
         backend = ShibbolethRemoteUserBackend()
         self.assertEqual(backend.get_email(1), None)

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 from django.contrib.auth.models import Group
+from requests.auth import HTTPBasicAuth
 
 from accounts.models import Email
 
@@ -14,23 +15,40 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
     """
 
     def get_email(self, pennid):
-        try:
-            response = requests.get(
-                settings.EMAIL_WEB_SERVICE_URL + str(pennid),
-                auth=(
-                    settings.EMAIL_WEB_SERVICE_USERNAME,
-                    settings.EMAIL_WEB_SERVICE_PASSWORD,
-                ),
-            )
-            response = response.json()
-            response = response["result_data"]
+        """
+        Use Penn Directory API with OAuth2 to get the email of a user given their Penn ID.
+        This is necessary to ensure that we have the correct domain (@seas vs. @wharton, etc.)
+        for various services like Clubs emails.
+        """
+        auth = HTTPBasicAuth(
+            settings.EMAIL_OAUTH_CLIENT_ID, settings.EMAIL_OAUTH_CLIENT_SECRET
+        )
+        token_response = requests.post(
+            settings.EMAIL_OAUTH_TOKEN_URL,
+            auth=auth,
+            data={"grant_type": "client_credentials"},
+        )
 
-            # Check if Penn ID doesn't exist somehow
-            if len(response) == 0:
+        if token_response.status_code != 200:
+            return None
+
+        tokens = token_response.json()
+        access_token = tokens["access_token"]
+
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+
+        api_url = settings.EMAIL_OAUTH_API_URL_BASE + str(pennid)
+        response = requests.get(api_url, headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()["result_data"]
+            if not data:
                 return None
-
-            return response[0]["email"]
-        except requests.exceptions.RequestException:
+            return data[0]["email"]
+        else:
             return None
 
     def authenticate(self, request, remote_user, shibboleth_attributes):
