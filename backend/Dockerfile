@@ -7,6 +7,12 @@ ENV LANG C.UTF-8
 
 WORKDIR /app/
 
+# Update PGP key for NGINX
+# https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
+RUN wget https://nginx.org/keys/nginx_signing.key
+RUN cat nginx_signing.key
+RUN cat nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+
 # Install dependencies
 RUN apt-get update \
     && apt-get install --no-install-recommends -y python3.11-dev pipenv python3-distutils libpq-dev gcc \
