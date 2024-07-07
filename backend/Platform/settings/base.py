@@ -197,8 +197,10 @@ SHIB_ADMIN = True
 # Email web service
 EMAIL_OAUTH_CLIENT_ID = os.environ.get("EMAIL_OAUTH_CLIENT_ID", "")
 EMAIL_OAUTH_CLIENT_SECRET = os.environ.get("EMAIL_OAUTH_CLIENT_SECRET", "")
-EMAIL_OAUTH_TOKEN_URL = os.environ.get("EMAIL_OAUTH_TOKEN_URL", "")
-EMAIL_OAUTH_API_URL_BASE = os.environ.get("EMAIL_OAUTH_API_URL_BASE", "")
+EMAIL_OAUTH_TOKEN_URL = os.environ.get("EMAIL_OAUTH_TOKEN_URL", "http://127.0.0.1")
+EMAIL_OAUTH_API_URL_BASE = os.environ.get(
+    "EMAIL_OAUTH_API_URL_BASE", "http://127.0.0.1"
+)
 
 # Twilio Settings
 

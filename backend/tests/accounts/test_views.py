@@ -4,6 +4,7 @@ import json
 import os
 import sys
 from importlib import reload
+from unittest.mock import MagicMock, patch
 from urllib.parse import quote
 
 from django.conf import settings
@@ -61,7 +62,19 @@ class LoginViewTestCase(TestCase):
         response = self.client.get(reverse("accounts:login"))
         self.assertEqual(response.status_code, 500)
 
-    def test_valid_shibboleth(self):
+    @patch("accounts.backends.requests.post")
+    @patch("accounts.backends.requests.get")
+    def test_valid_shibboleth(self, mock_get, mock_post):
+        mock_response_get = MagicMock()
+        mock_response_get.status_code = 200
+        mock_response_get.json.return_value = {"result_data": []}
+        mock_get.return_value = mock_response_get
+
+        mock_response_post = MagicMock()
+        mock_response_post.status_code = 200
+        mock_response_post.json.return_value = {"access_token": "my-access-token"}
+        mock_post.return_value = mock_response_post
+
         headers = {
             "HTTP_EMPLOYEENUMBER": "1",
             "HTTP_EPPN": "test",
@@ -121,7 +134,19 @@ class DevLoginViewTestCase(TestCase):
         response = self.client.get(reverse("accounts:login"))
         self.assertEqual(response.status_code, 200)
 
-    def test_login_valid_choice(self):
+    @patch("accounts.backends.requests.post")
+    @patch("accounts.backends.requests.get")
+    def test_login_valid_choice(self, mock_get, mock_post):
+        mock_response_get = MagicMock()
+        mock_response_get.status_code = 200
+        mock_response_get.json.return_value = {"result_data": []}
+        mock_get.return_value = mock_response_get
+
+        mock_response_post = MagicMock()
+        mock_response_post.status_code = 200
+        mock_response_post.json.return_value = {"access_token": "my-access-token"}
+        mock_post.return_value = mock_response_post
+
         self.client.post(reverse("accounts:login"), data={"userChoice": 1})
         # sample_response = reverse("application:homepage")
         expected_user_pennid = 1
@@ -129,7 +154,19 @@ class DevLoginViewTestCase(TestCase):
         self.assertTrue(expected_user_pennid, actual_user_pennid)
         # self.assertRedirects(response, sample_response, fetch_redirect_response=False)
 
-    def test_login_invalid_choice(self):
+    @patch("accounts.backends.requests.post")
+    @patch("accounts.backends.requests.get")
+    def test_login_invalid_choice(self, mock_get, mock_post):
+        mock_response_get = MagicMock()
+        mock_response_get.status_code = 200
+        mock_response_get.json.return_value = {"result_data": []}
+        mock_get.return_value = mock_response_get
+
+        mock_response_post = MagicMock()
+        mock_response_post.status_code = 200
+        mock_response_post.json.return_value = {"access_token": "my-access-token"}
+        mock_post.return_value = mock_response_post
+
         self.client.post(reverse("accounts:login"), data={"userChoice": 24})
         self.assertTrue("_auth_user_id" in self.client.session)
 

@@ -108,22 +108,36 @@ class BackendTestCase(TestCase):
         user = auth.authenticate(remote_user=1, shibboleth_attributes=attributes)
         self.assertEqual(len(Student.objects.filter(user=user)), 1)
 
+    @patch("accounts.backends.requests.post")
     @patch("accounts.backends.requests.get")
-    def test_get_email_exists(self, mock_get):
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
+    def test_get_email_exists(self, mock_get, mock_post):
+        mock_response_get = MagicMock()
+        mock_response_get.status_code = 200
+        mock_response_get.json.return_value = {
             "result_data": [{"email": "test@example.com"}]
         }
-        mock_get.return_value = mock_response
+        mock_get.return_value = mock_response_get
+
+        mock_response_post = MagicMock()
+        mock_response_post.status_code = 200
+        mock_response_post.json.return_value = {"access_token": "my-access-token"}
+        mock_post.return_value = mock_response_post
+
         backend = ShibbolethRemoteUserBackend()
         self.assertEqual(backend.get_email(1), "test@example.com")
 
+    @patch("accounts.backends.requests.post")
     @patch("accounts.backends.requests.get")
-    def test_get_email_no_exists(self, mock_get):
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"result_data": []}
-        mock_get.return_value = mock_response
+    def test_get_email_no_exists(self, mock_get, mock_post):
+        mock_response_get = MagicMock()
+        mock_response_get.status_code = 200
+        mock_response_get.json.return_value = {"result_data": []}
+        mock_get.return_value = mock_response_get
+
+        mock_response_post = MagicMock()
+        mock_response_post.status_code = 200
+        mock_response_post.json.return_value = {"access_token": "my-access-token"}
+        mock_post.return_value = mock_response_post
+
         backend = ShibbolethRemoteUserBackend()
         self.assertEqual(backend.get_email(1), None)
