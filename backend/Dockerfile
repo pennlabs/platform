@@ -9,9 +9,7 @@ WORKDIR /app/
 
 # Update PGP key for NGINX
 # https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
-RUN wget https://nginx.org/keys/nginx_signing.key
-RUN cat nginx_signing.key
-RUN cat nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+RUN wget -O/etc/apt/trusted.gpg.d/nginx.asc https://nginx.org/keys/nginx_signing.key
 
 # Install dependencies
 RUN apt-get update \
