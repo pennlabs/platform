@@ -194,10 +194,13 @@ AUTH_USER_MODEL = "accounts.User"
 # Enable admin login through shibboleth
 SHIB_ADMIN = True
 
-# Other settings
-EMAIL_WEB_SERVICE_URL = os.environ.get("EMAIL_WEB_SERVICE_URL", "http://127.0.0.1")
-EMAIL_WEB_SERVICE_USERNAME = os.environ.get("EMAIL_WEB_SERVICE_USERNAME", "")
-EMAIL_WEB_SERVICE_PASSWORD = os.environ.get("EMAIL_WEB_SERVICE_PASSWORD", "")
+# Email web service
+EMAIL_OAUTH_CLIENT_ID = os.environ.get("EMAIL_OAUTH_CLIENT_ID", "")
+EMAIL_OAUTH_CLIENT_SECRET = os.environ.get("EMAIL_OAUTH_CLIENT_SECRET", "")
+EMAIL_OAUTH_TOKEN_URL = os.environ.get("EMAIL_OAUTH_TOKEN_URL", "http://127.0.0.1")
+EMAIL_OAUTH_API_URL_BASE = os.environ.get(
+    "EMAIL_OAUTH_API_URL_BASE", "http://127.0.0.1"
+)
 
 # Twilio Settings
 
