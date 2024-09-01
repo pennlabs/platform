@@ -52,11 +52,12 @@ urlpatterns = [
     path("privacy/", PrivacySettingView.as_view(), name="privacy"),
     path("privacy/<int:pk>/", PrivacySettingView.as_view(), name="privacy"),
     path("user/<str:username>", FindUserView.as_view(), name="user"),
-    path(".well-known/openid-configuration",
-         ConnectDiscoveryInfoView.as_view(),
-         name="oidc-connect-discovery-info"),
-    path(".well-known/jwks.json", JwksInfoView.as_view(),
-         name="oidc-jwks-info"),
+    path(
+        ".well-known/openid-configuration",
+        ConnectDiscoveryInfoView.as_view(),
+        name="oidc-connect-discovery-info",
+    ),
+    path(".well-known/jwks.json", JwksInfoView.as_view(), name="oidc-jwks-info"),
 ]
 
 urlpatterns += router.urls

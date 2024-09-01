@@ -148,8 +148,7 @@ class DevLoginView(View):
             "affiliation": affiliations,
         }
         user = auth.authenticate(
-            remote_user=user.pennid,
-            shibboleth_attributes=shibboleth_attributes
+            remote_user=user.pennid, shibboleth_attributes=shibboleth_attributes
         )
         auth.login(request, user)
         return redirect(request.GET.get("next", "/accounts/me/"))
