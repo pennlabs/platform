@@ -7,6 +7,7 @@ class LabsOAuth2Validator(OAuth2Validator):
         {
             "name": "read",
             "email": "read",
+            "pennkey": "read",
             "pennid": "read",
             "is_staff": "read",
             "is_active": "read",
@@ -17,6 +18,7 @@ class LabsOAuth2Validator(OAuth2Validator):
         return {
             "name": request.user.preferred_name or request.user.get_full_name(),
             "email": request.user.get_email(),
+            "pennkey": request.user.username,
             "pennid": request.user.pennid,
             "is_staff": request.user.is_staff,
             "is_active": request.user.is_active,
