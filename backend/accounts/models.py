@@ -71,7 +71,7 @@ class User(AbstractUser):
 
     @property
     def id(self):
-        return self.username
+        return self.uuid
 
     def get_preferred_name(self):
         if self.preferred_name != "":
