@@ -198,7 +198,7 @@ CSRF_TRUSTED_ORIGINS = [f"https://*.{domain}" for domain in DOMAINS]
 # OAuth2 Settings
 
 OAUTH2_PROVIDER = {
-    "SCOPES": {        
+    "SCOPES": {
         "openid": "OpenID Connect scope",
         "read": "Read scope",
         "write": "Write scope",
