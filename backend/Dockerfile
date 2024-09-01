@@ -35,6 +35,7 @@ COPY . /app/
 ENV DJANGO_SETTINGS_MODULE Platform.settings.production
 ENV SECRET_KEY 'temporary key just to build the docker image'
 ENV IDENTITY_RSA_PRIVATE_KEY 'temporary private key just to build the docker image'
+ENV OIDC_RSA_PRIVATE_KEY 'temporary private key just to build the docker image'
 
 # Collect static files
 RUN python3 /app/manage.py collectstatic --noinput
