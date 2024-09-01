@@ -39,7 +39,7 @@ sentry_sdk.init(dsn=SENTRY_URL, integrations=[DjangoIntegration()])
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_METHODS = ["GET"]
+CORS_ALLOW_METHODS = ["GET", "POST"]
 CORS_URLS_REGEX = r"^/options/$"
 
 # Email client settings
