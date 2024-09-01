@@ -198,6 +198,7 @@ CSRF_TRUSTED_ORIGINS = [f"https://*.{domain}" for domain in DOMAINS]
 # OAuth2 Settings
 
 OAUTH2_PROVIDER = {
+    "OAUTH2_VALIDATOR_CLASS": "accounts.oauth2_validator.LabsOAuth2Validator",
     "SCOPES": {
         "openid": "OpenID Connect scope",
         "read": "Read scope",
