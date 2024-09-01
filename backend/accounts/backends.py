@@ -15,6 +15,8 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
     """
 
     def get_email(self, pennid):
+        if settings.DEBUG:
+            return None
         """
         Use Penn Directory API with OAuth2 to get the email of a user given their Penn ID.
         This is necessary to ensure that we have the correct domain (@seas vs. @wharton, etc.)

@@ -1,7 +1,12 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from oauth2_provider.views import AuthorizationView, TokenView
+from oauth2_provider.views import (
+    AuthorizationView,
+    ConnectDiscoveryInfoView,
+    JwksInfoView,
+    TokenView,
+)
 from rest_framework import routers
 
 from accounts.views import (
@@ -47,6 +52,12 @@ urlpatterns = [
     path("privacy/", PrivacySettingView.as_view(), name="privacy"),
     path("privacy/<int:pk>/", PrivacySettingView.as_view(), name="privacy"),
     path("user/<str:username>", FindUserView.as_view(), name="user"),
+    path(
+        ".well-known/openid-configuration",
+        ConnectDiscoveryInfoView.as_view(),
+        name="oidc-connect-discovery-info",
+    ),
+    path(".well-known/jwks.json", JwksInfoView.as_view(), name="oidc-jwks-info"),
 ]
 
 urlpatterns += router.urls

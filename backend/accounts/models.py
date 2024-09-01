@@ -69,6 +69,10 @@ class User(AbstractUser):
 
     VERIFICATION_EXPIRATION_MINUTES = 10
 
+    @property
+    def id(self):
+        return self.username
+
     def get_preferred_name(self):
         if self.preferred_name != "":
             return self.preferred_name
