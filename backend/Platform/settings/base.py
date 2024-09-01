@@ -47,6 +47,26 @@ dTnvCVtA59ne4LEVie/PMH/odQWY0SxVm/76uBZv/1vY
 -----END RSA PRIVATE KEY-----""",
 )
 
+OIDC_RSA_PRIVATE_KEY = os.environ.get(
+    "OIDC_RSA_PRIVATE_KEY",
+    """-----BEGIN PRIVATE KEY-----
+MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAMF37VZGAUWIsrcE
+Iw2uskamXXkQtFb7dMD96iaPNvp7Buc4Z/p+6Mc1uLJRKUeJavU5JIF3K2uRWuLh
+OozP5O3WKDnD5johit1GsaBejc45unxMIAoP4fdLO+iVSHQSl9VS4SXBX1RtitgP
+/eRvEBxk4/LCpJJiZo4cQVZjavc5AgMBAAECgYBx6qiwHQZQqB37D4+IVe4ZFYqC
+Z6iYcvWbUadWzwsjT9+PtDHdWG6+Jc68CHgS7EIzZFMvfDjv3KW0Y8Qy95Kmw++z
+HlmvfGatR8NRge1tdEUCFKkLfSj0hUh/RjculDWM5hlnWnaVa9kw+drUGVhNqUxa
+pMbqYSDiMljtFVDeVQJBAP7KSS9Pm+XZx0qVo4u82Fd9AuoyGumt0EqqHcwpHTpu
+N5mIUttIBvGeQ9Cc3LiUqzMBP/vIEIMoqLt104io1esCQQDCYxnFS+1DfFIvgXWu
+K55PZKVLl4S8/6IKrfulpbZrBNYfQbbsjY+3GHHBzGU0cId3yAsTHZsZ1OdoFb4w
+AyprAkAzfTWk9fWPUZ9Ql0ThrFwb8gtwwIdnydRaAl7bL0PU1wktYbs8zSV6Fn2l
+3s1MD985A3umqhuMJd9TYtBIwbXZAkEAseVR616+J5m5+SHoWdovSodYQuLKptDo
+Mg/hkkoitLQ7ZWWVi81N7gmf6fUt1Zz6TSO1Bux8Slqu4HGtmXD8OwJAW5FEDoOQ
+D0LF8EFEhFrtPvkb0wTr6pyDWtIAJuxqvIRwaP4FACgOL/Cv6BGn5DyM6H/W5/Kp
+Zk+r72xEuoNzUQ==
+-----END PRIVATE KEY-----""",
+)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -179,12 +199,15 @@ CSRF_TRUSTED_ORIGINS = [f"https://*.{domain}" for domain in DOMAINS]
 
 OAUTH2_PROVIDER = {
     "SCOPES": {
+        "openid": "OpenID Connect scope",
         "read": "Read scope",
         "write": "Write scope",
         "introspection": "Introspect token scope",
     },
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
     "PKCE_REQUIRED": False,
+    "OIDC_ENABLED": True,
+    "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
 }
 
 # Custom User Model

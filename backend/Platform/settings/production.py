@@ -26,6 +26,13 @@ if IDENTITY_RSA_PRIVATE_KEY is None:
         "Please provide environment variable IDENTITY_RSA_PRIVATE_KEY in production"
     )
 
+
+OIDC_RSA_PRIVATE_KEY = os.environ.get("OIDC_RSA_PRIVATE_KEY", None)
+if OIDC_RSA_PRIVATE_KEY is None:
+    raise ImproperlyConfigured(
+        "Please provide environment variable OIDC_RSA_PRIVATE_KEY in production"
+    )
+
 # Sentry settings
 SENTRY_URL = os.environ.get("SENTRY_URL", "")
 sentry_sdk.init(dsn=SENTRY_URL, integrations=[DjangoIntegration()])
