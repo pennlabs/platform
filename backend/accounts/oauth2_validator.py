@@ -8,7 +8,7 @@ class LabsOAuth2Validator(OAuth2Validator):
                              "pennid": "read",
                              "is_staff": "read",
                              "is_active": "read"})
-    
+
     def get_additional_claims(self, request):
         return {
             "name": request.user.preferred_name or

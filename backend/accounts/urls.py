@@ -6,7 +6,7 @@ from oauth2_provider.views import (
     ConnectDiscoveryInfoView,
     JwksInfoView,
     TokenView,
-    )
+)
 from rest_framework import routers
 
 from accounts.views import (
