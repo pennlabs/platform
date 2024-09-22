@@ -28,3 +28,5 @@ docker-compose.yml
 
 # Uploaded media files
 backend/accounts/mediafiles
+
+.env
