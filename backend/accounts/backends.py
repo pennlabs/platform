@@ -1,4 +1,5 @@
 import os
+
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -7,6 +8,7 @@ from django.contrib.auth.models import Group
 from requests.auth import HTTPBasicAuth
 
 from accounts.models import Email
+
 
 SETTINGS_MODULE = os.getenv("DJANGO_SETTINGS_MODULE", None)
 
