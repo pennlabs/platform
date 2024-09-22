@@ -2,6 +2,10 @@ FROM pennlabs/django-base:b269ea1613686b1ac6370154debbb741b012de1a-3.9.14
 
 LABEL maintainer="Penn Labs"
 
+# Update PGP key for NGINX
+# https://blog.nginx.org/blog/updating-pgp-key-for-nginx-software
+RUN wget -O/etc/apt/trusted.gpg.d/nginx.asc https://nginx.org/keys/nginx_signing.key
+
 # Copy project dependencies
 COPY Pipfile* /app/
 
