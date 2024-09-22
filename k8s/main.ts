@@ -86,7 +86,7 @@ export class MyChart extends PennLabsChart {
         paths: ["/"],
         isSubdomain: true,
       }],
-      djangoSettingsModule: 'Platform.settings.production',
+      djangoSettingsModule: 'Platform.settings.staging',
     });
 
     new CronJob(this, 'clear-expired-tokens', {
