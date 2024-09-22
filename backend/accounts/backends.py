@@ -1,3 +1,4 @@
+import os
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -7,6 +8,8 @@ from requests.auth import HTTPBasicAuth
 
 from accounts.models import Email
 
+SETTINGS_MODULE = os.getenv("DJANGO_SETTINGS_MODULE", None)
+
 
 class ShibbolethRemoteUserBackend(RemoteUserBackend):
     """
@@ -15,7 +18,8 @@ class ShibbolethRemoteUserBackend(RemoteUserBackend):
     """
 
     def get_email(self, pennid):
-        if settings.DEBUG:
+        # Skip if in debug mode or staging
+        if settings.DEBUG or SETTINGS_MODULE == "Platform.settings.staging":
             return None
         """
         Use Penn Directory API with OAuth2 to get the email of a user given their Penn ID.
