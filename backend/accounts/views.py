@@ -515,7 +515,7 @@ class ProductAdminView(APIView):
         content_type = ContentType.objects.get(app_label="accounts", model="user")
         perms = Permission.objects.filter(
             content_type=content_type, codename__endswith="_admin"
-        )
+        ).exclude(codename="penn_clubs_admin")
         for perm in perms:
             perm.user_set.clear()
         User.objects.filter(Q(is_superuser=True) | Q(is_staff=True)).update(
