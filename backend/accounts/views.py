@@ -515,17 +515,12 @@ class ProductAdminView(APIView):
         content_type = ContentType.objects.get(app_label="accounts", model="user")
         perms = Permission.objects.filter(
             content_type=content_type, codename__endswith="_admin"
-        ).exclude(codename="penn_clubs_admin")
+        )
         for perm in perms:
             perm.user_set.clear()
-        penn_clubs_admin_permission = Permission.objects.get(
-            codename="penn_clubs_admin"
-        )
-        users_to_reset = User.objects.filter(
-            Q(is_superuser=True) | Q(is_staff=True)
-        ).exclude(
-            Q(user_permissions=penn_clubs_admin_permission) | Q(is_superuser=True)
-        )
+        users_to_reset = User.objects.filter(Q(is_staff=True)).exclude(
+            Q(is_superuser=True)
+        )  # Superusers retain permissions across time
         users_to_reset.update(is_superuser=False, is_staff=False)
 
         try:
