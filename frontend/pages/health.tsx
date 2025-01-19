@@ -1,15 +1,24 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { GetServerSideProps } from 'next';
 
-const HealthPage = async () => {
-    const headersList = await headers();
-    const userAgent = headersList.get("User-Agent") || headersList.get("user-agent") || "";
+const HealthPage = () => {
+    return <div>OK</div>;
+};
 
-    if (userAgent !== "service-status") {
-        redirect("/");
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+    const userAgent = req.headers['user-agent'] || '';
+
+    if (userAgent !== 'service-status') {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
     }
 
-    return <div>OK</div>;
+    return {
+        props: {},
+    };
 };
 
 export default HealthPage;
