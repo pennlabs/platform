@@ -23,6 +23,7 @@ djangorestframework-api-key = "*"
 psycopg2 = "*"
 sentry-sdk = "*"
 django-oauth-toolkit = "*"
+oauthlib = { git = "https://github.com/oauthlib/oauthlib.git", rev = "f9a07c6" }
 django-cors-headers = "*"
 django = "*"
 pyyaml = "*"
