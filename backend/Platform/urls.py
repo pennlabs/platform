@@ -13,6 +13,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls", namespace="oauth2_provider")),
     path("options/", include("options.urls", namespace="options")),
     path("identity/", include("identity.urls", namespace="identity")),
+    path("", include("health.urls", namespace="health")),
     path("s/", include("shortener.urls", namespace="shortener")),
     path(
         "openapi/",

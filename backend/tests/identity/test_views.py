@@ -179,3 +179,13 @@ class RefreshTestCase(TestCase):
         self.assertIsInstance(content, dict)
         self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
         self.assertNotIn("access", content)
+
+class HealthTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_health(self):
+        url = reverse("health")
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), {"message": "OK"})
