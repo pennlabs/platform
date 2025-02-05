@@ -48,9 +48,11 @@ export class MyChart extends PennLabsChart {
           "/openapi",
           "/documentation",
           "/Shibboleth.sso",
+          "/healthbackend",
         ],
         isSubdomain: true,
       }],
+
       ingressProps: {
         annotations: {
           ["ingress.kubernetes.io/protocol"]: "https",
