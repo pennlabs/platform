@@ -31,6 +31,7 @@ uritemplate = "*"
 shortener = "*"
 django-runtime-options = "*"
 jwcrypto = "*"
+oauthlib = {git = "https://github.com/oauthlib/oauthlib.git", ref = "f9a07c6"}
 django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
 django-email-tools = "*"
 twilio = "*"
