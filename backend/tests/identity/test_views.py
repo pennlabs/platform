@@ -180,6 +180,7 @@ class RefreshTestCase(TestCase):
         self.assertEqual(HTTPStatus.BAD_REQUEST, response.status_code)
         self.assertNotIn("access", content)
 
+
 class HealthTestCase(TestCase):
     def setUp(self):
         self.client = Client()
