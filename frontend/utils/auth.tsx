@@ -7,7 +7,7 @@ import { doApiRequest } from "./fetch";
 import { User } from "../types";
 
 export interface AuthProps {
-    user: User;
+    user: User | null;
 }
 
 type GetServerSidePropsResultDiscUnion<T> =
