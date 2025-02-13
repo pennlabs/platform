@@ -892,7 +892,7 @@ class ProductAdminViewTestCase(TestCase):
 
     def test_remove_platform_admin(self):
         self.user.is_staff = True
-        self.user.is_superuser = True
+        self.user.is_superuser = False
         self.user.save()
         response = self.client.post(
             reverse("accounts:productadmin"),

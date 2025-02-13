@@ -180,7 +180,6 @@ jobs:
           RELEASE_NAME=${{ steps.synth.outputs.RELEASE_NAME }}
 
           # Deploy
-          kubectl apply -f k8s/dist/ -l app.kubernetes.io/component=certificate
           kubectl apply -f k8s/dist/ --prune -l app.kubernetes.io/part-of=$RELEASE_NAME
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}

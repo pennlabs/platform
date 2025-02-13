@@ -205,7 +205,7 @@ OAUTH2_PROVIDER = {
         "write": "Write scope",
         "introspection": "Introspect token scope",
     },
-    "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https", "pennmobile"],
     "PKCE_REQUIRED": False,
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,

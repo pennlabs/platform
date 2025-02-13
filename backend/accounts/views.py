@@ -518,9 +518,10 @@ class ProductAdminView(APIView):
         )
         for perm in perms:
             perm.user_set.clear()
-        User.objects.filter(Q(is_superuser=True) | Q(is_staff=True)).update(
-            is_superuser=False, is_staff=False
-        )
+        users_to_reset = User.objects.filter(Q(is_staff=True)).exclude(
+            Q(is_superuser=True)
+        )  # Superusers retain permissions across time
+        users_to_reset.update(is_superuser=False, is_staff=False)
 
         try:
             body = json.loads(request.body)
