@@ -6,7 +6,6 @@ from django.views.generic import View
 
 class HealthView(View):
     def get(self, request):
-
         """
         Health check endpoint to confirm the backend is running.
         ---

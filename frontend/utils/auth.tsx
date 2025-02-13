@@ -39,7 +39,7 @@ export function withAuth<T>(getServerSidePropsFunc: GetServerSidePropsFunc<T>) {
     return async (
         ctx: GetServerSidePropsContext
     ): Promise<GetServerSidePropsResult<T & AuthProps>> => {
-        if (ctx.resolvedUrl === '/health') {
+        if (ctx.resolvedUrl === "/health") {
             const wrapped = await getServerSidePropsFunc(ctx);
             const casted = convertGetServerSidePropsResult(wrapped);
 
