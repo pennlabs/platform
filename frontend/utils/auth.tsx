@@ -45,7 +45,7 @@ export function withAuth<T>(getServerSidePropsFunc: GetServerSidePropsFunc<T>) {
 
             if (casted.tag === "props") {
                 return {
-                    props: { ...casted.props },
+                    props: { ...casted.props, user: null } as T & AuthProps,
                 };
             } else if (casted.tag === "notFound") {
                 return { notFound: casted.notFound };
