@@ -14,4 +14,4 @@ class UpdateMajorsTestCase(TestCase):
 
         update_all_schools()
 
-        self.assertEquals(School.objects.all().count(), 12)
+        self.assertEqual(School.objects.all().count(), 12)
