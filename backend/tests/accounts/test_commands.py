@@ -8,8 +8,8 @@ from accounts.models import Major, School, Student
 class UpdateMajorsTestCase(TestCase):
     def test_update_academics(self):
         call_command("update_academics")
-        self.assertNotEquals(0, Major.objects.all().count())
-        self.assertNotEquals(0, School.objects.all().count())
+        self.assertNotEqual(0, Major.objects.all().count())
+        self.assertNotEqual(0, School.objects.all().count())
 
 
 class PopulateUsersTestCase(TestCase):
