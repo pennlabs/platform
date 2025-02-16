@@ -731,7 +731,7 @@ class PhoneNumberViewTestCase(TestCase):
         )
         self.assertEqual(json.loads(response.content), self.expected_response)
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(len(self.user2.phone_numbers.all()), 0)
+        self.assertEqual(len(self.user2.phone_numbers.all()), 0)
 
     def test_resend_verification_fail(self):
         self.client.force_authenticate(user=self.user)
