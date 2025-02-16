@@ -12,25 +12,24 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.local/share/virtualenvs
-          key: v0-${{ hashFiles('backend/Pipfile.lock') }}
+          key: v0-${{ hashFiles('backend/uv.lock') }}
       - name: Install Dependencies
         run: |-
           cd backend
-          pip install pipenv
-          pipenv install --deploy --dev
+          uv sync
       - name: Lint (flake8)
         run: |-
           cd backend
-          pipenv run flake8 .
+          uv run flake8 .
       - name: Lint (black)
         run: |-
           cd backend
-          pipenv run black --check .
+          uv run black --check .
       - name: Test (run in parallel)
         run: |-
           cd backend
-          pipenv run python -m coverage run --concurrency=multiprocessing manage.py test --settings=Platform.settings.ci --parallel
-          pipenv run python -m coverage combine
+          uv run python -m coverage run --concurrency=multiprocessing manage.py test --settings=Platform.settings.ci --parallel
+          uv run python -m coverage combine
     container:
       image: python:3.10-buster
     env:
