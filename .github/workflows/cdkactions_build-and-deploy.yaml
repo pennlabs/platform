@@ -35,7 +35,7 @@ jobs:
           uv run python -m coverage run --concurrency=multiprocessing manage.py test --settings=Platform.settings.ci --parallel
           uv run python -m coverage combine
     container:
-      image: python:3.10-buster
+      image: python:3.11-bookworm
     env:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
     services:
