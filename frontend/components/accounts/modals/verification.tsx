@@ -3,7 +3,6 @@ import { Modal } from "react-bulma-components";
 
 import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
 import toast from "react-hot-toast";
-import styles from "../../../styles/Verification.module.css";
 import { verifyContact } from "../../../data-fetching/accounts";
 import { ContactType, ContactInfo } from "../../../types";
 import { logException } from "../../../utils/sentry";
