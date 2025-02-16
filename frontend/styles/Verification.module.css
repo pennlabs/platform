@@ -1,10 +1,10 @@
-.verification-modal .container {
+.verification-modal-container {
   height: 50px;
   width: 300px;
   margin-top: 10px;
 }
 
-.verification-modal .character {
+.verification-modal-character {
   line-height: 50px;
   font-size: 36px;
   color: black;
@@ -14,10 +14,10 @@
   margin-left: 8px;
 }
 
-.verification-modal .character:first-child {
+.verification-modal-character:first-child {
   margin-left: 0;
 }
 
-.verification-modal .character--selected {
+.verification-modal-character-selected {
   border: 1px solid #b0b0b0;
 }

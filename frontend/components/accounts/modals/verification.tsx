@@ -37,9 +37,9 @@ const VerificationForm = (props: VerificationFormProps) => {
             onChange={handleInputChange}
             validChars="0-9"
             classNames={{
-                container: styles.container,
-                character: styles.character,
-                characterSelected: styles["character--selected"],
+                container: "verification-modal-container",
+                character: "verification-modal-character",
+                characterSelected: "verification-modal-character-selected",
             }}
             removeDefaultStyles
         />
