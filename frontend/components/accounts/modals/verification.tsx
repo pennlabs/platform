@@ -59,7 +59,7 @@ const VerificationModal = (props: VerificationModalProps) => {
     const { show, closeFunc, type, contact, id, mutate } = props;
     const prettyType = type === ContactType.Email ? "Email" : "Phone Number";
     return (
-        <Modal show={show} onClose={closeFunc}>
+        <Modal show={show} onClose={closeFunc} className="verification-modal">
             <Modal.Card>
                 <Modal.Card.Header onClose={closeFunc}>
                     <Modal.Card.Title>
