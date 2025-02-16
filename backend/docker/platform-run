@@ -1,7 +1,9 @@
 #!/bin/bash
 
+cd /app/ &&
+
 # Django Migrate
-/usr/bin/python3 /app/manage.py migrate --noinput
+/root/.local/bin/uv run manage.py migrate --noinput ||
 
 # Run supervisor
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
