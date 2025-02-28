@@ -7,7 +7,7 @@ import { doApiRequest } from "./fetch";
 import { User } from "../types";
 
 export interface AuthProps {
-    user: User;
+    user: User | null;
 }
 
 type GetServerSidePropsResultDiscUnion<T> =
@@ -39,6 +39,21 @@ export function withAuth<T>(getServerSidePropsFunc: GetServerSidePropsFunc<T>) {
     return async (
         ctx: GetServerSidePropsContext
     ): Promise<GetServerSidePropsResult<T & AuthProps>> => {
+        if (ctx.resolvedUrl === "/health") {
+            const wrapped = await getServerSidePropsFunc(ctx);
+            const casted = convertGetServerSidePropsResult(wrapped);
+
+            if (casted.tag === "props") {
+                return {
+                    props: { ...casted.props, user: null } as T & AuthProps,
+                };
+            } else if (casted.tag === "notFound") {
+                return { notFound: casted.notFound };
+            } else {
+                return { redirect: casted.redirect };
+            }
+        }
+
         const headers = {
             credentials: "include",
             headers: { cookie: ctx.req.headers.cookie },

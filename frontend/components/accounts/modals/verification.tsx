@@ -3,7 +3,6 @@ import { Modal } from "react-bulma-components";
 
 import { mutateResourceListFunction } from "@pennlabs/rest-hooks/dist/types";
 import toast from "react-hot-toast";
-import styles from "../../../styles/Verification.module.css";
 import { verifyContact } from "../../../data-fetching/accounts";
 import { ContactType, ContactInfo } from "../../../types";
 import { logException } from "../../../utils/sentry";
@@ -38,9 +37,9 @@ const VerificationForm = (props: VerificationFormProps) => {
             onChange={handleInputChange}
             validChars="0-9"
             classNames={{
-                container: styles.container,
-                character: styles.character,
-                characterSelected: styles["character--selected"],
+                container: "verification-modal-container",
+                character: "verification-modal-character",
+                characterSelected: "verification-modal-character-selected",
             }}
             removeDefaultStyles
         />
@@ -59,7 +58,7 @@ const VerificationModal = (props: VerificationModalProps) => {
     const { show, closeFunc, type, contact, id, mutate } = props;
     const prettyType = type === ContactType.Email ? "Email" : "Phone Number";
     return (
-        <Modal show={show} onClose={closeFunc}>
+        <Modal show={show} onClose={closeFunc} className="verification-modal">
             <Modal.Card>
                 <Modal.Card.Header onClose={closeFunc}>
                     <Modal.Card.Title>
