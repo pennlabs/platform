@@ -7,9 +7,9 @@ jobs:
     name: Django Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.local/share/virtualenvs
           key: v0-${{ hashFiles('backend/uv.lock') }}
@@ -50,11 +50,11 @@ jobs:
     name: Publish backend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: docker/setup-qemu-action@v1
-      - uses: docker/setup-buildx-action@v1
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v6
+      - uses: docker/setup-buildx-action@v6
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: buildx-publish-backend
@@ -76,11 +76,11 @@ jobs:
     name: Publish platform-dev
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: buildx-publish-platform-dev
@@ -102,9 +102,9 @@ jobs:
     name: React Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: "**/node_modules"
           key: v0-${{ hashFiles('frontend/yarn.lock') }}
@@ -131,11 +131,11 @@ jobs:
     name: Publish frontend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: buildx-publish-frontend
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - id: synth
         name: Synth cdk8s manifests
         run: |-
