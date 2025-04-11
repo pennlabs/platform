@@ -13,23 +13,12 @@ RUN wget -O/etc/apt/trusted.gpg.d/nginx.asc https://nginx.org/keys/nginx_signing
 
 # Install dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y python3.11-dev pipenv python3-distutils libpq-dev gcc \
+    && apt-get install --no-install-recommends -y python3.11-dev python3-distutils libpq-dev gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv
-# Download the latest installer
-ADD https://astral.sh/uv/0.6.0/install.sh /uv-installer.sh
-
-RUN echo "5464b06094b6363861b99cd60a010892e52fc2a7503b7594419828e74afecfe6  /uv-installer.sh" | sha256sum -c
-
-# Run the installer then remove it
-RUN sh /uv-installer.sh && rm /uv-installer.sh
-
-# Ensure the installed binary is on the `PATH`
-ENV PATH="/root/.local/bin/:$PATH"
-
-#RUN curl -LsSf https://astral.sh/uv/0.4.30/install.sh | sh
+COPY --from=ghcr.io/astral-sh/uv@sha256:2381d6aa60c326b71fd40023f921a0a3b8f91b14d5db6b90402e65a635053709 /uv /uvx /bin/
 
 # Copy config files
 COPY docker/shibboleth/ /etc/shibboleth/
@@ -38,11 +27,12 @@ COPY docker/shib_clear_headers /etc/nginx/
 COPY docker/supervisord.conf /etc/supervisor/
 
 # Copy project dependencies
-COPY pyproject.toml /app/
-COPY uv.lock /app/
+COPY pyproject.toml uv.lock
 
 # Install project dependencies
-RUN cd /app/ && uv sync
+RUN uv sync --frozen --no-dev --no-install-project --python $(which python); \
+    ln -s /app/.venv/bin/uwsgi /usr/local/bin/uwsgi; \
+    ln -s /app/.venv/bin/gunicorn /usr/local/bin/gunicorn
 
 # Copy project files
 COPY . /app/
