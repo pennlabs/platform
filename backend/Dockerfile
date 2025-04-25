@@ -30,9 +30,14 @@ COPY docker/supervisord.conf /etc/supervisor/
 COPY pyproject.toml uv.lock
 
 # Install project dependencies
-RUN uv sync --frozen --no-dev --no-install-project --python $(which python); \
+RUN uv sync --frozen --no-dev --no-install-project --no-managed-python --python $(which python); \
     ln -s /app/.venv/bin/uwsgi /usr/local/bin/uwsgi; \
     ln -s /app/.venv/bin/gunicorn /usr/local/bin/gunicorn
+
+# Make installed binaries available for POSIX compliant scripts
+ENV PATH="/app/.venv/bin:$PATH"
+
+ENV PYTHONPATH="/app/.venv/lib/python3.11/site-packages/"
 
 # Copy project files
 COPY . /app/
@@ -42,13 +47,13 @@ ENV SECRET_KEY 'temporary key just to build the docker image'
 ENV IDENTITY_RSA_PRIVATE_KEY 'temporary private key just to build the docker image'
 ENV OIDC_RSA_PRIVATE_KEY 'temporary private key just to build the docker image'
 
-# Collect static files
-RUN uv run /app/manage.py collectstatic --noinput
-
 # Copy mime definitions
 COPY docker/mime.types /etc/mime.types
 
 # Copy start script
 COPY docker/platform-run /usr/local/bin/
 
-CMD ["platform-run"]
+# Collect static files
+#RUN ls /app/.venv && python3 /app/manage.py collectstatic --noinput
+
+#CMD ["platform-run"]
