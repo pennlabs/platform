@@ -18,7 +18,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv@sha256:2381d6aa60c326b71fd40023f921a0a3b8f91b14d5db6b90402e65a635053709 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:08.14@sha256:2381d6aa60c326b71fd40023f921a0a3b8f91b14d5db6b90402e65a635053709 /uv /uvx /bin/
 
 # Copy config files
 COPY docker/shibboleth/ /etc/shibboleth/
@@ -27,10 +27,10 @@ COPY docker/shib_clear_headers /etc/nginx/
 COPY docker/supervisord.conf /etc/supervisor/
 
 # Copy project dependencies
-COPY pyproject.toml uv.lock
+COPY pyproject.toml uv.lock /app/
 
 # Install project dependencies
-RUN uv sync --frozen --no-dev --no-install-project --no-managed-python --python $(which python); \
+RUN uv sync; \
     ln -s /app/.venv/bin/uwsgi /usr/local/bin/uwsgi; \
     ln -s /app/.venv/bin/gunicorn /usr/local/bin/gunicorn
 
@@ -54,6 +54,6 @@ COPY docker/mime.types /etc/mime.types
 COPY docker/platform-run /usr/local/bin/
 
 # Collect static files
-#RUN ls /app/.venv && python3 /app/manage.py collectstatic --noinput
+RUN ls /app/ && python3 /app/manage.py collectstatic --noinput
 
-#CMD ["platform-run"]
+CMD ["platform-run"]
