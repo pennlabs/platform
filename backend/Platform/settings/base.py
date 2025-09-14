@@ -242,3 +242,6 @@ EMAIL_TOOLS = {
 # Media Upload Settings
 MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "mediafiles")
 MEDIA_URL = "/media/"
+
+PENN_GROUPS_USER = os.environ.get("PENN_GROUPS_USER", "")
+PENN_GROUPS_PWD = os.environ.get("PENN_GROUPS_PWD", "")
