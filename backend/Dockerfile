@@ -13,9 +13,12 @@ RUN wget -O/etc/apt/trusted.gpg.d/nginx.asc https://nginx.org/keys/nginx_signing
 
 # Install dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y python3.11-dev pipenv python3-distutils libpq-dev gcc \
+    && apt-get install --no-install-recommends -y python3.11-dev python3-distutils libpq-dev gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:08.14@sha256:2381d6aa60c326b71fd40023f921a0a3b8f91b14d5db6b90402e65a635053709 /uv /uvx /bin/
 
 # Copy config files
 COPY docker/shibboleth/ /etc/shibboleth/
@@ -24,10 +27,17 @@ COPY docker/shib_clear_headers /etc/nginx/
 COPY docker/supervisord.conf /etc/supervisor/
 
 # Copy project dependencies
-COPY Pipfile* /app/
+COPY pyproject.toml uv.lock /app/
 
 # Install project dependencies
-RUN pipenv install --deploy --system
+RUN uv sync; \
+    ln -s /app/.venv/bin/uwsgi /usr/local/bin/uwsgi; \
+    ln -s /app/.venv/bin/gunicorn /usr/local/bin/gunicorn
+
+# Make installed binaries available for POSIX compliant scripts
+ENV PATH="/app/.venv/bin:$PATH"
+
+ENV PYTHONPATH="/app/.venv/lib/python3.11/site-packages/"
 
 # Copy project files
 COPY . /app/
@@ -37,13 +47,13 @@ ENV SECRET_KEY 'temporary key just to build the docker image'
 ENV IDENTITY_RSA_PRIVATE_KEY 'temporary private key just to build the docker image'
 ENV OIDC_RSA_PRIVATE_KEY 'temporary private key just to build the docker image'
 
-# Collect static files
-RUN python3 /app/manage.py collectstatic --noinput
-
 # Copy mime definitions
 COPY docker/mime.types /etc/mime.types
 
 # Copy start script
 COPY docker/platform-run /usr/local/bin/
+
+# Collect static files
+RUN ls /app/ && python3 /app/manage.py collectstatic --noinput
 
 CMD ["platform-run"]
