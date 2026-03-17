@@ -22,7 +22,7 @@
         "babel-plugin-styled-components": "^1.13.2",
         "babel-preset-next": "^1.4.0",
         "bulma": "^0.9.3",
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "http-proxy-middleware": "^1.0.5",
         "libphonenumber-js": "^1.9.11",
         "lodash": "^4.17.21",
