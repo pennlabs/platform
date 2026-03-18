@@ -186,13 +186,7 @@ class HealthTestCase(TestCase):
         self.client = Client()
 
     def test_health(self):
-        url = reverse("healthcheck:backend")
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json(), {"message": "OK"})
-
-    def test_health_shortcut(self):
-        url = reverse("health")
+        url = reverse("health:health")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), {"message": "OK"})

@@ -49,7 +49,6 @@ export class MyChart extends PennLabsChart {
           "/documentation",
           "/Shibboleth.sso",
           "/health",
-          "/healthcheck",
         ],
         isSubdomain: true,
       }],
