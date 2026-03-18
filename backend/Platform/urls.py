@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
+from health.views import HealthView
 from rest_framework.schemas import get_schema_view
 
 
@@ -13,6 +14,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls", namespace="oauth2_provider")),
     path("options/", include("options.urls", namespace="options")),
     path("identity/", include("identity.urls", namespace="identity")),
+    path("health/", HealthView.as_view(), name="health"),
     path("healthcheck/", include("health.urls", namespace="healthcheck")),
     path("s/", include("shortener.urls", namespace="shortener")),
     path(
