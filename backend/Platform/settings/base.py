@@ -209,7 +209,18 @@ OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": False,
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
+    "ACCESS_TOKEN_GENERATOR": "accounts.jwt_tokens.generate_access_token",
+    # oauthlib reuses ACCESS_TOKEN_GENERATOR for refresh tokens unless this is set
+    "REFRESH_TOKEN_GENERATOR": "oauthlib.oauth2.rfc6749.tokens.random_token_generator",
 }
+
+# Issue user access tokens as JWTs. Keep off until every product's DLA verifies them.
+JWT_ACCESS_TOKENS_ENABLED = (
+    os.environ.get("JWT_ACCESS_TOKENS_ENABLED", "false").lower() == "true"
+)
+JWT_ACCESS_TOKEN_AUDIENCE = os.environ.get(
+    "JWT_ACCESS_TOKEN_AUDIENCE", "urn:pennlabs:api"
+)
 
 # Custom User Model
 
