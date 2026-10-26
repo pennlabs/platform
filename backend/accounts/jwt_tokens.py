@@ -12,11 +12,15 @@ SIGNING_ALG = "RS256"
 
 
 @lru_cache(maxsize=None)
+def load_key(pem: str) -> jwk.JWK:
+    return jwk.JWK.from_pem(pem.encode("utf-8"))
+
+
 def get_signing_key() -> jwk.JWK:
     """
     The OIDC key, whose public half DOT already publishes at /accounts/.well-known/jwks.json
     """
-    return jwk.JWK.from_pem(oauth2_settings.OIDC_RSA_PRIVATE_KEY.encode("utf-8"))
+    return load_key(oauth2_settings.OIDC_RSA_PRIVATE_KEY)
 
 
 def get_access_token_claims(request) -> dict:

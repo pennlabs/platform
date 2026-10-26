@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import re
 
 import dj_database_url
 
@@ -65,6 +66,22 @@ Mg/hkkoitLQ7ZWWVi81N7gmf6fUt1Zz6TSO1Bux8Slqu4HGtmXD8OwJAW5FEDoOQ
 D0LF8EFEhFrtPvkb0wTr6pyDWtIAJuxqvIRwaP4FACgOL/Cv6BGn5DyM6H/W5/Kp
 Zk+r72xEuoNzUQ==
 -----END PRIVATE KEY-----""",
+)
+
+# Retired OIDC keys (concatenated PEMs): still in the JWKS, no longer used to sign.
+# To rotate, move the current key here, then remove it once its tokens have expired.
+OIDC_RSA_PRIVATE_KEYS_INACTIVE = re.findall(
+    r"-----BEGIN [A-Z ]+-----.+?-----END [A-Z ]+-----",
+    os.environ.get("OIDC_RSA_PRIVATE_KEYS_INACTIVE", ""),
+    re.DOTALL,
+)
+
+# Token lifetimes in seconds. Defaults are DOT's: 10 hours, and no refresh lifetime.
+ACCESS_TOKEN_EXPIRE_SECONDS = int(os.environ.get("ACCESS_TOKEN_EXPIRE_SECONDS", 36000))
+REFRESH_TOKEN_EXPIRE_SECONDS = (
+    int(os.environ["REFRESH_TOKEN_EXPIRE_SECONDS"])
+    if os.environ.get("REFRESH_TOKEN_EXPIRE_SECONDS")
+    else None
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -209,6 +226,9 @@ OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": False,
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": OIDC_RSA_PRIVATE_KEY,
+    "OIDC_RSA_PRIVATE_KEYS_INACTIVE": OIDC_RSA_PRIVATE_KEYS_INACTIVE,
+    "ACCESS_TOKEN_EXPIRE_SECONDS": ACCESS_TOKEN_EXPIRE_SECONDS,
+    "REFRESH_TOKEN_EXPIRE_SECONDS": REFRESH_TOKEN_EXPIRE_SECONDS,
     "ACCESS_TOKEN_GENERATOR": "accounts.jwt_tokens.generate_access_token",
     # oauthlib reuses ACCESS_TOKEN_GENERATOR for refresh tokens unless this is set
     "REFRESH_TOKEN_GENERATOR": "oauthlib.oauth2.rfc6749.tokens.random_token_generator",
