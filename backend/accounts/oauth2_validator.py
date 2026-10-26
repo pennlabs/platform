@@ -1,4 +1,8 @@
+from datetime import timedelta
+
+from django.utils import timezone
 from oauth2_provider.oauth2_validators import OAuth2Validator
+from oauth2_provider.settings import oauth2_settings
 
 
 class LabsOAuth2Validator(OAuth2Validator):
@@ -23,3 +27,18 @@ class LabsOAuth2Validator(OAuth2Validator):
             "is_staff": request.user.is_staff,
             "is_active": request.user.is_active,
         }
+
+    def validate_refresh_token(self, refresh_token, client, request, *args, **kwargs):
+        """
+        DOT only applies REFRESH_TOKEN_EXPIRE_SECONDS in cleartokens, so check it here too
+        """
+        if not super().validate_refresh_token(
+            refresh_token, client, request, *args, **kwargs
+        ):
+            return False
+        lifetime = oauth2_settings.REFRESH_TOKEN_EXPIRE_SECONDS
+        if lifetime is None:
+            return True
+        return request.refresh_token_instance.created > timezone.now() - timedelta(
+            seconds=lifetime
+        )
