@@ -1,11 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
+from tests.accounts.catalog import mock_catalog
 
 from accounts.models import Major, School, Student
 
 
 class UpdateMajorsTestCase(TestCase):
+    def setUp(self):
+        mock_catalog(self)
+
     def test_update_academics(self):
         call_command("update_academics")
         self.assertNotEqual(0, Major.objects.all().count())
@@ -13,6 +17,9 @@ class UpdateMajorsTestCase(TestCase):
 
 
 class PopulateUsersTestCase(TestCase):
+    def setUp(self):
+        mock_catalog(self)
+
     def test_populate_users(self):
         call_command("populate_users")
         self.assertTrue(get_user_model().objects.all().count() > 0)
