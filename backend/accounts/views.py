@@ -1,4 +1,5 @@
 import calendar
+import hashlib
 import json
 from json.decoder import JSONDecodeError
 
@@ -169,7 +170,10 @@ class UUIDIntrospectTokenView(IntrospectTokenView):
     @staticmethod
     def get_token_response(token_value=None):
         try:
-            token = get_access_token_model().objects.get(token=token_value)
+            token_checksum = hashlib.sha256(
+                (token_value or "").encode("utf-8")
+            ).hexdigest()
+            token = get_access_token_model().objects.get(token_checksum=token_checksum)
         except ObjectDoesNotExist:
             return HttpResponse(
                 content=json.dumps({"active": False}),
