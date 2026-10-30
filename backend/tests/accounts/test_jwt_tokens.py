@@ -1,8 +1,12 @@
 import base64
 import datetime
 import json
+import os
+import runpy
 import time
+from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase, override_settings
@@ -16,7 +20,7 @@ from oauth2_provider.models import (
 )
 from oauthlib.common import Request
 
-from accounts.jwt_tokens import generate_access_token
+from accounts.jwt_tokens import generate_access_token, get_signing_key
 from accounts.models import Email
 from accounts.serializers import UserSerializer
 
@@ -182,3 +186,83 @@ class JWTAccessTokenTestCase(TestCase):
         content = response.json()
         self.assertTrue(content["active"])
         self.assertEqual(10000001, content["user"]["pennid"])
+
+    @override_settings(
+        JWT_ACCESS_TOKENS_ENABLED=True,
+        OAUTH2_PROVIDER={
+            **settings.OAUTH2_PROVIDER,
+            "ACCESS_TOKEN_EXPIRE_SECONDS": 600,
+        },
+    )
+    def test_configured_lifetime(self):
+        tokens = self.refresh()
+        _, claims = self.verify(tokens["access_token"])
+        self.assertEqual(600, tokens["expires_in"])
+        self.assertEqual(600, claims["exp"] - claims["iat"])
+
+    @override_settings(JWT_ACCESS_TOKENS_ENABLED=True)
+    def test_key_rotation(self):
+        old_pem = settings.OAUTH2_PROVIDER["OIDC_RSA_PRIVATE_KEY"]
+        old_kid = get_signing_key().thumbprint()
+        old_token = self.refresh()["access_token"]
+        new_pem = (
+            jwk.JWK.generate(kty="RSA", size=2048)
+            .export_to_pem(private_key=True, password=None)
+            .decode("utf-8")
+        )
+        with override_settings(
+            OAUTH2_PROVIDER={
+                **settings.OAUTH2_PROVIDER,
+                "OIDC_RSA_PRIVATE_KEY": new_pem,
+                "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [old_pem],
+            }
+        ):
+            new_kid = get_signing_key().thumbprint()
+            self.assertNotEqual(old_kid, new_kid)
+            jwks = self.client.get(reverse("oauth2_provider:oidc-jwks-info")).json()
+            self.assertEqual({old_kid, new_kid}, {key["kid"] for key in jwks["keys"]})
+            # tokens signed before the rotation still verify
+            header, _ = self.verify(old_token)
+            self.assertEqual(old_kid, header["kid"])
+            header, _ = self.verify(
+                generate_access_token(self.oauthlib_request(self.user))
+            )
+            self.assertEqual(new_kid, header["kid"])
+
+
+class TokenSettingsTestCase(TestCase):
+    def load_settings(self, **env):
+        with patch.dict(os.environ, env):
+            return runpy.run_module("Platform.settings.base")
+
+    def test_defaults(self):
+        for name in [
+            "ACCESS_TOKEN_EXPIRE_SECONDS",
+            "REFRESH_TOKEN_EXPIRE_SECONDS",
+            "OIDC_RSA_PRIVATE_KEYS_INACTIVE",
+        ]:
+            os.environ.pop(name, None)
+        oauth2 = self.load_settings()["OAUTH2_PROVIDER"]
+        self.assertEqual(36000, oauth2["ACCESS_TOKEN_EXPIRE_SECONDS"])
+        self.assertIsNone(oauth2["REFRESH_TOKEN_EXPIRE_SECONDS"])
+        self.assertEqual([], oauth2["OIDC_RSA_PRIVATE_KEYS_INACTIVE"])
+
+    def test_lifetimes_from_environment(self):
+        oauth2 = self.load_settings(
+            ACCESS_TOKEN_EXPIRE_SECONDS="600", REFRESH_TOKEN_EXPIRE_SECONDS="2592000"
+        )["OAUTH2_PROVIDER"]
+        self.assertEqual(600, oauth2["ACCESS_TOKEN_EXPIRE_SECONDS"])
+        self.assertEqual(2592000, oauth2["REFRESH_TOKEN_EXPIRE_SECONDS"])
+
+    def test_inactive_keys_from_environment(self):
+        pems = [
+            jwk.JWK.generate(kty="RSA", size=2048)
+            .export_to_pem(private_key=True, password=None)
+            .decode("utf-8")
+            .strip()
+            for _ in range(2)
+        ]
+        oauth2 = self.load_settings(OIDC_RSA_PRIVATE_KEYS_INACTIVE="\n".join(pems))[
+            "OAUTH2_PROVIDER"
+        ]
+        self.assertEqual(pems, oauth2["OIDC_RSA_PRIVATE_KEYS_INACTIVE"])
