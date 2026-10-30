@@ -18,6 +18,7 @@ from django.utils import timezone
 from oauth2_provider.models import get_access_token_model, get_application_model
 from rest_framework.test import APIClient
 from rest_framework_api_key.models import APIKey
+from tests.accounts.catalog import mock_catalog
 
 from accounts.models import (
     Email,
@@ -128,6 +129,7 @@ class DevLoginViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         reload_urlconf()
+        mock_catalog(self)
         call_command("populate_users")
 
     def test_get_login_page(self):
