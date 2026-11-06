@@ -14,6 +14,7 @@ urlpatterns = [
     path("options/", include("options.urls", namespace="options")),
     path("identity/", include("identity.urls", namespace="identity")),
     path("healthcheck/", include("health.urls", namespace="healthcheck")),
+    path("penngroups/", include("penngroups.urls", namespace="penngroups")),
     path("s/", include("shortener.urls", namespace="shortener")),
     path(
         "openapi/",

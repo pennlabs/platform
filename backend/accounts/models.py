@@ -108,7 +108,10 @@ def ensure_student_object(sender, instance, created, **kwargs):
     This post_save hook triggers automatically when a User object is saved, and if no Student
     object exists for that User, it will create one
     """
-    Student.objects.get_or_create(user=instance)
+    # Only create Student object if the User instance has been saved to the database
+    # (has a primary key) to avoid "Model instances passed to related filters must be saved" error
+    if instance.pk:
+        Student.objects.get_or_create(user=instance)
 
 
 class Email(models.Model):
@@ -180,12 +183,15 @@ def load_privacy_settings(sender, instance, created, **kwargs):
     privacy settings for the User
     """
 
-    # In most cases, first checking if settings exists should reduce the number of queries
-    # to the database
-    if not instance.privacy_setting.exists():
-        resources = PrivacyResource.objects.all()
-        settings = [
-            PrivacySetting(user=instance, resource=resource, enabled=True)
-            for resource in resources
-        ]
-        PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)
+    # Only access relationships if the User instance has been saved to the database
+    # (has a primary key) to avoid "User instance needs to have a primary key value" error
+    if instance.pk:
+        # In most cases, first checking if settings exists should reduce the number of queries
+        # to the database
+        if not instance.privacy_setting.exists():
+            resources = PrivacyResource.objects.all()
+            settings = [
+                PrivacySetting(user=instance, resource=resource, enabled=True)
+                for resource in resources
+            ]
+            PrivacySetting.objects.bulk_create(settings, ignore_conflicts=True)
