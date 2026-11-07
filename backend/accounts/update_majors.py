@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from accounts.models import Major
+from accounts.update_schools import CATALOG_HEADERS
 
 
 def contains_filters(listed_filters, desired_filters=set(), excluded_filters=set()):
@@ -20,7 +21,9 @@ def contains_filters(listed_filters, desired_filters=set(), excluded_filters=set
 
 def update_all_majors():
     # scrapes majors from the official penn catalog of all programs
-    source = requests.get("https://catalog.upenn.edu/programs/").text
+    source = requests.get(
+        "https://catalog.upenn.edu/programs/", headers=CATALOG_HEADERS
+    ).text
 
     soup = BeautifulSoup(source, "lxml")
 
@@ -66,6 +69,12 @@ def update_all_majors():
 
         # keep track of found majors
         listed_majors.add(major_name)
+
+    # don't mark every major inactive if the page couldn't be read
+    if not listed_majors:
+        raise RuntimeError(
+            "no majors found: catalog page changed or request was blocked"
+        )
 
     # iterate through existing majors and set active/inactive status
     for existing_major in Major.objects.all():
