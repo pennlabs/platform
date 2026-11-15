@@ -40,7 +40,13 @@ export default class MyDocument extends Document {
     render() {
         return (
             <Html>
-                <Head />
+                <Head>
+                    <script
+                        src="https://status.pennlabs.org/banner.js"
+                        data-product="penn-platform"
+                        defer
+                    />
+                </Head>
                 <body>
                     <Main />
                     <NextScript />
